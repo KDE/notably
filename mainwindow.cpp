@@ -31,6 +31,8 @@
 #include <KWindowSystem>
 #include <KLocale>
 #include <KDebug>
+#include <KShortcut>
+#include <KAction>
 
 MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)
@@ -72,6 +74,13 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     //animation->start();
 
     connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );
+
+    // Add a shortcut
+    // TODO: Again, make configurable
+    KAction * toggleAction = new KAction( i18n("Toggle Window"), this );
+    toggleAction->setObjectName( QLatin1String("toggle-window") );
+    toggleAction->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
+    connect( toggleAction, SIGNAL(triggered(bool)), this, SLOT(toggleWindowState()) );
 }
 
 MainWindow::~MainWindow()
@@ -80,15 +89,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::toggleWindowState()
 {
-    bool visible = isVisible();
-    // Visible but not active
-    if(visible && !isActiveWindow()) {
-        KWindowSystem::activateWindow(winId());
-        KWindowSystem::forceActiveWindow(winId());
-    }
-    else {
-        // Call the showing/hiding animation based on the visibility
-    }
+    if( isVisible() )
+        hide();
+    else
+        show();
+//     bool visible = isVisible();
+//     // Visible but not active
+//     if(visible && !isActiveWindow()) {
+//         KWindowSystem::activateWindow(winId());
+//         KWindowSystem::forceActiveWindow(winId());
+//     }
+//     else {
+//         // Call the showing/hiding animation based on the visibility
+//     }
 }
 
 void MainWindow::slotNewNote()
