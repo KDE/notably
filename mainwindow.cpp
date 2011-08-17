@@ -22,21 +22,36 @@
 
 #include <QtCore/QPropertyAnimation>
 
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QBoxLayout>
+
 #include <KTextEdit>
 #include <KWindowSystem>
+#include <KLocale>
 
 MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)
 {
-    KTextEdit *textEdit = new KTextEdit( this );
-    setCentralWidget( textEdit );
+    QWidget *widget = new QWidget( this );
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
 
-    int x = maximumWidth()/2 - width()/2;
-    int y = maximumHeight()/2 - height()/2;
-    move( x, y );
+    m_newNoteButton = new KPushButton( i18n("New Note") );
+    buttonLayout->addWidget( m_newNoteButton );
 
-    KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
-    //KWindowSystem::setType(winId(), NET::Splash);
+    QVBoxLayout *mainLayout = new QVBoxLayout( widget );
+
+    KTextEdit *textEdit = new KTextEdit();
+    mainLayout->addLayout( buttonLayout );
+    mainLayout->addWidget( textEdit );
+
+    setCentralWidget( widget );
+
+    //setWindowFlags( Qt::FramelessWindowHint  );
+    //KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
+
+    QRect scr = QApplication::desktop()->screenGeometry();
+    move( scr.center() - rect().center() );
 
     //QPropertyAnimation *animation = new QPropertyAnimation( this, "geometry");
     //animation->setDuration(10000);

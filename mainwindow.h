@@ -22,19 +22,20 @@
 #define MAINWINDOW_H
 
 #include <KMainWindow>
+#include <KPushButton>
 
 class MainWindow : public KMainWindow
 {
     Q_OBJECT
 public:
     MainWindow(QWidget *parent=0, Qt::WindowFlags f=0);
-    ~MainWindow();
+    virtual ~MainWindow();
 
 private slots:
     void toggleWindowState();
 
 private:
-
+    KPushButton *m_newNoteButton;
 };
 
 #endif // MAINWINDOW_H
