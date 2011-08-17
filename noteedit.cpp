@@ -20,14 +20,43 @@
 
 #include "noteedit.h"
 
+#include <Soprano/Model>
+#include <Soprano/QueryResultIterator>
+
+#include <Nepomuk/Variant>
+#include <Nepomuk/ResourceManager>
+
 #include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk/Vocabulary/NIE>
+#include <Soprano/Vocabulary/NAO>
+
+#include <KDebug>
 
 using namespace Nepomuk::Vocabulary;
+using namespace Soprano::Vocabulary;
 
 NoteEdit::NoteEdit(QWidget* parent)
     : KTextEdit(parent)
 {
-    reset();
+    // Show the last modified resource
+    QString query = QString::fromLatin1("select ?r where { ?r a %1. ?r %2 ?dt . } "
+                                        "ORDER BY desc(?dt) LIMIT 1")
+                    .arg( Soprano::Node::resourceToN3( PIMO::Note() ),
+                          Soprano::Node::resourceToN3( NAO::lastModified() ) );
+
+    Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it = model->executeQuery( query, Soprano::Query::QueryLanguageSparql );
+    kDebug() << "Executed " << query;
+    if( it.next() ) {
+        kDebug() << "Found " << it[0].uri();
+
+        m_noteResource = Nepomuk::Resource( it[0].uri() );
+        setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
+        moveCursor( QTextCursor::End );
+    }
+    else {
+        reset();
+    }
 }
 
 NoteEdit::~NoteEdit()
@@ -37,7 +66,7 @@ NoteEdit::~NoteEdit()
 
 void NoteEdit::save()
 {
-    m_noteResource.setDescription( toPlainText() );
+    m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
 }
 
 void NoteEdit::reset()
