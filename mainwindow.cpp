@@ -52,8 +52,17 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     //setWindowFlags( Qt::FramelessWindowHint  );
     //KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
 
-    QRect scr = QApplication::desktop()->screenGeometry();
-    move( scr.center() - rect().center() );
+    QRect screen = QApplication::desktop()->screenGeometry();
+
+    // TODO: Make configurable
+    QRect newGeometry;
+    newGeometry.setWidth( screen.width() * 0.35 );
+    newGeometry.setHeight( screen.height() * 0.55 );
+    setGeometry( newGeometry );
+
+    // Move to the center of the screen
+    // TODO:: Make configurable
+    move( screen.center().x() - rect().width()/2, screen.center().y() - rect().height()/2 );
 
     //QPropertyAnimation *animation = new QPropertyAnimation( this, "geometry");
     //animation->setDuration(10000);
