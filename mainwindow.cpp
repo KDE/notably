@@ -51,8 +51,9 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 
     setCentralWidget( widget );
 
-    //setWindowFlags( Qt::FramelessWindowHint  );
-    //KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
+    // Window flags to make it look pretier
+    setWindowFlags( Qt::FramelessWindowHint );
+    KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
 
     QRect screen = QApplication::desktop()->screenGeometry();
 
@@ -81,6 +82,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     toggleAction->setObjectName( QLatin1String("toggle-window") );
     toggleAction->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
     connect( toggleAction, SIGNAL(triggered(bool)), this, SLOT(toggleWindowState()) );
+
 }
 
 MainWindow::~MainWindow()
@@ -91,8 +93,10 @@ void MainWindow::toggleWindowState()
 {
     if( isVisible() )
         hide();
-    else
+    else {
         show();
+        KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
+    }
 //     bool visible = isVisible();
 //     // Visible but not active
 //     if(visible && !isActiveWindow()) {
