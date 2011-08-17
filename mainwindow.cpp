@@ -19,6 +19,7 @@
 
 
 #include "mainwindow.h"
+#include "noteedit.h"
 
 #include <QtCore/QPropertyAnimation>
 
@@ -34,16 +35,16 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)
 {
     QWidget *widget = new QWidget( this );
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-
-    m_newNoteButton = new KPushButton( i18n("New Note") );
-    buttonLayout->addWidget( m_newNoteButton );
-
     QVBoxLayout *mainLayout = new QVBoxLayout( widget );
 
-    KTextEdit *textEdit = new KTextEdit();
+    m_newNoteButton = new KPushButton( i18n("New Note") );
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget( m_newNoteButton );
+
+    m_noteEditor = new NoteEdit( this );
+
     mainLayout->addLayout( buttonLayout );
-    mainLayout->addWidget( textEdit );
+    mainLayout->addWidget( m_noteEditor );
 
     setCentralWidget( widget );
 
@@ -59,6 +60,8 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     //animation->setEndValue(QRect(250, 250, 100, 30));
 
     //animation->start();
+
+    connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );
 }
 
 MainWindow::~MainWindow()
@@ -76,5 +79,12 @@ void MainWindow::toggleWindowState()
     else {
         // Call the showing/hiding animation based on the visibility
     }
+}
+
+void MainWindow::slotNewNote()
+{
+    m_noteEditor->save();
+    m_noteEditor->reset();
+    m_noteEditor->setFocus();
 }
 

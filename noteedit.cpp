@@ -18,28 +18,32 @@
 */
 
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "noteedit.h"
 
-#include <KMainWindow>
-#include <KPushButton>
+#include <Nepomuk/Vocabulary/PIMO>
 
-class NoteEdit;
+using namespace Nepomuk::Vocabulary;
 
-class MainWindow : public KMainWindow
+NoteEdit::NoteEdit(QWidget* parent)
+    : KTextEdit(parent)
 {
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent=0, Qt::WindowFlags f=0);
-    virtual ~MainWindow();
+    reset();
+}
 
-private slots:
-    void toggleWindowState();
-    void slotNewNote();
+NoteEdit::~NoteEdit()
+{
+    save();
+}
 
-private:
-    NoteEdit *m_noteEditor;
-    KPushButton *m_newNoteButton;
-};
+void NoteEdit::save()
+{
+    m_noteResource.setDescription( toPlainText() );
+}
 
-#endif // MAINWINDOW_H
+void NoteEdit::reset()
+{
+    clear();
+    // Create a new note
+    m_noteResource = Nepomuk::Resource( QUrl(), PIMO::Note() );
+}
+

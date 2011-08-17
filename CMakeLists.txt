@@ -17,6 +17,7 @@ include_directories(
 set( SRCS
   main.cpp
   mainwindow.cpp
+  noteedit.cpp
 )
 
 kde4_add_executable(nnotes ${SRCS})

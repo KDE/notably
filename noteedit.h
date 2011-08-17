@@ -18,28 +18,23 @@
 */
 
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef NOTEEDIT_H
+#define NOTEEDIT_H
 
-#include <KMainWindow>
-#include <KPushButton>
+#include <KTextEdit>
+#include <Nepomuk/Resource>
 
-class NoteEdit;
-
-class MainWindow : public KMainWindow
+class NoteEdit : public KTextEdit
 {
     Q_OBJECT
 public:
-    MainWindow(QWidget *parent=0, Qt::WindowFlags f=0);
-    virtual ~MainWindow();
+    explicit NoteEdit(QWidget* parent = 0);
+    virtual ~NoteEdit();
 
-private slots:
-    void toggleWindowState();
-    void slotNewNote();
-
+    void save();
+    void reset();
 private:
-    NoteEdit *m_noteEditor;
-    KPushButton *m_newNoteButton;
+    Nepomuk::Resource m_noteResource;
 };
 
-#endif // MAINWINDOW_H
+#endif // NOTEEDIT_H
