@@ -30,6 +30,7 @@
 #include <KTextEdit>
 #include <KWindowSystem>
 #include <KLocale>
+#include <KDebug>
 
 MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)

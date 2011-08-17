@@ -41,8 +41,9 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
     KUniqueApplication app;
 
-    MainWindow mainWindow;
-    mainWindow.show();
+    //vHanda: Figure out how/why this is being deleted!
+    MainWindow *mainWindow = new MainWindow();
+    mainWindow->show();
 
     return app.exec();
 }
