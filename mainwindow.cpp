@@ -34,11 +34,17 @@
 #include <KShortcut>
 #include <KAction>
 
+#ifdef Q_WS_X11
+#include <QX11Info>
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#endif
+
 MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)
 {
-    QWidget *widget = new QWidget( this );
-    QVBoxLayout *mainLayout = new QVBoxLayout( widget );
+    QWidget *widget = new QWidget();
+    QVBoxLayout *mainLayout = new QVBoxLayout(widget);
 
     m_newNoteButton = new KPushButton( i18n("New Note") );
     QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -50,6 +56,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     mainLayout->addWidget( m_noteEditor );
 
     setCentralWidget( widget );
+    //showFullScreen();
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );
@@ -83,7 +90,27 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     toggleAction->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
     connect( toggleAction, SIGNAL(triggered(bool)), this, SLOT(toggleWindowState()) );
 
+    // Blur background
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoSystemBackground, false);
+#ifdef Q_WS_X11
+    Atom net_wm_blur_region = XInternAtom(QX11Info::display(), "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
+
+    QVector<QRect> rects;
+    QRect re = screen;
+    rects << re;
+
+    QVector<unsigned long> data;
+    foreach (const QRect &r, rects) {
+        data << r.x() << r.y() << r.width() << r.height();
+    }
+
+    XChangeProperty(QX11Info::display(), winId(), net_wm_blur_region, XA_CARDINAL, 32, PropModeReplace,
+                    reinterpret_cast<const unsigned char *>(data.constData()), data.size());
+#endif
 }
+
+
 
 MainWindow::~MainWindow()
 {
