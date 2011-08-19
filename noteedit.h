@@ -33,6 +33,10 @@ public:
 
     void save();
     void reset();
+
+public slots:
+    void slotCreateNote();
+
 private:
     Nepomuk::Resource m_noteResource;
 };
