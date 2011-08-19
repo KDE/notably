@@ -47,8 +47,11 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
 
     m_newNoteButton = new KPushButton( i18n("New Note") );
+    m_saveNoteButton = new KPushButton( i18n("Save Note") );
+
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget( m_newNoteButton );
+    buttonLayout->addWidget( m_saveNoteButton );
 
     m_noteEditor = new NoteEdit( this );
 
@@ -81,7 +84,9 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 
     //animation->start();
 
+    // Buttons
     connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );
+    connect( m_saveNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotSaveNote()) );
 
     // Add a shortcut
     // TODO: Again, make configurable
@@ -142,3 +147,7 @@ void MainWindow::slotNewNote()
     m_noteEditor->setFocus();
 }
 
+void MainWindow::slotSaveNote()
+{
+    m_noteEditor->save();
+}

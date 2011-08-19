@@ -36,10 +36,12 @@ public:
 private slots:
     void toggleWindowState();
     void slotNewNote();
+    void slotSaveNote();
 
 private:
     NoteEdit *m_noteEditor;
     KPushButton *m_newNoteButton;
+    KPushButton *m_saveNoteButton;
 };
 
 #endif // MAINWINDOW_H
