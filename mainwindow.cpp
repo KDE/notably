@@ -20,8 +20,7 @@
 
 #include "mainwindow.h"
 #include "noteedit.h"
-
-#include <QtCore/QPropertyAnimation>
+#include "settings.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
@@ -69,20 +68,14 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 
     // TODO: Make configurable
     QRect newGeometry;
-    newGeometry.setWidth( screen.width() * 0.35 );
-    newGeometry.setHeight( screen.height() * 0.55 );
+    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
+    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
     setGeometry( newGeometry );
 
     // Move to the center of the screen
     // TODO:: Make configurable
-    move( screen.center().x() - rect().width()/2, screen.center().y() - rect().height()/2 );
-
-    //QPropertyAnimation *animation = new QPropertyAnimation( this, "geometry");
-    //animation->setDuration(10000);
-    //animation->setStartValue(QRect(0, 0, 100, 30));
-    //animation->setEndValue(QRect(250, 250, 100, 30));
-
-    //animation->start();
+    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
+          screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
 
     // Buttons
     connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );

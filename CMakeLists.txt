@@ -20,6 +20,8 @@ set( SRCS
   noteedit.cpp
 )
 
+kde4_add_kcfg_files(SRCS config/settings.kcfgc)
+
 kde4_add_executable(nnotes ${SRCS})
 
 target_link_libraries( nnotes

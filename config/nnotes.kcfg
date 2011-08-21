@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+  <kcfgfile name="nnotesrc" />
+  <group name="Window">
+    <entry name="Screen" type="Int">
+      <label context="@label">Screen to use</label>
+      <whatsthis context="@info:whatsthis">The screen on which the application window will appear. 0 is understood to be the screen the mouse pointer is on.</whatsthis>
+      <default>1</default>
+    </entry>
+    <entry name="Width" type="Int">
+      <label context="@label">Window width</label>
+      <whatsthis context="@info:whatsthis">Width of the application window as a percentage of the screen.</whatsthis>
+      <default>40</default>
+      <min>10</min>
+      <max>100</max>
+    </entry>
+    <entry name="Height" type="Int">
+      <label context="@label">Window height</label>
+      <whatsthis context="@info:whatsthis">Height of the application window as a percentage of the screen.</whatsthis>
+      <default>60</default>
+      <min>10</min>
+      <max>100</max>
+    </entry>
+    <entry name="HorziontalPosition" type="Int">
+      <label context="@label">Window horizontal position</label>
+      <whatsthis context="@info:whatsthis">Center point of the application window, as a percentage, measured from the left-hand edge of the screen.</whatsthis>
+      <default>50</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+    <entry name="VerticalPosition" type="Int">
+      <label context="@label">Window vertical position</label>
+      <whatsthis context="@info:whatsthis">Center point of the application window, as a percentage, measured from the top edge of the screen.</whatsthis>
+      <default>50</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+    <entry name="ShowOnAllDesktops" type="Bool">
+      <label context="@label">Show window on all desktops</label>
+      <whatsthis context="@info:whatsthis">Whether to show the window on all desktops.</whatsthis>
+      <default>true</default>
+    </entry>
+    <entry name="KeepOpen" type="Bool">
+      <label context="@label">Keep window open</label>
+      <whatsthis context="@info:whatsthis">Whether to keep the application window open when it loses focus.</whatsthis>
+      <default>true</default>
+    </entry>
+    <entry name="ToggleToFocus" type="Bool">
+      <label context="@label">Use open/retract shortcut to focus window</label>
+      <whatsthis context="@info:whatsthis">Whether the open/retract keyboard shortcut can be used to focus the application window when it is already open.</whatsthis>
+      <default>false</default>
+    </entry>
+    <entry name="KeepAbove" type="Bool">
+      <label context="@label">Keep window on top</label>
+      <whatsthis context="@info:whatsthis">Whether to keep the application window above other windows on the screen.</whatsthis>
+      <default>true</default>
+    </entry>
+  </group>
+  <group name="Behavior">
+    <entry name="OpenAfterStart" type="Bool">
+      <label context="@label">Open after start</label>
+      <whatsthis context="@info:whatsthis">Whether the application window should be opened after program start.</whatsthis>
+    <default>false</default>
+    </entry>
+  </group>
+  <group name="Dialogs">
+    <entry name="FirstRun" type="Bool">
+      <label context="@label">Application first run</label>
+      <whatsthis context="@info:whatsthis">Whether this is the first time the application is run.</whatsthis>
+      <default>true</default>
+    </entry>
+    <entry name="ConfirmQuit" type="Bool">
+      <label context="@label">Confirm quit with multiple sessions</label>
+      <whatsthis context="@info:whatsthis">Whether to prompt the user before quitting the application when multiple sessions are open.</whatsthis>
+      <default>true</default>
+    </entry>
+  </group>
+</kcfg>
