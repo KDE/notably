@@ -49,14 +49,25 @@ private slots:
     void configureNotifications();
     void configureApp();
 
+    void setWindowWidth(QAction *action);
+    void setWindowHeight(QAction *action);
+
+    void applyWindowGeometry();
+
 private:
     void setupActions();
     void setupMenus();
     void setupGUI();
 
+    void updateWindowSizeMenus();
+    void updateWindowHeightMenu();
+    void updateWindowWidthMenu();
+
     NoteEdit *m_noteEditor;
 
     KMenu *m_menu;
+    KMenu *m_windowHeightMenu;
+    KMenu *m_windowWidthMenu;
     KHelpMenu *m_helpMenu;
     KActionCollection *m_actionCollection;
 

@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     setupActions();
     setupMenus();
     setupGUI();
+
+    applyWindowGeometry();
 }
 
 MainWindow::~MainWindow()
@@ -87,19 +89,6 @@ void MainWindow::setupGUI()
     setWindowFlags( Qt::FramelessWindowHint );
     KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
 
-    QRect screen = QApplication::desktop()->screenGeometry();
-
-    // TODO: Make configurable
-    QRect newGeometry;
-    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
-    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
-    setGeometry( newGeometry );
-
-    // Move to the center of the screen
-    // TODO:: Make configurable
-    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
-          screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
-
     // Blur background
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_NoSystemBackground, false);
@@ -107,7 +96,7 @@ void MainWindow::setupGUI()
     Atom net_wm_blur_region = XInternAtom(QX11Info::display(), "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
 
     QVector<QRect> rects;
-    QRect re = screen;
+    QRect re = QApplication::desktop()->screenGeometry();
     rects << re;
 
     QVector<unsigned long> data;
@@ -193,7 +182,7 @@ void MainWindow::setupMenus()
     m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::AboutApp)));
     m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::AboutKDE)));
 
-//    m_menu->addTitle(i18nc("@title:menu", "Quick Options"));
+    m_menu->addTitle(i18nc("@title:menu", "Quick Options"));
 //    m_menu->addAction(actionCollection()->action("view-full-screen"));
 //     m_menu->addAction(actionCollection()->action("keep-open"));
 //
@@ -202,15 +191,17 @@ void MainWindow::setupMenus()
 //     m_screenMenu->setTitle(i18nc("@title:menu", "Screen"));
 //     m_menu->addMenu(m_screenMenu);
 //
-//     m_windowWidthMenu = new KMenu(this);
-//     connect(m_windowWidthMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowWidth(QAction*)));
-//     m_windowWidthMenu->setTitle(i18nc("@title:menu", "Width"));
-//     m_menu->addMenu(m_windowWidthMenu);
-//
-//     m_windowHeightMenu = new KMenu(this);
-//     connect(m_windowHeightMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowHeight(QAction*)));
-//     m_windowHeightMenu->setTitle(i18nc("@title:menu", "Height"));
-//     m_menu->addMenu(m_windowHeightMenu);
+    m_windowWidthMenu = new KMenu(this);
+    connect(m_windowWidthMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowWidth(QAction*)));
+    m_windowWidthMenu->setTitle(i18nc("@title:menu", "Width"));
+    m_menu->addMenu(m_windowWidthMenu);
+
+    m_windowHeightMenu = new KMenu(this);
+    connect(m_windowHeightMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowHeight(QAction*)));
+    m_windowHeightMenu->setTitle(i18nc("@title:menu", "Height"));
+    m_menu->addMenu(m_windowHeightMenu);
+
+    updateWindowSizeMenus();
 
     m_menu->addTitle(i18nc("@title:menu", "Settings"));
     //m_menu->addAction(actionCollection()->action("manage-profiles"));
@@ -231,7 +222,85 @@ void MainWindow::configureNotifications()
 
 void MainWindow::configureApp()
 {
-
 }
 
+void MainWindow::updateWindowWidthMenu()
+{
+    QAction* action = 0;
 
+    if(m_windowWidthMenu->isEmpty()) {
+        for(int i = 10; i <= 100; i += 10) {
+            action = m_windowWidthMenu->addAction(QString::number(i) + '%');
+            action->setCheckable(true);
+            action->setData(i);
+            action->setChecked(i == Settings::width());
+        }
+    } else {
+        QListIterator<QAction*> i(m_windowWidthMenu->actions());
+
+        while (i.hasNext()) {
+            action = i.next();
+            action->setChecked(action->data().toInt() == Settings::width());
+        }
+    }
+}
+
+void MainWindow::updateWindowHeightMenu()
+{
+    QAction* action = 0;
+
+    if(m_windowWidthMenu->isEmpty()) {
+        for(int i = 10; i <= 100; i += 10) {
+            action = m_windowHeightMenu->addAction(QString::number(i) + '%');
+            action->setCheckable(true);
+            action->setData(i);
+            action->setChecked(i == Settings::height());
+        }
+    } else {
+        QListIterator<QAction*> i(m_windowHeightMenu->actions());
+
+        while (i.hasNext()) {
+            action = i.next();
+            action->setChecked(action->data().toInt() == Settings::height());
+        }
+    }
+}
+
+void MainWindow::updateWindowSizeMenus()
+{
+    updateWindowHeightMenu();
+    updateWindowWidthMenu();
+}
+
+void MainWindow::setWindowHeight(QAction* action)
+{
+    Settings::setHeight(action->data().toInt());
+
+    applyWindowGeometry();
+    updateWindowHeightMenu();
+}
+
+void MainWindow::setWindowWidth(QAction* action)
+{
+    Settings::setWidth(action->data().toInt());
+
+    applyWindowGeometry();
+    updateWindowWidthMenu();
+}
+
+void MainWindow::applyWindowGeometry()
+{
+    //TODO: Find a better way of setting the width and height
+    const QRect screen = QApplication::desktop()->screenGeometry();
+
+    QRect newGeometry;
+    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
+    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
+
+    setGeometry( newGeometry );
+
+    // Move to the center of the screen
+    // TODO:: Make configurable
+    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
+          screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
+}
