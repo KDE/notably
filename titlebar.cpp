@@ -61,6 +61,9 @@ TitleBar::TitleBar(MainWindow* window)
     layout->setSpacing( 0 );
     layout->addWidget( titleLabel, 100, Qt::AlignLeft );
     layout->addLayout( buttonLayout );
+
+    // No background
+    setAttribute( Qt::WA_OpaquePaintEvent );
 }
 
 TitleBar::~TitleBar()

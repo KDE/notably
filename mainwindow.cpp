@@ -79,9 +79,9 @@ void MainWindow::setupGUI()
     m_noteEditor = new NoteEdit( this );
     //SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
 
+    mainLayout->addWidget( m_titleBar );
     mainLayout->addWidget( m_noteEditor );
 //     mainLayout->addWidget( tagEditor );
-    mainLayout->addWidget( m_titleBar );
 
     setCentralWidget( widget );
     //showFullScreen();
