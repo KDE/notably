@@ -34,6 +34,8 @@ public:
     void save();
     void reset();
 
+    virtual void keyPressEvent(QKeyEvent* event);
+
 public slots:
     void slotCreateNote();
 

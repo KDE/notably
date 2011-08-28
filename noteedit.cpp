@@ -20,6 +20,8 @@
 
 #include "noteedit.h"
 
+#include <QtGui/QKeyEvent>
+
 #include <Soprano/Model>
 #include <Soprano/QueryResultIterator>
 
@@ -88,4 +90,20 @@ void NoteEdit::slotCreateNote()
 {
     save();
     disconnect( this, SIGNAL(textChanged()), this, SLOT(slotCreateNote()) );
+}
+
+void NoteEdit::keyPressEvent(QKeyEvent* event)
+{
+    const QString plainText = toPlainText();
+    QChar lastChar;
+    if( !plainText.isEmpty() )
+        lastChar = plainText.at( plainText.length() - 1 );
+
+    // Do not allow double spaces while typing
+    if( event->key() == Qt::Key_Space && lastChar == QChar::fromAscii(' ') ) {
+        event->accept();
+        return;
+    }
+
+    KTextEdit::keyPressEvent( event );
 }
