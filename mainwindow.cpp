@@ -37,6 +37,7 @@
 #include <KShortcut>
 #include <KShortcutsDialog>
 #include <KAction>
+#include <KToolBar>
 #include <KNotifyConfigWidget>
 
 #ifdef Q_WS_X11
@@ -52,9 +53,9 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     m_helpMenu = new KHelpMenu(this, KGlobal::mainComponent().aboutData());
     m_titleBar = new TitleBar( this );
 
-    setupGUI();
     setupActions();
     setupMenus();
+    setupGUI();
 }
 
 MainWindow::~MainWindow()
@@ -66,17 +67,15 @@ void MainWindow::setupGUI()
     QWidget *widget = new QWidget();
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
 
-    m_newNoteButton = new KPushButton( i18n("New Note") );
-    m_saveNoteButton = new KPushButton( i18n("Save Note") );
+    KToolBar* toolBar = new KToolBar( this, true );
+    toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
+    toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget( m_newNoteButton );
-    buttonLayout->addWidget( m_saveNoteButton );
+    addToolBar( toolBar );
 
     m_noteEditor = new NoteEdit( this );
     //SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
 
-    mainLayout->addLayout( buttonLayout );
     mainLayout->addWidget( m_noteEditor );
 //     mainLayout->addWidget( tagEditor );
     mainLayout->addWidget( m_titleBar );
@@ -100,10 +99,6 @@ void MainWindow::setupGUI()
     // TODO:: Make configurable
     move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
           screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
-
-    // Buttons
-    connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );
-    connect( m_saveNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotSaveNote()) );
 
     // Blur background
     setAttribute(Qt::WA_TranslucentBackground);
@@ -181,6 +176,10 @@ void MainWindow::setupActions()
     action->setText(i18nc("@action:", "Toggle Window"));
     action->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
     connect( action, SIGNAL(triggered()), this, SLOT(toggleWindowState()) );
+
+    // Note stuff
+    action = KStandardAction::openNew( this, SLOT(slotNewNote()), actionCollection() );
+    action = KStandardAction::save( this, SLOT(slotSaveNote()), actionCollection() );
 
     m_actionCollection->associateWidget(this);
     m_actionCollection->readSettings(); // vHanda: Why is this done?

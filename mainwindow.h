@@ -55,8 +55,6 @@ private:
     void setupGUI();
 
     NoteEdit *m_noteEditor;
-    KPushButton *m_newNoteButton;
-    KPushButton *m_saveNoteButton;
 
     KMenu *m_menu;
     KHelpMenu *m_helpMenu;
