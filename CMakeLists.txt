@@ -18,6 +18,7 @@ set( SRCS
   main.cpp
   mainwindow.cpp
   noteedit.cpp
+  titlebar.cpp
   tageditor.cpp
 )
 

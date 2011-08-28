@@ -21,6 +21,7 @@
 #include "mainwindow.h"
 #include "noteedit.h"
 #include "settings.h"
+#include "titlebar.h"
 #include "tageditor.h"
 
 #include <QtGui/QApplication>
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 {
     m_menu = new KMenu(this);
     m_helpMenu = new KHelpMenu(this, KGlobal::mainComponent().aboutData());
+    m_titleBar = new TitleBar( this );
 
     setupGUI();
     setupActions();
@@ -72,11 +74,12 @@ void MainWindow::setupGUI()
     buttonLayout->addWidget( m_saveNoteButton );
 
     m_noteEditor = new NoteEdit( this );
-    SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
+    //SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
 
     mainLayout->addLayout( buttonLayout );
     mainLayout->addWidget( m_noteEditor );
-    mainLayout->addWidget( tagEditor );
+//     mainLayout->addWidget( tagEditor );
+    mainLayout->addWidget( m_titleBar );
 
     setCentralWidget( widget );
     //showFullScreen();
@@ -124,7 +127,6 @@ void MainWindow::setupGUI()
 
 void MainWindow::toggleWindowState()
 {
-    kDebug();
     if( isVisible() )
         hide();
     else {

@@ -28,6 +28,7 @@
 #include <KActionCollection>
 
 class NoteEdit;
+class TitleBar;
 
 class MainWindow : public KMainWindow
 {
@@ -61,6 +62,7 @@ private:
     KHelpMenu *m_helpMenu;
     KActionCollection *m_actionCollection;
 
+    TitleBar *m_titleBar;
 };
 
 #endif // MAINWINDOW_H
