@@ -34,7 +34,9 @@
 #include <KLocale>
 #include <KDebug>
 #include <KShortcut>
+#include <KShortcutsDialog>
 #include <KAction>
+#include <KNotifyConfigWidget>
 
 #ifdef Q_WS_X11
 #include <QX11Info>
@@ -44,6 +46,20 @@
 
 MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     : KMainWindow(parent, f)
+{
+    m_menu = new KMenu(this);
+    m_helpMenu = new KHelpMenu(this, KGlobal::mainComponent().aboutData());
+
+    setupGUI();
+    setupActions();
+    setupMenus();
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::setupGUI()
 {
     QWidget *widget = new QWidget();
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
@@ -86,13 +102,6 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     connect( m_newNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotNewNote()) );
     connect( m_saveNoteButton, SIGNAL(clicked(bool)), this, SLOT(slotSaveNote()) );
 
-    // Add a shortcut
-    // TODO: Again, make configurable
-    KAction * toggleAction = new KAction( i18n("Toggle Window"), this );
-    toggleAction->setObjectName( QLatin1String("toggle-window") );
-    toggleAction->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
-    connect( toggleAction, SIGNAL(triggered(bool)), this, SLOT(toggleWindowState()) );
-
     // Blur background
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_NoSystemBackground, false);
@@ -113,14 +122,9 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 #endif
 }
 
-
-
-MainWindow::~MainWindow()
-{
-}
-
 void MainWindow::toggleWindowState()
 {
+    kDebug();
     if( isVisible() )
         hide();
     else {
@@ -149,3 +153,84 @@ void MainWindow::slotSaveNote()
 {
     m_noteEditor->save();
 }
+
+void MainWindow::setupActions()
+{
+    m_actionCollection = new KActionCollection( this );
+
+    KAction *action = KStandardAction::quit(this, SLOT(close()), actionCollection());
+    action->setShortcut( Qt::CTRL + Qt::Key_Q );
+
+    // About stuff
+    action = KStandardAction::aboutApp( m_helpMenu, SLOT(aboutApplication()), actionCollection() );
+    action = KStandardAction::reportBug( m_helpMenu, SLOT(reportBug()), actionCollection() );
+    action = KStandardAction::aboutKDE( m_helpMenu, SLOT(aboutKDE()), actionCollection() );
+
+    // Configuration
+    action = KStandardAction::keyBindings(this, SLOT(configureKeys()), actionCollection());
+    action = KStandardAction::configureNotifications(this, SLOT(configureNotifications()), actionCollection());
+    action = KStandardAction::preferences(this, SLOT(configureApp()), actionCollection());
+
+    //action = KStandardAction::whatsThis(this, SLOT(whatsThis()), actionCollection());
+
+    // Add a shortcut
+    action = actionCollection()->addAction("toggle-window");
+    action->setObjectName( QLatin1String("toggle-window") );
+    action->setText(i18nc("@action:", "Toggle Window"));
+    action->setGlobalShortcut( KShortcut( QKeySequence( Qt::ALT + Qt::Key_K ) ) );
+    connect( action, SIGNAL(triggered()), this, SLOT(toggleWindowState()) );
+
+    m_actionCollection->associateWidget(this);
+    m_actionCollection->readSettings(); // vHanda: Why is this done?
+}
+
+void MainWindow::setupMenus()
+{
+    m_menu->addTitle(i18nc("@title:menu", "Help"));
+    //m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::WhatsThis)));
+    m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::ReportBug)));
+    m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::AboutApp)));
+    m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::AboutKDE)));
+
+//    m_menu->addTitle(i18nc("@title:menu", "Quick Options"));
+//    m_menu->addAction(actionCollection()->action("view-full-screen"));
+//     m_menu->addAction(actionCollection()->action("keep-open"));
+//
+//     m_screenMenu = new KMenu(this);
+//     connect(m_screenMenu, SIGNAL(triggered(QAction*)), this, SLOT(setScreen(QAction*)));
+//     m_screenMenu->setTitle(i18nc("@title:menu", "Screen"));
+//     m_menu->addMenu(m_screenMenu);
+//
+//     m_windowWidthMenu = new KMenu(this);
+//     connect(m_windowWidthMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowWidth(QAction*)));
+//     m_windowWidthMenu->setTitle(i18nc("@title:menu", "Width"));
+//     m_menu->addMenu(m_windowWidthMenu);
+//
+//     m_windowHeightMenu = new KMenu(this);
+//     connect(m_windowHeightMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowHeight(QAction*)));
+//     m_windowHeightMenu->setTitle(i18nc("@title:menu", "Height"));
+//     m_menu->addMenu(m_windowHeightMenu);
+
+    m_menu->addTitle(i18nc("@title:menu", "Settings"));
+    //m_menu->addAction(actionCollection()->action("manage-profiles"));
+    m_menu->addAction(actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)));
+    m_menu->addAction(actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureNotifications)));
+    m_menu->addAction(actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)));
+}
+
+void MainWindow::configureKeys()
+{
+    KShortcutsDialog::configure( actionCollection() );
+}
+
+void MainWindow::configureNotifications()
+{
+    KNotifyConfigWidget::configure(this);
+}
+
+void MainWindow::configureApp()
+{
+
+}
+
+

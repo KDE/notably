@@ -23,6 +23,9 @@
 
 #include <KMainWindow>
 #include <KPushButton>
+#include <KMenu>
+#include <KHelpMenu>
+#include <KActionCollection>
 
 class NoteEdit;
 
@@ -33,15 +36,31 @@ public:
     MainWindow(QWidget *parent=0, Qt::WindowFlags f=0);
     virtual ~MainWindow();
 
+    KMenu *menu() const { return m_menu; }
+    KActionCollection *actionCollection() { return m_actionCollection; }
+
 private slots:
     void toggleWindowState();
     void slotNewNote();
     void slotSaveNote();
 
+    void configureKeys();
+    void configureNotifications();
+    void configureApp();
+
 private:
+    void setupActions();
+    void setupMenus();
+    void setupGUI();
+
     NoteEdit *m_noteEditor;
     KPushButton *m_newNoteButton;
     KPushButton *m_saveNoteButton;
+
+    KMenu *m_menu;
+    KHelpMenu *m_helpMenu;
+    KActionCollection *m_actionCollection;
+
 };
 
 #endif // MAINWINDOW_H

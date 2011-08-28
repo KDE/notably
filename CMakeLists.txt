@@ -28,6 +28,8 @@ kde4_add_executable(nnotes ${SRCS})
 target_link_libraries( nnotes
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
+  ${KDE4_KNOTIFYCONFIG_LIBRARY}
+
   ${NEPOMUK_LIBRARIES}
   ${NEPOMUK_QUERY_LIBRARIES}
   ${SOPRANO_LIBRARIES}
