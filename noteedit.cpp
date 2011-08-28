@@ -74,8 +74,10 @@ NoteEdit::~NoteEdit()
 void NoteEdit::save()
 {
     const QString plainTextContent = m_noteResource.property( NIE::plainTextContent() ).toString();
-    if( plainTextContent != toPlainText() )
+    if( plainTextContent != toPlainText() ) {
         m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
+        m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
+    }
 }
 
 void NoteEdit::reset()
