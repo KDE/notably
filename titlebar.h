@@ -22,9 +22,9 @@
 #define TITLEBAR_H
 
 #include <QtGui/QWidget>
+#include <QtGui/QToolButton>
 
 class MainWindow;
-class KPushButton;
 
 class TitleBar : public QWidget
 {
@@ -36,8 +36,8 @@ public:
     virtual void resizeEvent(QResizeEvent* event);
 
 private:
-    KPushButton *m_quitButton;
-    KPushButton *m_menuButton;
+    QToolButton *m_quitButton;
+    QToolButton *m_menuButton;
 
     MainWindow *m_mainWindow;
 };

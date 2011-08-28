@@ -25,7 +25,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QHBoxLayout>
 
-#include <KPushButton>
 #include <KLocale>
 #include <KGlobalSettings>
 
@@ -40,22 +39,24 @@ TitleBar::TitleBar(MainWindow* window)
     labelFont.setBold( true );
     titleLabel->setFont( labelFont );
 
-    m_quitButton = new KPushButton( this );
+    m_quitButton = new QToolButton( this );
+    m_quitButton->setAutoRaise( true );
     m_quitButton->setFocusPolicy( Qt::NoFocus );
     m_quitButton->setIcon(KIcon("application-exit"));
     m_quitButton->setToolTip( i18nc("@info:tooltip Quits the application", "Quit") );
     m_quitButton->setWhatsThis( i18nc("@info:whatsthis", "Quits the application") );
-    connect( m_quitButton, SIGNAL(clicked(bool)), m_mainWindow, SLOT(close()) );
+    connect( m_quitButton, SIGNAL(clicked()), m_mainWindow, SLOT(close()) );
 
-    m_menuButton = new KPushButton( this );
+    m_menuButton = new QToolButton( this );
+    m_menuButton->setAutoRaise( true );
     m_menuButton->setMenu( m_mainWindow->menu() );
+    m_menuButton->setPopupMode( QToolButton::InstantPopup );
     m_menuButton->setFocusPolicy( Qt::NoFocus );
     m_menuButton->setIcon(KIcon("configure"));
     m_menuButton->setToolTip( i18nc("@info:tooltip", "Open Menu") );
     m_menuButton->setWhatsThis( i18nc("@info:whatsthis", "Opens the main menu.") );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
-    buttonLayout->setSpacing( 0 );
     buttonLayout->addWidget( m_menuButton );
     buttonLayout->addWidget( m_quitButton );
 
