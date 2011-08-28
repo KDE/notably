@@ -51,10 +51,14 @@ TitleBar::TitleBar(MainWindow* window)
     m_menuButton->setWhatsThis( i18nc("@info:whatsthis", "Opens the main menu.") );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->setSpacing( 0 );
     buttonLayout->addWidget( m_menuButton );
     buttonLayout->addWidget( m_quitButton );
 
     QHBoxLayout *layout = new QHBoxLayout( this );
+    // The left margin is kept so that there is some space before the title
+    layout->setContentsMargins( layout->margin(), 0, 0, 0 );
+    layout->setSpacing( 0 );
     layout->addWidget( titleLabel, 100, Qt::AlignLeft );
     layout->addLayout( buttonLayout );
 }

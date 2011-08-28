@@ -68,6 +68,8 @@ void MainWindow::setupGUI()
 {
     QWidget *widget = new QWidget();
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
+    mainLayout->setSpacing( 0 );
+    mainLayout->setMargin( 0 );
 
     //KToolBar* toolBar = new KToolBar( this, true );
     //toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
