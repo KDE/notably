@@ -69,11 +69,10 @@ void MainWindow::setupGUI()
     QWidget *widget = new QWidget();
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
 
-    KToolBar* toolBar = new KToolBar( this, true );
-    toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
-    toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
-
-    addToolBar( toolBar );
+    //KToolBar* toolBar = new KToolBar( this, true );
+    //toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
+    //toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
+    //addToolBar( toolBar );
 
     m_noteEditor = new NoteEdit( this );
     //SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
@@ -183,6 +182,10 @@ void MainWindow::setupMenus()
     m_menu->addAction(actionCollection()->action(KStandardAction::stdName(KStandardAction::AboutKDE)));
 
     m_menu->addTitle(i18nc("@title:menu", "Quick Options"));
+
+    m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
+    m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
+
 //    m_menu->addAction(actionCollection()->action("view-full-screen"));
 //     m_menu->addAction(actionCollection()->action("keep-open"));
 //
