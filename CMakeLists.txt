@@ -18,6 +18,7 @@ set( SRCS
   main.cpp
   mainwindow.cpp
   noteedit.cpp
+  tageditor.cpp
 )
 
 kde4_add_kcfg_files(SRCS config/settings.kcfgc)

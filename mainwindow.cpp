@@ -21,10 +21,13 @@
 #include "mainwindow.h"
 #include "noteedit.h"
 #include "settings.h"
+#include "tageditor.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
 #include <QtGui/QBoxLayout>
+
+#include <Nepomuk/ResourceManager>
 
 #include <KTextEdit>
 #include <KWindowSystem>
@@ -53,9 +56,11 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     buttonLayout->addWidget( m_saveNoteButton );
 
     m_noteEditor = new NoteEdit( this );
+    SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
 
     mainLayout->addLayout( buttonLayout );
     mainLayout->addWidget( m_noteEditor );
+    mainLayout->addWidget( tagEditor );
 
     setCentralWidget( widget );
     //showFullScreen();
