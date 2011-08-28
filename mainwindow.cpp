@@ -22,7 +22,6 @@
 #include "noteedit.h"
 #include "settings.h"
 #include "titlebar.h"
-#include "tageditor.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
@@ -67,24 +66,16 @@ MainWindow::~MainWindow()
 void MainWindow::setupGUI()
 {
     QWidget *widget = new QWidget();
+    setCentralWidget( widget );
+
+    m_noteEditor = new NoteEdit( this );
+
     QVBoxLayout *mainLayout = new QVBoxLayout(widget);
     mainLayout->setSpacing( 0 );
     mainLayout->setMargin( 0 );
 
-    //KToolBar* toolBar = new KToolBar( this, true );
-    //toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
-    //toolBar->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
-    //addToolBar( toolBar );
-
-    m_noteEditor = new NoteEdit( this );
-    //SemNotes::TagEditor *tagEditor = new SemNotes::TagEditor( this );
-
     mainLayout->addWidget( m_titleBar );
     mainLayout->addWidget( m_noteEditor );
-//     mainLayout->addWidget( tagEditor );
-
-    setCentralWidget( widget );
-    //showFullScreen();
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );
@@ -92,21 +83,12 @@ void MainWindow::setupGUI()
 
     // Blur background
     setAttribute(Qt::WA_TranslucentBackground);
-    setAttribute(Qt::WA_NoSystemBackground, false);
+
 #ifdef Q_WS_X11
     Atom net_wm_blur_region = XInternAtom(QX11Info::display(), "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
 
-    QVector<QRect> rects;
-    QRect re = QApplication::desktop()->screenGeometry();
-    rects << re;
-
-    QVector<unsigned long> data;
-    foreach (const QRect &r, rects) {
-        data << r.x() << r.y() << r.width() << r.height();
-    }
-
-    XChangeProperty(QX11Info::display(), winId(), net_wm_blur_region, XA_CARDINAL, 32, PropModeReplace,
-                    reinterpret_cast<const unsigned char *>(data.constData()), data.size());
+    XChangeProperty(QX11Info::display(), winId(), net_wm_blur_region, XA_CARDINAL,
+                    32, PropModeReplace, 0, 0);
 #endif
 }
 
@@ -146,7 +128,6 @@ void MainWindow::setupActions()
     m_actionCollection = new KActionCollection( this );
 
     KAction *action = KStandardAction::quit(this, SLOT(close()), actionCollection());
-    action->setShortcut( Qt::CTRL + Qt::Key_Q );
 
     // About stuff
     action = KStandardAction::aboutApp( m_helpMenu, SLOT(aboutApplication()), actionCollection() );
