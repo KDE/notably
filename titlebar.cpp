@@ -36,6 +36,10 @@ TitleBar::TitleBar(MainWindow* window)
     QLabel *titleLabel = new QLabel( this );
     titleLabel->setText( i18n("Nepomuk Notes") );
 
+    QFont labelFont = titleLabel->font();
+    labelFont.setBold( true );
+    titleLabel->setFont( labelFont );
+
     m_quitButton = new KPushButton( this );
     m_quitButton->setFocusPolicy( Qt::NoFocus );
     m_quitButton->setIcon(KIcon("application-exit"));
