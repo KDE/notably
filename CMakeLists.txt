@@ -20,9 +20,14 @@ set( SRCS
   noteedit.cpp
   titlebar.cpp
   tageditor.cpp
+  config/windowsettings.cpp
 )
 
 kde4_add_kcfg_files(SRCS config/settings.kcfgc)
+
+kde4_add_ui_files(SRCS
+    config/windowsettings.ui
+)
 
 kde4_add_executable(nnotes ${SRCS})
 

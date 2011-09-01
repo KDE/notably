@@ -22,6 +22,7 @@
 #include "noteedit.h"
 #include "settings.h"
 #include "titlebar.h"
+#include "config/windowsettings.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
@@ -38,6 +39,7 @@
 #include <KAction>
 #include <KToolBar>
 #include <KNotifyConfigWidget>
+#include <KConfigDialog>
 
 #ifdef Q_WS_X11
 #include <QX11Info>
@@ -208,6 +210,35 @@ void MainWindow::configureNotifications()
 
 void MainWindow::configureApp()
 {
+    if (KConfigDialog::showDialog("settings")) return;
+
+    KConfigDialog* settingsDialog = new KConfigDialog(this, "settings", Settings::self());
+    settingsDialog->setFaceType(KPageDialog::List);
+    connect(settingsDialog, SIGNAL(settingsChanged(QString)), this, SLOT(applySettings()));
+    connect(settingsDialog, SIGNAL(hidden()), this, SLOT(activate()));
+
+    WindowSettings* windowSettings = new WindowSettings(settingsDialog);
+    settingsDialog->addPage(windowSettings, i18nc("@title Preferences page name", "Window"), "Nepomuk Notes");
+    connect(windowSettings, SIGNAL(updateWindowGeometry(int,int)),
+            this, SLOT(setWindowGeometry(int,int)));
+
+    //QWidget* behaviorSettings = new QWidget(settingsDialog);
+    //Ui::BehaviorSettings behaviorSettingsUi;
+    //behaviorSettingsUi.setupUi(behaviorSettings);
+    //settingsDialog->addPage(behaviorSettings, i18nc("@title Preferences page name", "Behavior"),
+    //                        "preferences-other");
+
+    settingsDialog->show();
+}
+
+void MainWindow::applySettings()
+{
+    updateWindowSizeMenus();
+}
+
+void MainWindow::activate()
+{
+    KWindowSystem::activateWindow(winId());
 }
 
 void MainWindow::updateWindowWidthMenu()

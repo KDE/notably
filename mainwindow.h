@@ -53,7 +53,9 @@ private slots:
     void setWindowHeight(QAction *action);
 
     void applyWindowGeometry();
+    void applySettings();
 
+    void activate();
 private:
     void setupActions();
     void setupMenus();
