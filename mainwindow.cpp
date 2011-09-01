@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 
 MainWindow::~MainWindow()
 {
+    Settings::self()->writeConfig();
 }
 
 void MainWindow::setupGUI()
@@ -218,6 +219,7 @@ void MainWindow::configureApp()
     settingsDialog->setFaceType(KPageDialog::List);
     connect(settingsDialog, SIGNAL(settingsChanged(QString)), this, SLOT(applySettings()));
     connect(settingsDialog, SIGNAL(hidden()), this, SLOT(activate()));
+    connect(settingsDialog, SIGNAL(cancelClicked()), this, SLOT(applyWindowGeometry()));
 
     WindowSettings* windowSettings = new WindowSettings(settingsDialog);
     settingsDialog->addPage(windowSettings, i18nc("@title Preferences page name", "Window"), "Nepomuk Notes");
@@ -235,6 +237,7 @@ void MainWindow::configureApp()
 
 void MainWindow::applySettings()
 {
+    applyWindowGeometry();
     updateWindowSizeMenus();
 }
 
@@ -293,19 +296,36 @@ void MainWindow::updateWindowSizeMenus()
 
 void MainWindow::setWindowHeight(QAction* action)
 {
-    Settings::setHeight(action->data().toInt());
+    setWindowHeight(action->data().toInt());
+}
+
+void MainWindow::setWindowWidth(QAction* action)
+{
+    setWindowWidth(action->data().toInt());
+}
+
+void MainWindow::setWindowHeight(int height)
+{
+    Settings::setHeight(height);
 
     applyWindowGeometry();
     updateWindowHeightMenu();
 }
 
-void MainWindow::setWindowWidth(QAction* action)
+void MainWindow::setWindowWidth(int width)
 {
-    Settings::setWidth(action->data().toInt());
+    Settings::setWidth(width);
 
     applyWindowGeometry();
     updateWindowWidthMenu();
 }
+
+void MainWindow::setWindowGeometry(int width, int height)
+{
+    setWindowWidth( width );
+    setWindowHeight( height );
+}
+
 
 void MainWindow::applyWindowGeometry()
 {

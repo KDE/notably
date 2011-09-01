@@ -54,7 +54,12 @@ private slots:
     void setWindowWidth(QAction *action);
     void setWindowHeight(QAction *action);
 
+    void setWindowWidth( int width );
+    void setWindowHeight( int height );
+
+    void setWindowGeometry( int width, int height );
     void applyWindowGeometry();
+
     void applySettings();
 
     void activate();
