@@ -27,6 +27,7 @@
 #include "noteedit.h"
 #include "settings.h"
 #include "titlebar.h"
+#include "tageditor.h"
 #include "config/windowsettings.h"
 
 #include <QtGui/QApplication>
@@ -77,6 +78,7 @@ void MainWindow::setupGUI()
     setCentralWidget( widget );
 
     m_noteEditor = new NoteEdit( this );
+    m_tagEditor = new TagEditor( this );
 
     m_mainLayout = new QVBoxLayout(widget);
     m_mainLayout->setSpacing( 0 );
@@ -84,6 +86,7 @@ void MainWindow::setupGUI()
 
     m_mainLayout->addWidget( m_titleBar );
     m_mainLayout->addWidget( m_noteEditor );
+    m_mainLayout->addWidget( m_tagEditor );
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );

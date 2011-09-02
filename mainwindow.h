@@ -36,6 +36,7 @@
 
 class NoteEdit;
 class TitleBar;
+class TagEditor;
 
 class MainWindow : public KMainWindow
 {
@@ -86,6 +87,7 @@ private:
     KActionCollection *m_actionCollection;
 
     TitleBar *m_titleBar;
+    TagEditor *m_tagEditor;
 
     QBoxLayout *m_mainLayout;
 };
