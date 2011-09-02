@@ -36,6 +36,10 @@ public:
     void save();
     void reset();
 
+    void setResource( const Nepomuk::Resource &note );
+    Nepomuk::Resource resource() const;
+
+protected:
     virtual void keyPressEvent(QKeyEvent* event);
 
 public slots:

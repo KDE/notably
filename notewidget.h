@@ -23,6 +23,8 @@
 
 #include <QtGui/QWidget>
 
+#include <Nepomuk/Resource>
+
 class NoteEdit;
 class TagEditor;
 
@@ -36,6 +38,8 @@ public:
     void newNote();
     void saveNote();
 private:
+    Nepomuk::Resource lastUsedNote() const;
+
     NoteEdit *m_noteEditor;
     TagEditor *m_tagEditor;
 };

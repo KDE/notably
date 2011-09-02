@@ -24,6 +24,18 @@
 
 #include <QtGui/QVBoxLayout>
 
+#include <Soprano/Model>
+#include <Soprano/QueryResultIterator>
+
+#include <Nepomuk/Variant>
+#include <Nepomuk/ResourceManager>
+
+#include <Nepomuk/Vocabulary/PIMO>
+#include <Soprano/Vocabulary/NAO>
+
+using namespace Nepomuk::Vocabulary;
+using namespace Soprano::Vocabulary;
+
 NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
     m_noteEditor = new NoteEdit( this );
@@ -35,10 +47,15 @@ NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 
     layout->addWidget( m_noteEditor );
     layout->addWidget( m_tagEditor );
+
+    Nepomuk::Resource lastNote = lastUsedNote();
+    m_noteEditor->setResource( lastNote );
+    m_tagEditor->setTags( lastNote.tags() );
 }
 
 NoteWidget::~NoteWidget()
 {
+    saveNote();
 }
 
 void NoteWidget::newNote()
@@ -51,4 +68,22 @@ void NoteWidget::newNote()
 void NoteWidget::saveNote()
 {
     m_noteEditor->save();
+    Nepomuk::Resource noteResource = m_noteEditor->resource();
+    noteResource.setTags( m_tagEditor->tags() );
+}
+
+Nepomuk::Resource NoteWidget::lastUsedNote() const
+{
+    // Show the last modified note
+    QString query = QString::fromLatin1("select ?r where { ?r a %1. ?r %2 ?dt . } "
+                                        "ORDER BY desc(?dt) LIMIT 1")
+                    .arg( Soprano::Node::resourceToN3( PIMO::Note() ),
+                          Soprano::Node::resourceToN3( NAO::lastModified() ) );
+
+    Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::QueryResultIterator it = model->executeQuery( query, Soprano::Query::QueryLanguageSparql );
+    if( it.next() )
+        return Nepomuk::Resource( it[0].uri() );
+    else
+        return Nepomuk::Resource();
 }

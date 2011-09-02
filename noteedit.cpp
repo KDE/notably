@@ -23,43 +23,20 @@
 
 #include <QtGui/QKeyEvent>
 
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
-
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
 
-#include <Nepomuk/Vocabulary/PIMO>
 #include <Nepomuk/Vocabulary/NIE>
-#include <Soprano/Vocabulary/NAO>
+#include <Nepomuk/Vocabulary/PIMO>
 
 #include <KDebug>
 
 using namespace Nepomuk::Vocabulary;
-using namespace Soprano::Vocabulary;
 
 NoteEdit::NoteEdit(QWidget* parent)
     : KTextEdit(parent)
 {
-    // Show the last modified resource
-    QString query = QString::fromLatin1("select ?r where { ?r a %1. ?r %2 ?dt . } "
-                                        "ORDER BY desc(?dt) LIMIT 1")
-                    .arg( Soprano::Node::resourceToN3( PIMO::Note() ),
-                          Soprano::Node::resourceToN3( NAO::lastModified() ) );
-
-    Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery( query, Soprano::Query::QueryLanguageSparql );
-    kDebug() << "Executed " << query;
-    if( it.next() ) {
-        kDebug() << "Found " << it[0].uri();
-
-        m_noteResource = Nepomuk::Resource( it[0].uri() );
-        setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
-        moveCursor( QTextCursor::End );
-    }
-    else {
-        reset();
-    }
+    reset();
 
     setCheckSpellingEnabled( true );
 
@@ -69,8 +46,22 @@ NoteEdit::NoteEdit(QWidget* parent)
 
 NoteEdit::~NoteEdit()
 {
-    save();
 }
+
+void NoteEdit::setResource(const Nepomuk::Resource& note)
+{
+    if( note.isValid() ) {
+        m_noteResource = note;
+        setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
+        moveCursor( QTextCursor::End );
+    }
+}
+
+Nepomuk::Resource NoteEdit::resource() const
+{
+    return m_noteResource;
+}
+
 
 void NoteEdit::save()
 {
@@ -86,7 +77,6 @@ void NoteEdit::reset()
     clear();
     // Create a new note
     m_noteResource = Nepomuk::Resource( QUrl(), PIMO::Note() );
-    connect( this, SIGNAL(textChanged()), this, SLOT(slotCreateNote()) );
 }
 
 void NoteEdit::slotCreateNote()
