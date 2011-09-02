@@ -18,45 +18,18 @@
 */
 
 
-#ifndef TAGEDITOR_H
-#define TAGEDITOR_H
+#ifndef TAGCOMPLETER_H
+#define TAGCOMPLETER_H
 
-#include <QtCore/QSet>
 #include <QtGui/QCompleter>
 
-#include <KTextEdit>
-
-#include <Nepomuk/Tag>
-
-class TagEditor : public KTextEdit
+class TagCompleter : public QCompleter
 {
     Q_OBJECT
 public:
-    explicit TagEditor(QWidget* parent = 0);
-    virtual ~TagEditor();
+    TagCompleter(QObject* parent = 0);
+    virtual ~TagCompleter();
 
-    void addTag( const Nepomuk::Tag &tag );
-    void setTags( const QSet<Nepomuk::Tag> &tags );
-    QSet<Nepomuk::Tag> tags() const;
-
-    virtual QSize sizeHint() const;
-
-signals:
-    void tagsChanged( const QSet<Nepomuk::Tag> &tagList );
-
-protected:
-    virtual void paintEvent(QPaintEvent* event);
-    virtual void keyPressEvent(QKeyEvent* event);
-
-private slots:
-    void slotDocumentSizeChanged();
-    void insertCompletion(const QString& completion);
-
-private:
-    QSet<Nepomuk::Tag> m_tagList;
-    QCompleter *m_completer;
-
-    QString tagUnderCursor() const;
 };
 
-#endif // TAGEDITOR_H
+#endif // TAGCOMPLETER_H

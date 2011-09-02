@@ -20,6 +20,7 @@ set( SRCS
   noteedit.cpp
   titlebar.cpp
   tageditor.cpp
+  tagcompleter.cpp
   config/windowsettings.cpp
 )
 
