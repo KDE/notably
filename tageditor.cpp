@@ -57,21 +57,41 @@ TagEditor::~TagEditor()
 
 void TagEditor::addTag(const Nepomuk::Tag& tag)
 {
-    m_tagList << tag;
-    emit tagsChanged( m_tagList );
+    if( !m_tagList.contains( tag ) ) {
+        m_tagList << tag;
+
+        QTextCursor tc = textCursor();
+        tc.insertText( tag.genericLabel() + QLatin1String(", ") );
+        tc.movePosition( QTextCursor::EndOfLine );
+        setTextCursor( tc );
+
+        emit tagsChanged( m_tagList );
+    }
 }
 
-void TagEditor::setTags(const QSet<Nepomuk::Tag>& tags)
+void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
 {
     m_tagList = tags;
+
+    // Update the string
+    QStringList list;
+    foreach( const Nepomuk::Tag &tag, m_tagList )
+        list << tag.genericLabel();
+
+    setPlainText( list.join(QLatin1String(", ")) );
+
+    QTextCursor tc = textCursor();
+    tc.movePosition( QTextCursor::EndOfLine );
+    tc.insertText( QLatin1String(", ") );
+    setTextCursor( tc );
+
     emit tagsChanged( m_tagList );
 }
 
-QSet< Nepomuk::Tag > TagEditor::tags() const
+QList<Nepomuk::Tag> TagEditor::tags() const
 {
     return m_tagList;
 }
-
 
 void TagEditor::paintEvent(QPaintEvent* event)
 {
@@ -112,7 +132,6 @@ void TagEditor::keyPressEvent(QKeyEvent* event)
     if( text.isEmpty() )
         return;
 
-    kDebug() << "Setting prefix: " << text;
     m_completer->setCompletionPrefix( text );
 
     // Get the cursor at the start of the tag
@@ -151,14 +170,17 @@ QSize TagEditor::sizeHint() const
 
 void TagEditor::insertCompletion(const QString &completion)
 {
-    QTextCursor tc = textCursor();
-    int extra = completion.length() - m_completer->completionPrefix().length();
-    tc.movePosition(QTextCursor::Left);
-    tc.movePosition(QTextCursor::EndOfWord);
-    tc.insertText( completion.right(extra) );
-    tc.insertText( QLatin1String(", ") ); // Insert the ", " at the end of the tag
-    setTextCursor(tc);
+    QString compPrefix = m_completer->completionPrefix();
 
+    QTextCursor tc = textCursor();
+    tc.anchor();
+    tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor, compPrefix.length() );
+    tc.removeSelectedText();
+
+    setTextCursor( tc );
+
+    // TODO: If the tag already exists, then add some kind of animation where that tag is
+    // highlighted for a second or so
     addTag( Nepomuk::Tag( completion ) );
 }
 

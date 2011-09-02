@@ -21,7 +21,7 @@
 #ifndef TAGEDITOR_H
 #define TAGEDITOR_H
 
-#include <QtCore/QSet>
+#include <QtCore/QList>
 #include <QtGui/QCompleter>
 
 #include <KTextEdit>
@@ -36,13 +36,13 @@ public:
     virtual ~TagEditor();
 
     void addTag( const Nepomuk::Tag &tag );
-    void setTags( const QSet<Nepomuk::Tag> &tags );
-    QSet<Nepomuk::Tag> tags() const;
+    void setTags( const QList<Nepomuk::Tag> &tags );
+    QList<Nepomuk::Tag> tags() const;
 
     virtual QSize sizeHint() const;
 
 signals:
-    void tagsChanged( const QSet<Nepomuk::Tag> &tagList );
+    void tagsChanged( const QList<Nepomuk::Tag> &tagList );
 
 protected:
     virtual void paintEvent(QPaintEvent* event);
@@ -53,7 +53,7 @@ private slots:
     void insertCompletion(const QString& completion);
 
 private:
-    QSet<Nepomuk::Tag> m_tagList;
+    QList<Nepomuk::Tag> m_tagList;
     QCompleter *m_completer;
 
     QString tagUnderCursor() const;
