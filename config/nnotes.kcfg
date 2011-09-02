@@ -38,6 +38,11 @@
       <min>0</min>
       <max>100</max>
     </entry>
+    <entry name="BlurBackground" type="Bool">
+        <label context="@label">Should the background be blurred</label>
+        <whatsthis context="@info:whatsthis">Whether the the background should be blurred.</whatsthis>
+        <default>true</default>
+    </entry>
     <entry name="ShowOnAllDesktops" type="Bool">
       <label context="@label">Show window on all desktops</label>
       <whatsthis context="@info:whatsthis">Whether to show the window on all desktops.</whatsthis>

@@ -26,6 +26,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtGui/QBoxLayout>
+
 #include <KMainWindow>
 #include <KPushButton>
 #include <KMenu>
@@ -84,6 +86,8 @@ private:
     KActionCollection *m_actionCollection;
 
     TitleBar *m_titleBar;
+
+    QBoxLayout *m_mainLayout;
 };
 
 #endif // MAINWINDOW_H

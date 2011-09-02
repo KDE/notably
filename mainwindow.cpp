@@ -78,12 +78,12 @@ void MainWindow::setupGUI()
 
     m_noteEditor = new NoteEdit( this );
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(widget);
-    mainLayout->setSpacing( 0 );
-    mainLayout->setMargin( 0 );
+    m_mainLayout = new QVBoxLayout(widget);
+    m_mainLayout->setSpacing( 0 );
+    m_mainLayout->setMargin( 0 );
 
-    mainLayout->addWidget( m_titleBar );
-    mainLayout->addWidget( m_noteEditor );
+    m_mainLayout->addWidget( m_titleBar );
+    m_mainLayout->addWidget( m_noteEditor );
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );
@@ -335,14 +335,23 @@ void MainWindow::applyWindowGeometry()
     //TODO: Find a better way of setting the width and height
     const QRect screen = QApplication::desktop()->screenGeometry();
 
-    QRect newGeometry;
-    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
-    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
+    if( Settings::blurBackground() ) {
+        showFullScreen();
 
-    setGeometry( newGeometry );
+        int w = screen.width() * (100-Settings::width())/100.0 * 0.5;
+        int h = screen.height() * (100-Settings::height())/100.0 * 0.5;
+        m_mainLayout->setContentsMargins( w, h, w, h );
+    }
+    else {
+        QRect newGeometry;
+        newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
+        newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
 
-    // Move to the center of the screen
-    // TODO:: Make configurable
-    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
-          screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
+        setGeometry( newGeometry );
+
+        // Move to the center of the screen
+        // TODO:: Make configurable
+        move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
+            screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
+    }
 }
