@@ -34,9 +34,8 @@
 #include <KHelpMenu>
 #include <KActionCollection>
 
-class NoteEdit;
+class NoteWidget;
 class TitleBar;
-class TagEditor;
 
 class MainWindow : public KMainWindow
 {
@@ -78,7 +77,7 @@ private:
     void updateWindowHeightMenu();
     void updateWindowWidthMenu();
 
-    NoteEdit *m_noteEditor;
+    NoteWidget *m_noteWidget;
 
     KMenu *m_menu;
     KMenu *m_windowHeightMenu;
@@ -87,7 +86,6 @@ private:
     KActionCollection *m_actionCollection;
 
     TitleBar *m_titleBar;
-    TagEditor *m_tagEditor;
 
     QBoxLayout *m_mainLayout;
 };

@@ -17,6 +17,7 @@ include_directories(
 set( SRCS
   main.cpp
   mainwindow.cpp
+  notewidget.cpp
   noteedit.cpp
   titlebar.cpp
   tageditor.cpp
