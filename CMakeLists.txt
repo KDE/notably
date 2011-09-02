@@ -19,7 +19,6 @@ set( SRCS
   mainwindow.cpp
   noteedit.cpp
   titlebar.cpp
-  tageditor.cpp
   config/windowsettings.cpp
 )
 
