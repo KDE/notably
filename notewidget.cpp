@@ -68,8 +68,10 @@ void NoteWidget::newNote()
 void NoteWidget::saveNote()
 {
     m_noteEditor->save();
-    Nepomuk::Resource noteResource = m_noteEditor->resource();
-    noteResource.setTags( m_tagEditor->tags() );
+    if( !m_tagEditor->tags().isEmpty() ) {
+        Nepomuk::Resource noteResource = m_noteEditor->resource();
+        noteResource.setTags( m_tagEditor->tags() );
+    }
 }
 
 Nepomuk::Resource NoteWidget::lastUsedNote() const
