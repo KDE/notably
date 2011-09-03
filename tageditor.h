@@ -41,6 +41,7 @@ public:
 
     virtual QSize sizeHint() const;
 
+    virtual void reset();
 signals:
     void tagsChanged( const QList<Nepomuk::Tag> &tagList );
 

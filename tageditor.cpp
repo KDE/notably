@@ -184,3 +184,9 @@ void TagEditor::insertCompletion(const QString &completion)
     addTag( Nepomuk::Tag( completion ) );
 }
 
+
+void TagEditor::reset()
+{
+    clear();
+    m_tagList.clear();
+}

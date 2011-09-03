@@ -37,6 +37,8 @@ public:
 
     void newNote();
     void saveNote();
+
+    void reset();
 private:
     Nepomuk::Resource lastUsedNote() const;
 

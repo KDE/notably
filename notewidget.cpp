@@ -60,8 +60,9 @@ NoteWidget::~NoteWidget()
 
 void NoteWidget::newNote()
 {
-    m_noteEditor->save();
-    m_noteEditor->reset();
+    saveNote();
+    reset();
+
     m_noteEditor->setFocus();
 }
 
@@ -88,4 +89,10 @@ Nepomuk::Resource NoteWidget::lastUsedNote() const
         return Nepomuk::Resource( it[0].uri() );
     else
         return Nepomuk::Resource();
+}
+
+void NoteWidget::reset()
+{
+    m_noteEditor->reset();
+    m_tagEditor->reset();
 }
