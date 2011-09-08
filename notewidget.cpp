@@ -69,8 +69,10 @@ void NoteWidget::newNote()
 void NoteWidget::saveNote()
 {
     m_noteEditor->save();
-    if( !m_tagEditor->tags().isEmpty() ) {
-        Nepomuk::Resource noteResource = m_noteEditor->resource();
+
+    Nepomuk::Resource noteResource = m_noteEditor->resource();
+    // Only save the tags if the previous and current tags are different
+    if( m_tagEditor->tags() !=  noteResource.tags() ) {
         noteResource.setTags( m_tagEditor->tags() );
     }
 }
