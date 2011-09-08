@@ -39,6 +39,7 @@ target_link_libraries( nnotes
   ${KDE4_KNOTIFYCONFIG_LIBRARY}
 
   ${NEPOMUK_LIBRARIES}
+  ${NEPOMUK_UTILS_LIBRARIES}
   ${NEPOMUK_QUERY_LIBRARIES}
   ${SOPRANO_LIBRARIES}
   nepomukdatamanagement
