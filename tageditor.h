@@ -41,6 +41,9 @@ public:
 
     virtual QSize sizeHint() const;
 
+    void setPlaceholderText(const QString &text);
+    QString placeholderText() const;
+
     virtual void reset();
 signals:
     void tagsChanged( const QList<Nepomuk::Tag> &tagList );
@@ -54,10 +57,12 @@ private slots:
     void insertCompletion(const QString& completion);
 
 private:
+    QString tagUnderCursor() const;
+
     QList<Nepomuk::Tag> m_tagList;
     QCompleter *m_completer;
 
-    QString tagUnderCursor() const;
+    QString m_placeholderText;
 };
 
 #endif // TAGEDITOR_H

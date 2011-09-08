@@ -26,6 +26,7 @@
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QScrollBar>
+#include <QtGui/QPainter>
 
 #include <KDebug>
 
@@ -37,6 +38,7 @@ TagEditor::TagEditor(QWidget* parent)
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     setContextMenuPolicy( Qt::NoContextMenu );
+    setPlaceholderText( QLatin1String("Tags (comma separated)") );
 
     connect( document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
              this, SLOT(slotDocumentSizeChanged()) );
@@ -99,6 +101,30 @@ QList<Nepomuk::Tag> TagEditor::tags() const
 void TagEditor::paintEvent(QPaintEvent* event)
 {
     KTextEdit::paintEvent(event);
+
+    QPainter painter(viewport());
+
+    QPalette pal = palette();
+
+    QRect lineRect = viewport()->rect();
+    Qt::Alignment va( Qt::AlignVCenter ); //FIXME
+
+    QFontMetrics fm = fontMetrics();
+    int minLB = qMax(0, -fm.minLeftBearing());
+
+    if( document()->isEmpty() ) {
+        if(!hasFocus() && !m_placeholderText.isEmpty()) {
+            QColor col = pal.text().color();
+            col.setAlpha(128);
+            QPen oldpen = painter.pen();
+            painter.setPen(col);
+            lineRect.adjust(minLB, 0, 0, 0);
+            QString elidedText = fm.elidedText(m_placeholderText, Qt::ElideRight, lineRect.width());
+            painter.drawText(lineRect, va, elidedText);
+            painter.setPen(oldpen);
+            return;
+        }
+    }
 }
 
 void TagEditor::slotDocumentSizeChanged()
@@ -129,7 +155,7 @@ void TagEditor::keyPressEvent(QKeyEvent* event)
         return;
     }
 
-    QTextEdit::keyPressEvent(event);
+    KTextEdit::keyPressEvent(event);
 
     QString text = tagUnderCursor();
     if( text.isEmpty() )
@@ -187,6 +213,15 @@ void TagEditor::insertCompletion(const QString &completion)
     addTag( Nepomuk::Tag( completion ) );
 }
 
+QString TagEditor::placeholderText() const
+{
+    return m_placeholderText;
+}
+
+void TagEditor::setPlaceholderText(const QString& text)
+{
+    m_placeholderText = text;
+}
 
 void TagEditor::reset()
 {
