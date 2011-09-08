@@ -29,6 +29,7 @@
 #include "titlebar.h"
 #include "config/windowsettings.h"
 
+#include <QtCore/QPropertyAnimation>
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
 #include <QtGui/QBoxLayout>
@@ -102,11 +103,29 @@ void MainWindow::setupGUI()
 
 void MainWindow::toggleWindowState()
 {
-    if( isVisible() )
-        hide();
+    if( isVisible() ) {
+        // Start the hide animation
+        QPropertyAnimation *fadeAnimation = new QPropertyAnimation( this, "windowOpacity" );
+        fadeAnimation->setDuration(200);
+        fadeAnimation->setStartValue( 1.0f );
+        fadeAnimation->setEndValue( 0.0f );
+
+        connect( fadeAnimation, SIGNAL(finished()), this, SLOT(hide()) );
+        connect( fadeAnimation, SIGNAL(finished()), fadeAnimation, SLOT(deleteLater()) );
+        fadeAnimation->start();
+    }
     else {
-        show();
         KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
+        show();
+
+        // Start the show animation
+        QPropertyAnimation *fadeAnimation = new QPropertyAnimation( this, "windowOpacity" );
+        fadeAnimation->setDuration(200);
+        fadeAnimation->setStartValue( 0.0f );
+        fadeAnimation->setEndValue( 1.0f );
+
+        connect( fadeAnimation, SIGNAL(finished()), fadeAnimation, SLOT(deleteLater()) );
+        fadeAnimation->start();
     }
 //     bool visible = isVisible();
 //     // Visible but not active
