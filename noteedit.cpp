@@ -41,7 +41,7 @@ NoteEdit::NoteEdit(QWidget* parent)
     setCheckSpellingEnabled( true );
 
     // This is done so that when the user starts writing the note, the creation time is set
-    connect( this, SIGNAL(textChanged()), this, SLOT(slotCreateNote()) );
+    connect( document(), SIGNAL(modificationChanged(bool)), this, SLOT(save()) );
 }
 
 NoteEdit::~NoteEdit()
@@ -76,12 +76,6 @@ void NoteEdit::reset()
     clear();
     // Create a new note
     m_noteResource = Nepomuk::Resource( QUrl(), PIMO::Note() );
-}
-
-void NoteEdit::slotCreateNote()
-{
-    save();
-    disconnect( this, SIGNAL(textChanged()), this, SLOT(slotCreateNote()) );
 }
 
 void NoteEdit::keyPressEvent(QKeyEvent* event)

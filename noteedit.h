@@ -33,7 +33,6 @@ public:
     explicit NoteEdit(QWidget* parent = 0);
     virtual ~NoteEdit();
 
-    void save();
     void reset();
 
     void setResource( const Nepomuk::Resource &note );
@@ -43,7 +42,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event);
 
 public slots:
-    void slotCreateNote();
+    void save();
 
 private:
     Nepomuk::Resource m_noteResource;
