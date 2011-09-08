@@ -71,6 +71,15 @@
     <default>false</default>
     </entry>
   </group>
+  <group name="Animation">
+    <entry name="Duration" type="Int">
+      <label context="@label">Animation Duration</label>
+      <whatsthis context="@info:whatsthis">The time take to show/hide the window</whatsthis>
+      <default>170</default>
+      <min>0</min>
+      <max>500</max>
+    </entry>
+  </group>
   <group name="Dialogs">
     <entry name="FirstRun" type="Bool">
       <label context="@label">Application first run</label>

@@ -106,7 +106,7 @@ void MainWindow::toggleWindowState()
     if( isVisible() ) {
         // Start the hide animation
         QPropertyAnimation *fadeAnimation = new QPropertyAnimation( this, "windowOpacity" );
-        fadeAnimation->setDuration(200);
+        fadeAnimation->setDuration( Settings::duration() );
         fadeAnimation->setStartValue( 1.0f );
         fadeAnimation->setEndValue( 0.0f );
 
@@ -120,7 +120,7 @@ void MainWindow::toggleWindowState()
 
         // Start the show animation
         QPropertyAnimation *fadeAnimation = new QPropertyAnimation( this, "windowOpacity" );
-        fadeAnimation->setDuration(200);
+        fadeAnimation->setDuration( Settings::duration() );
         fadeAnimation->setStartValue( 0.0f );
         fadeAnimation->setEndValue( 1.0f );
 
