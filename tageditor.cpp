@@ -73,6 +73,9 @@ void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
 {
     m_tagList = tags;
 
+    if( m_tagList.isEmpty() )
+        return;
+
     // Update the string
     QStringList list;
     foreach( const Nepomuk::Tag &tag, m_tagList )
