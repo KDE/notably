@@ -95,7 +95,18 @@ void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
 
 QList<Nepomuk::Tag> TagEditor::tags() const
 {
-    return m_tagList;
+    // Parse all the tags from text
+    QString text = toPlainText();
+    QStringList tagStringList = text.split( QChar::fromAscii(',') );
+
+    QList<Nepomuk::Tag> tagList;
+    foreach( const QString &tag, tagStringList ) {
+        QString trimmedTag = tag.trimmed();
+        if( !trimmedTag.isEmpty() )
+            tagList << trimmedTag;
+    }
+
+    return tagList;
 }
 
 void TagEditor::paintEvent(QPaintEvent* event)
