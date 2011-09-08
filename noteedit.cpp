@@ -65,8 +65,7 @@ Nepomuk::Resource NoteEdit::resource() const
 
 void NoteEdit::save()
 {
-    const QString plainTextContent = m_noteResource.property( NIE::plainTextContent() ).toString();
-    if( plainTextContent != toPlainText() ) {
+    if( document()->isModified() ) {
         m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
         m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
     }
