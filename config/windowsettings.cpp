@@ -35,6 +35,9 @@ WindowSettings::WindowSettings(QWidget* parent, Qt::WindowFlags f): QWidget(pare
 
     connect(kcfg_Height, SIGNAL(valueChanged(int)), this, SLOT(updateHeightSlider(int)));
     connect(heightSlider, SIGNAL(valueChanged(int)), this, SLOT(updateHeightSpinBox(int)));
+
+    connect(kcfg_Duration, SIGNAL(valueChanged(int)), this, SLOT(updateDurationSlider(int)));
+    connect(durationSlider, SIGNAL(valueChanged(int)), this, SLOT(updateDurationSpinBox(int)));
 }
 
 WindowSettings::~WindowSettings()
@@ -64,3 +67,14 @@ void WindowSettings::updateHeightSpinBox(int height)
 {
     kcfg_Height->setValue(height*10);
 }
+
+void WindowSettings::updateDurationSlider(int duration)
+{
+    durationSlider->setValue( duration );
+}
+
+void WindowSettings::updateDurationSpinBox(int duration)
+{
+    kcfg_Duration->setValue( duration );
+}
+

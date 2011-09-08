@@ -42,6 +42,9 @@ private slots:
 
     void updateHeightSlider(int height);
     void updateHeightSpinBox(int height);
+
+    void updateDurationSlider(int duration);
+    void updateDurationSpinBox(int duration);
 };
 
 #endif // WINDOWSETTINGS_H

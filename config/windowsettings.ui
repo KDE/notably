@@ -131,9 +131,63 @@
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
+
+   <item row="2" column="0">
+       <widget class="QLabel" name="durationLabel">
+        <property name="text">
+         <string comment="@label:slider">Duration:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSlider" name="durationSlider">
+        <property name="maximum">
+         <number>500</number>
+        </property>
+        <property name="pageStep">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>170</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBelow</enum>
+        </property>
+        <property name="tickInterval">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QSpinBox" name="kcfg_Duration">
+        <property name="correctionMode">
+         <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+        </property>
+        <property name="suffix">
+         <string comment="@label Spinbox unit suffix">ms</string>
+        </property>
+        <property name="prefix">
+         <string comment="@label Spinbox unit prefix">~</string>
+        </property>
+        <property name="maximum">
+         <number>500</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>170</number>
+        </property>
+       </widget>
+      </item>
+
+   </layout>
+   </widget>
    </item>
+   
    <item>
     <spacer>
      <property name="orientation">
@@ -154,6 +208,8 @@
   <tabstop>kcfg_Width</tabstop>
   <tabstop>heightSlider</tabstop>
   <tabstop>kcfg_Height</tabstop>
+  <tabstop>durationSlider</tabstop>
+  <tabstop>kcfg_Duration</tabstop>
  </tabstops>
  <resources/>
  <connections/>
