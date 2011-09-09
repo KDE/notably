@@ -349,26 +349,35 @@ void MainWindow::setWindowGeometry(int width, int height)
 
 void MainWindow::applyWindowGeometry()
 {
+    m_mainLayout->setMargin( 0 );
+    m_mainLayout->setSpacing( 0 );
+
     //TODO: Find a better way of setting the width and height
-    const QRect screen = QApplication::desktop()->screenGeometry();
+    const QRect screen = KWindowSystem::workArea();
 
     if( Settings::blurBackground() ) {
-        showFullScreen();
+        setWindowState(windowState() | Qt::WindowFullScreen);
+        setGeometry( screen );
 
         int w = screen.width() * (100-Settings::width())/100.0 * 0.5;
         int h = screen.height() * (100-Settings::height())/100.0 * 0.5;
+
         m_mainLayout->setContentsMargins( w, h, w, h );
     }
     else {
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
+
         QRect newGeometry;
         newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
         newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
 
+        // FIXME: Who changes the minimum size?
+        setMinimumSize( newGeometry.size() );
         setGeometry( newGeometry );
 
         // Move to the center of the screen
         // TODO:: Make configurable
         move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
-            screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
+              screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
     }
 }
