@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBox_1">
      <property name="title">
       <string comment="@title:group">Size and Animation</string>
      </property>
@@ -131,7 +131,6 @@
         </property>
        </widget>
       </item>
-
    <item row="2" column="0">
        <widget class="QLabel" name="durationLabel">
         <property name="text">
@@ -183,11 +182,27 @@
         </property>
        </widget>
       </item>
-
    </layout>
    </widget>
    </item>
-   
+
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+            <string comment="@title:group">Background</string>
+        </property>
+        <layout class="QGridLayout">
+            <item row="0" column="0" colspan="2">
+                <widget class="QCheckBox" name="kcfg_BlurBackground">
+                    <property name="text">
+                        <string comment="@option:check">Blur the window background</string>
+                    </property>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+   </item>
+
    <item>
     <spacer>
      <property name="orientation">
