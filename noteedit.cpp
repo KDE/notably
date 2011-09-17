@@ -86,7 +86,7 @@ void NoteEdit::keyPressEvent(QKeyEvent* event)
         lastChar = plainText.at( plainText.length() - 1 );
 
     // Do not allow double spaces while typing
-    if( event->key() == Qt::Key_Space && lastChar == QChar::fromAscii(' ') ) {
+    if( event->key() == Qt::Key_Space && lastChar.isSpace() ) {
         event->accept();
         return;
     }

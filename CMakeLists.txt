@@ -23,6 +23,8 @@ set( SRCS
   tageditor.cpp
   tagcompleter.cpp
   config/windowsettings.cpp
+
+  porterstemmer.cpp
 )
 
 kde4_add_kcfg_files(SRCS config/settings.kcfgc)
