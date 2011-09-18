@@ -22,6 +22,8 @@ set( SRCS
   titlebar.cpp
   tageditor.cpp
   tagcompleter.cpp
+  sidebar.cpp
+  noteitemdelegate.cpp
   config/windowsettings.cpp
 
   porterstemmer.cpp
