@@ -21,6 +21,7 @@
 #include "notewidget.h"
 #include "noteedit.h"
 #include "tageditor.h"
+#include "sidebar.h"
 
 #include <QtGui/QVBoxLayout>
 
@@ -38,19 +39,27 @@ using namespace Soprano::Vocabulary;
 
 NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
-    m_noteEditor = new NoteEdit( this );
-    m_tagEditor = new TagEditor( this );
+    m_noteEditor = new NoteEdit();
+    m_tagEditor = new TagEditor();
+    Sidebar* sidebar = new Sidebar( this );
+
+    //QWidget * topWidget = new QWidget( this );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
-    layout->addWidget( m_noteEditor );
+    layout->addWidget( sidebar );
     layout->addWidget( m_tagEditor );
+
 
     Nepomuk::Resource lastNote = lastUsedNote();
     m_noteEditor->setResource( lastNote );
     m_tagEditor->setTags( lastNote.tags() );
+
+    //m_splitter = new QSplitter( this );
+    //m_splitter->addWidget( topWidget );
+    //m_splitter->addWidget( sidebar );
 }
 
 NoteWidget::~NoteWidget()

@@ -18,34 +18,20 @@
 */
 
 
-#ifndef NOTEWIDGET_H
-#define NOTEWIDGET_H
+#ifndef SIDEBAR_H
+#define SIDEBAR_H
 
-#include <QtGui/QSplitter>
+#include <QtGui/QListView>
 
-#include <Nepomuk/Resource>
 
-class NoteEdit;
-class TagEditor;
-
-class NoteWidget : public QWidget
+class Sidebar : public QListView
 {
     Q_OBJECT
 public:
-    explicit NoteWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~NoteWidget();
+    explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    virtual ~Sidebar();
 
-    void newNote();
-    void saveNote();
-
-    void reset();
 private:
-    Nepomuk::Resource lastUsedNote() const;
-
-    NoteEdit *m_noteEditor;
-    TagEditor *m_tagEditor;
-
-    QSplitter *m_splitter;
 };
 
-#endif // NOTEWIDGET_H
+#endif // SIDEBAR_H

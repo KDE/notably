@@ -83,8 +83,8 @@ void MainWindow::setupGUI()
     m_mainLayout->setSpacing( 0 );
     m_mainLayout->setMargin( 0 );
 
-    m_mainLayout->addWidget( m_titleBar );
-    m_mainLayout->addWidget( m_noteWidget );
+    m_mainLayout->addWidget( m_titleBar, 0 );
+    m_mainLayout->addWidget( m_noteWidget, 100 );
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );

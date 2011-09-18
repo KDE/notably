@@ -18,34 +18,19 @@
 */
 
 
-#ifndef NOTEWIDGET_H
-#define NOTEWIDGET_H
+#ifndef NOTEITEMDELEGATE_H
+#define NOTEITEMDELEGATE_H
 
-#include <QtGui/QSplitter>
+#include <QtGui/QStyledItemDelegate>
 
-#include <Nepomuk/Resource>
 
-class NoteEdit;
-class TagEditor;
-
-class NoteWidget : public QWidget
+class NoteItemDelegate : public QStyledItemDelegate
 {
-    Q_OBJECT
 public:
-    explicit NoteWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~NoteWidget();
+    explicit NoteItemDelegate(QObject* parent = 0);
 
-    void newNote();
-    void saveNote();
-
-    void reset();
-private:
-    Nepomuk::Resource lastUsedNote() const;
-
-    NoteEdit *m_noteEditor;
-    TagEditor *m_tagEditor;
-
-    QSplitter *m_splitter;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 };
 
-#endif // NOTEWIDGET_H
+#endif // NOTEITEMDELEGATE_H
