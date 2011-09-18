@@ -21,8 +21,7 @@
 #include "sidebar.h"
 #include "noteitemdelegate.h"
 
-#include <QtGui/QLabel>
-#include <QtGui/QListView>
+#include <QtGui/QHBoxLayout>
 
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/ResourceTypeTerm>
@@ -41,7 +40,7 @@ using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
-    : QListView(parent)
+    : QWidget(parent, f)
 {
     Nepomuk::Utils::SimpleResourceModel *model = new Nepomuk::Utils::SimpleResourceModel( this );
 
@@ -56,16 +55,21 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     Nepomuk::Query::Query query( typeTerm && compTerm );
     client->query( query );
 
-    //QListView *view = new QListView( this );
-    //setEnabled( false );
-    setModel( model );
-    setItemDelegate( new NoteItemDelegate( this ) );
+    m_notesView = new NotesView( this );
+    m_notesView->setModel( model );
 
-    //QLabel *label = new QLabel( this );
-    //label->setText("daffffffffffffffff");
+    //FIXME: Figure out why this stupid layout is required!
+    QHBoxLayout* layout = new QHBoxLayout( this );
+    layout->setMargin( 0 );
+    layout->setSpacing( 0 );
+
+    layout->addWidget( m_notesView );
+    setLayout( layout );
 }
 
 Sidebar::~Sidebar()
 {
 
 }
+
+

@@ -18,20 +18,20 @@
 */
 
 
-#ifndef SIDEBAR_H
-#define SIDEBAR_H
+#ifndef NOTESVIEW_H
+#define NOTESVIEW_H
 
-#include "notesview.h"
+#include <QtGui/QListView>
+#include <KPushButton>
 
-class Sidebar : public QWidget
+class NotesView : public QListView
 {
     Q_OBJECT
 public:
-    explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~Sidebar();
+    explicit NotesView(QWidget* parent = 0);
+    virtual ~NotesView();
 
-private:
-    NotesView *m_notesView;
+private slots:
 };
 
-#endif // SIDEBAR_H
+#endif // NOTESVIEW_H

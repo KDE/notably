@@ -18,20 +18,16 @@
 */
 
 
-#ifndef SIDEBAR_H
-#define SIDEBAR_H
-
 #include "notesview.h"
+#include "noteitemdelegate.h"
 
-class Sidebar : public QWidget
+NotesView::NotesView(QWidget* parent)
+    : QListView(parent)
 {
-    Q_OBJECT
-public:
-    explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~Sidebar();
+    setItemDelegate( new NoteItemDelegate(this) );
+}
 
-private:
-    NotesView *m_notesView;
-};
+NotesView::~NotesView()
+{
 
-#endif // SIDEBAR_H
+}
