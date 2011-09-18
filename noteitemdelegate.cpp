@@ -24,6 +24,7 @@
 
 #include <QtGui/QPainter>
 #include <QtGui/QStyle>
+#include <QtGui/QTextDocument>
 #include <QtGui/QStyleOptionViewItemV4>
 
 #include <KStyle>
@@ -60,26 +61,48 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 
     QString plainTextContent = res.property( NIE::plainTextContent() ).toString();
     plainTextContent = plainTextContent.simplified();
-    kDebug() << "########";
-    kDebug() << plainTextContent;
-    kDebug() << "########";
 
     QDateTime creationDate = res.property( NAO::created() ).toDateTime();
-    kDebug() << creationDate;
+    //kDebug() << creationDate;
 
     QString dateString = creationDate.toString();
 
     QPalette pal = option.palette;
     style->drawItemText( painter, rect, 0, option.palette, true, dateString, QPalette::Dark );
 
-    QPixmap pix;
-    pix.load("/home/vishesh/Images/avatars/Aditya");
-    pix = pix.scaled( 32, 32 );
-
-    //style->drawItemPixmap( painter, rect, 0, pix );
-
     rect.setY( rect.y() + 15 );
-    style->drawItemText( painter, rect, 0, option.palette, true, plainTextContent );
+
+    //
+    // Draw the excerpt
+    //
+    QTextDocument textDocument;
+    textDocument.setTextWidth( rect.width() );
+
+    QFont font = textDocument.defaultFont();
+    font.setItalic( true );
+    textDocument.setDefaultFont( font );
+
+    QFontMetrics fm( font );
+    int numLines = rect.height() / fm.height();
+    int charPerLine = rect.width() / fm.averageCharWidth();
+
+    int l = (numLines-2) * charPerLine; // one line less for ending, and one line for padding
+    QString text;
+    if( l < plainTextContent.length() ) {
+        text = plainTextContent.left( l );
+        text += QLatin1String(" .... ");
+        text += plainTextContent.right( charPerLine-10 );
+    }
+    else {
+        text = plainTextContent;
+    }
+
+    textDocument.setPlainText( text );
+
+    painter->save();
+    painter->translate( rect.topLeft() );
+    textDocument.drawContents( painter );
+    painter->restore();
 }
 
 QSize NoteItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
