@@ -21,7 +21,9 @@
 #ifndef NOTESVIEW_H
 #define NOTESVIEW_H
 
+#include <QtCore/QTimer>
 #include <QtGui/QListView>
+
 #include <KPushButton>
 
 class NotesView : public QListView
@@ -31,7 +33,19 @@ public:
     explicit NotesView(QWidget* parent = 0);
     virtual ~NotesView();
 
+protected:
+    virtual void leaveEvent(QEvent* event);
+
 private slots:
+    void slotItemEntered(const QModelIndex &index);
+    void showDeleteButton();
+    void deleteNote();
+
+private:
+    KPushButton *m_deleteButton;
+    QTimer *m_deleteButtonTimer;
+
+    QModelIndex m_deleteCandidate;
 };
 
 #endif // NOTESVIEW_H
