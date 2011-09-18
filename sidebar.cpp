@@ -26,6 +26,7 @@
 
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk/Query/ComparisonTerm>
 #include <Nepomuk/Query/QueryServiceClient>
 
 #include <Nepomuk/Types/Class>
@@ -49,14 +50,11 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
              model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
 
     Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::Query query( typeTerm );
+    Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
+    compTerm.setSortWeight( 1, Qt::DescendingOrder );
 
-    //FIXME: Find a better way of doing this.
-    Nepomuk::Query::Query::RequestProperty rp( NAO::lastModified(), false );
-    query.addRequestProperty( rp );
-
-    QString sparql = query.toSparqlQuery() + QLatin1String(" order by desc(?reqProp1)");
-    client->sparqlQuery( sparql );
+    Nepomuk::Query::Query query( typeTerm && compTerm );
+    client->query( query );
 
     //QListView *view = new QListView( this );
     //setEnabled( false );
