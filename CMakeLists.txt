@@ -23,6 +23,7 @@ set( SRCS
   tageditor.cpp
   tagcompleter.cpp
   sidebar.cpp
+  notesview.cpp
   noteitemdelegate.cpp
   config/windowsettings.cpp
 
