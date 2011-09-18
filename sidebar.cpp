@@ -32,24 +32,31 @@
 #include <Nepomuk/Utils/SimpleResourceModel>
 
 #include <Nepomuk/Vocabulary/PIMO>
+#include <Soprano/Vocabulary/NAO>
 
 #include <KDebug>
 
 using namespace Nepomuk::Vocabulary;
+using namespace Soprano::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QListView(parent)
 {
     Nepomuk::Utils::SimpleResourceModel *model = new Nepomuk::Utils::SimpleResourceModel( this );
 
-    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::Query query( typeTerm );
-
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
 
-    client->query( query );
+    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
+    Nepomuk::Query::Query query( typeTerm );
+
+    //FIXME: Find a better way of doing this.
+    Nepomuk::Query::Query::RequestProperty rp( NAO::lastModified(), false );
+    query.addRequestProperty( rp );
+
+    QString sparql = query.toSparqlQuery() + QLatin1String(" order by desc(?reqProp1)");
+    client->sparqlQuery( sparql );
 
     //QListView *view = new QListView( this );
     //setEnabled( false );
