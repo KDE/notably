@@ -65,7 +65,9 @@ Nepomuk::Resource NoteEdit::resource() const
 
 void NoteEdit::save()
 {
-    if( document()->isModified() ) {
+    if( document()->isModified() && !toPlainText().isEmpty() ) {
+        kDebug() << "Saving : " << m_noteResource.resourceUri();
+        kDebug() << toPlainText().left( 80 );
         m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
         m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
     }
