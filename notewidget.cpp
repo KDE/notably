@@ -39,27 +39,24 @@ using namespace Soprano::Vocabulary;
 
 NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
-    m_noteEditor = new NoteEdit();
-    m_tagEditor = new TagEditor();
+    m_noteEditor = new NoteEdit( this );
+    m_tagEditor = new TagEditor( this );
     Sidebar* sidebar = new Sidebar( this );
 
-    //QWidget * topWidget = new QWidget( this );
-
-    QVBoxLayout *layout = new QVBoxLayout( this );
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
-    layout->addWidget( sidebar );
+    layout->addWidget( m_noteEditor );
     layout->addWidget( m_tagEditor );
 
+    QLayout *horzLayout = new QHBoxLayout( this );
+    horzLayout->addItem( layout );
+    horzLayout->addWidget( sidebar );
 
     Nepomuk::Resource lastNote = lastUsedNote();
     m_noteEditor->setResource( lastNote );
     m_tagEditor->setTags( lastNote.tags() );
-
-    //m_splitter = new QSplitter( this );
-    //m_splitter->addWidget( topWidget );
-    //m_splitter->addWidget( sidebar );
 }
 
 NoteWidget::~NoteWidget()

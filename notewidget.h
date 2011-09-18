@@ -21,7 +21,7 @@
 #ifndef NOTEWIDGET_H
 #define NOTEWIDGET_H
 
-#include <QtGui/QSplitter>
+#include <QtGui/QWidget>
 
 #include <Nepomuk/Resource>
 
@@ -44,8 +44,6 @@ private:
 
     NoteEdit *m_noteEditor;
     TagEditor *m_tagEditor;
-
-    QSplitter *m_splitter;
 };
 
 #endif // NOTEWIDGET_H
