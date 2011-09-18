@@ -68,8 +68,12 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     QString dateString = creationDate.toString();
 
     QPalette pal = option.palette;
-    style->drawItemText( painter, rect, 0, option.palette, true, dateString, QPalette::Dark );
-
+    painter->save();
+    QFont f = painter->font();
+    f.setBold( true );
+    painter->setFont( f );
+    style->drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignTop, pal, true, dateString, QPalette::Dark );
+    painter->restore();
     rect.setY( rect.y() + 15 );
 
     //
