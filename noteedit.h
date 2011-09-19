@@ -42,6 +42,11 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event);
 
 public slots:
+    /**
+     * Saves the note.
+     * By saving the note, you update the nao:lastModified of the note. Do not save if you haven't
+     * made any modifications, as that will unnecessarily update the modification time.
+     */
     void save();
 
 private:
