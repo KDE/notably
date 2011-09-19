@@ -45,6 +45,10 @@ NotesView::NotesView(QWidget* parent)
     m_deleteButtonTimer->setSingleShot(true);
     m_deleteButtonTimer->setInterval(500);
     connect(m_deleteButtonTimer, SIGNAL(timeout()), this, SLOT(showDeleteButton()));
+
+    // Misc
+    setUniformItemSizes( true );
+    setAlternatingRowColors( true );
 }
 
 NotesView::~NotesView()
