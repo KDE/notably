@@ -22,10 +22,15 @@
 #include "notesview.h"
 #include "noteitemdelegate.h"
 
-#include <QtGui/qevent.h>
+#include <QtCore/QEvent>
 
 #include <KLocale>
 #include <KMessageBox>
+
+#include <Nepomuk/Resource>
+#include <Nepomuk/Variant> // For Q_DECLARE_METATYPE<Nepomuk::Resource>
+#include <Nepomuk/Utils/SimpleResourceModel>
+#include <KDebug>
 
 NotesView::NotesView(QWidget* parent)
     : QListView(parent)
@@ -79,13 +84,22 @@ void NotesView::deleteNote()
     if( !m_deleteCandidate.isValid() )
         return;
 
-    const QString text = i18nc("@info", "Should the note really be deleted?");
+    const QString text = i18nc("@info", "Do you want to permanently delete this note?");
     const QString caption = i18nc("@title", "Delete Note");
     const KGuiItem deleteItem(i18nc("@action:button", "Delete"), KIcon("edit-delete"));
     const KGuiItem cancelItem(i18nc("@action:button", "Cancel"), KIcon("dialog-cancel"));
 
     if (KMessageBox::warningYesNo(this, text, caption, deleteItem, cancelItem) == KMessageBox::Yes) {
-        model()->removeRow( m_deleteCandidate.row() );
+
+        qRegisterMetaType<Nepomuk::Resource>();
+        Nepomuk::Resource res = m_deleteCandidate.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
+
+        kDebug() << "Deleting : " << res.resourceUri();
+
+        // FIXME: The Nepomuk ResourceModel doesn't support removing of rows! Use some other model
+        //        => The view isn't updated corrected
+        kDebug() << model()->removeRow( m_deleteCandidate.row() );
+        res.remove();
 
         // Reset the candidate
         m_deleteCandidate = QModelIndex();
