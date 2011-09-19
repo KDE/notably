@@ -45,7 +45,7 @@ using namespace Nepomuk::Vocabulary;
 NoteItemDelegate::NoteItemDelegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {
-
+    m_margin = 4;
 }
 
 void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -54,27 +54,24 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
 
     QRect rect = option.rect;
-    rect.setY( rect.y() + 5 );
-    rect.setX( rect.x() + 5 );
+    rect.adjust( m_margin, m_margin, -m_margin, -m_margin );
 
     Nepomuk::Resource res = index.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
 
     QString plainTextContent = res.property( NIE::plainTextContent() ).toString();
-    plainTextContent = plainTextContent.simplified();
-
     QDateTime creationDate = res.property( NAO::created() ).toDateTime();
-    //kDebug() << creationDate;
 
+    //TODO: Find a way to convert this date into "4 hours ago" format
     QString dateString = creationDate.toString();
 
-    QPalette pal = option.palette;
     painter->save();
     QFont f = painter->font();
     f.setBold( true );
     painter->setFont( f );
-    style->drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignTop, pal, true, dateString, QPalette::Dark );
+    style->drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignTop, option.palette, true, dateString );
     painter->restore();
-    rect.setY( rect.y() + 15 );
+
+    rect.setY( rect.y() + QFontMetrics(f).height()/* + m_margin */);
 
     //
     // Draw the excerpt
@@ -92,6 +89,7 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 
     int l = (numLines-2) * charPerLine; // one line less for ending, and one line for padding
     QString text;
+    // FIXME: There may be a case where some part of the text gets repeated before and after the ...
     if( l < plainTextContent.length() ) {
         text = plainTextContent.left( l );
         text += QLatin1String(" .... ");
@@ -101,7 +99,7 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
         text = plainTextContent;
     }
 
-    textDocument.setPlainText( text );
+    textDocument.setPlainText( text.simplified() );
 
     painter->save();
     painter->translate( rect.topLeft() );
@@ -112,11 +110,16 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
 QSize NoteItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     Q_UNUSED( index );
+    Q_UNUSED( option );
 
-    QSize size = option.decorationSize;
-    size += QSize( 40, 70 );
+    QFontMetrics fm( QTextDocument().defaultFont() );
 
-    return size;
+    int x = 0;
+    int y = 0;
+
+    y += m_margin + fm.height() + m_margin + (fm.height() * 4) + m_margin;
+
+    return QSize( x, y );
 }
 
 
