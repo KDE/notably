@@ -40,8 +40,7 @@ NoteEdit::NoteEdit(QWidget* parent)
 
     setCheckSpellingEnabled( true );
 
-    // This is done so that when the user starts writing the note, the creation time is set
-    connect( document(), SIGNAL(modificationChanged(bool)), this, SLOT(save()) );
+//     setAutoFormatting( QTextEdit::AutoBulletList );
 }
 
 NoteEdit::~NoteEdit()
@@ -65,12 +64,10 @@ Nepomuk::Resource NoteEdit::resource() const
 
 void NoteEdit::save()
 {
-    if( document()->isModified() && !toPlainText().isEmpty() ) {
-        kDebug() << "Saving : " << m_noteResource.resourceUri();
-        kDebug() << toPlainText().left( 80 );
-        m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
-        m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
-    }
+    kDebug() << "Saving : " << m_noteResource.resourceUri();
+    kDebug() << toPlainText();
+    m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
+    m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
 }
 
 void NoteEdit::reset()

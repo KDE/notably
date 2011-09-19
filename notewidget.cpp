@@ -74,7 +74,9 @@ void NoteWidget::newNote()
 
 void NoteWidget::saveNote()
 {
-    m_noteEditor->save();
+    //FIXME: Show some visual representation that the note has been modfied
+    if( m_noteEditor->document()->isModified() )
+        m_noteEditor->save();
 
     Nepomuk::Resource noteResource = m_noteEditor->resource();
     // Only save the tags if the previous and current tags are different
@@ -102,5 +104,7 @@ Nepomuk::Resource NoteWidget::lastUsedNote() const
 void NoteWidget::reset()
 {
     m_noteEditor->reset();
+    m_noteEditor->document()->setModified( false );
+
     m_tagEditor->reset();
 }

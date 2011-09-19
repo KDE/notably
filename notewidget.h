@@ -35,7 +35,15 @@ public:
     explicit NoteWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~NoteWidget();
 
+    /**
+     * The existing note is saved, but creating a new note.
+     */
     void newNote();
+
+    /**
+     * Save the note along with the associated tags and resources.
+     * The note is only saved if some modifications have been made.
+     */
     void saveNote();
 
     void reset();
