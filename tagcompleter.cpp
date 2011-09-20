@@ -45,6 +45,7 @@ TagCompleter::TagCompleter(QObject* parent): QCompleter(parent)
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
 
     client->query( query );
 }
