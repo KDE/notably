@@ -55,3 +55,18 @@ NotesModel::~NotesModel()
 {
 
 }
+
+QVariant NotesModel::data(const QModelIndex& index, int role) const
+{
+    if( !index.isValid() )
+        return QVariant();
+
+    switch( role ) {
+        case Nepomuk::Utils::ResourceModel::ResourceRole: {
+            Nepomuk::Resource res = resourceForIndex( index );
+            return QVariant::fromValue( res );
+        }
+    }
+
+    return QVariant();
+}

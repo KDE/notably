@@ -29,6 +29,7 @@ public:
     NotesModel(QObject* parent = 0);
     virtual ~NotesModel();
 
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 };
 
 #endif // NOTESMODEL_H
