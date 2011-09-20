@@ -44,6 +44,8 @@ NotesView::NotesView(QWidget* parent)
     m_deleteButton->setIcon(KIcon("edit-delete"));
     m_deleteButton->setToolTip(i18nc("@info", "Delete tag"));
     m_deleteButton->hide();
+    int size = QFontMetrics(font()).height() * 1.5;
+    m_deleteButton->setGeometry( 0, 0, size, size );
     connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(deleteNote()));
 
     m_deleteButtonTimer = new QTimer(this);
@@ -70,10 +72,9 @@ void NotesView::slotItemEntered(const QModelIndex& index)
     // align the delete-button to stay on the right border
     // of the item
     const QRect rect = visualRect(index);
-    const int size = m_deleteButton->size().height();
-    const int x = rect.right() - size;
+    const int x = rect.right() - m_deleteButton->size().width();
     const int y = rect.top();
-    m_deleteButton->setGeometry(x, y, size, size);
+    m_deleteButton->move(x, y);
 
     m_deleteCandidate = index;
     m_deleteButtonTimer->start();
