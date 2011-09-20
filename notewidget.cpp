@@ -21,7 +21,6 @@
 #include "notewidget.h"
 #include "noteedit.h"
 #include "tageditor.h"
-#include "sidebar.h"
 
 #include <QtGui/QVBoxLayout>
 
@@ -42,23 +41,15 @@ NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
     m_noteEditor = new NoteEdit( this );
     m_tagEditor = new TagEditor( this );
-    Sidebar* sidebar = new Sidebar( this );
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
     layout->addWidget( m_noteEditor );
     layout->addWidget( m_tagEditor );
 
-    QLayout *horzLayout = new QHBoxLayout( this );
-    horzLayout->addItem( layout );
-    horzLayout->addWidget( sidebar );
-
     setNote( lastUsedNote() );
-
-    //FIXME: Move the sidebar out of here
-    connect( sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), this, SLOT(setNote(Nepomuk::Resource)) );
 }
 
 NoteWidget::~NoteWidget()

@@ -27,6 +27,7 @@
 #include "notewidget.h"
 #include "settings.h"
 #include "titlebar.h"
+#include "sidebar.h"
 #include "config/windowsettings.h"
 
 #include <QtCore/QPropertyAnimation>
@@ -74,17 +75,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupGUI()
 {
-    QWidget *widget = new QWidget();
-    setCentralWidget( widget );
+    QWidget *outerWidget = new QWidget( this );
+    setCentralWidget( outerWidget );
 
-    m_noteWidget = new NoteWidget( this );
-
-    m_mainLayout = new QVBoxLayout(widget);
+    m_mainLayout = new QVBoxLayout(outerWidget);
     m_mainLayout->setSpacing( 0 );
     m_mainLayout->setMargin( 0 );
 
-    m_mainLayout->addWidget( m_titleBar, 0 );
-    m_mainLayout->addWidget( m_noteWidget, 100 );
+    m_noteWidget = new NoteWidget( this );
+    m_sidebar = new Sidebar( this );
+
+    QLayout *horzLayout = new QHBoxLayout( this );
+    horzLayout->addWidget( m_noteWidget );
+    horzLayout->addWidget( m_sidebar );
+
+    m_mainLayout->addWidget( m_titleBar );
+    m_mainLayout->addItem( horzLayout );
+
+    connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
 
     // Window flags to make it look pretier
     setWindowFlags( Qt::FramelessWindowHint );

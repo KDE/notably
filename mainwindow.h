@@ -35,6 +35,7 @@
 #include <KActionCollection>
 
 class NoteWidget;
+class Sidebar;
 class TitleBar;
 
 class MainWindow : public KMainWindow
@@ -78,6 +79,7 @@ private:
     void updateWindowWidthMenu();
 
     NoteWidget *m_noteWidget;
+    Sidebar *m_sidebar;
 
     KMenu *m_menu;
     KMenu *m_windowHeightMenu;
