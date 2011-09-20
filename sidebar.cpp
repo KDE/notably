@@ -19,46 +19,18 @@
 
 
 #include "sidebar.h"
-#include "noteitemdelegate.h"
+#include "notesview.h"
+#include "notesmodel.h"
 
 #include <QtGui/QHBoxLayout>
-
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <Nepomuk/Query/QueryServiceClient>
-
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Utils/SimpleResourceModel>
-
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Soprano/Vocabulary/NAO>
-
-#include <KDebug>
-
-using namespace Nepomuk::Vocabulary;
-using namespace Soprano::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
-    Nepomuk::Utils::SimpleResourceModel *model = new Nepomuk::Utils::SimpleResourceModel( this );
-
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
-    connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
-
-    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
-    compTerm.setSortWeight( 1, Qt::DescendingOrder );
-
-    Nepomuk::Query::Query query( typeTerm && compTerm );
-    client->query( query );
+    m_notesModel = new NotesModel( this );
 
     m_notesView = new NotesView( this );
-    m_notesView->setModel( model );
+    m_notesView->setModel( m_notesModel );
 
     connect( m_notesView, SIGNAL(doubleClicked(QModelIndex)),
              this, SLOT(slotNoteSelected(QModelIndex)) );
@@ -79,7 +51,7 @@ Sidebar::~Sidebar()
 
 void Sidebar::slotNoteSelected(const QModelIndex& index)
 {
-    Nepomuk::Resource res = index.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
+    Nepomuk::Resource res = m_notesModel->resourceForIndex(index);
     emit noteSelected( res );
 }
 

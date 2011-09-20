@@ -18,32 +18,17 @@
 */
 
 
-#ifndef SIDEBAR_H
-#define SIDEBAR_H
+#ifndef NOTESMODEL_H
+#define NOTESMODEL_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QAbstractItemView>
-#include <Nepomuk/Resource>
+#include <Nepomuk/Utils/SimpleResourceModel>
 
-class NotesView;
-class NotesModel;
-
-class Sidebar : public QWidget
+class NotesModel : public Nepomuk::Utils::SimpleResourceModel
 {
-    Q_OBJECT
 public:
-    explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~Sidebar();
+    NotesModel(QObject* parent = 0);
+    virtual ~NotesModel();
 
-signals:
-    void noteSelected(const Nepomuk::Resource &note);
-
-private slots:
-    void slotNoteSelected(const QModelIndex &index);
-
-private:
-    NotesView *m_notesView;
-    NotesModel *m_notesModel;
 };
 
-#endif // SIDEBAR_H
+#endif // NOTESMODEL_H
