@@ -29,6 +29,7 @@
 #include <Nepomuk/Query/QueryServiceClient>
 
 #include <Nepomuk/Types/Class>
+#include <Nepomuk/Variant>
 #include <Nepomuk/Utils/SimpleResourceModel>
 
 #include <Nepomuk/Vocabulary/PIMO>
@@ -58,6 +59,9 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     m_notesView = new NotesView( this );
     m_notesView->setModel( model );
 
+    connect( m_notesView, SIGNAL(doubleClicked(QModelIndex)),
+             this, SLOT(slotNoteSelected(QModelIndex)) );
+
     //FIXME: Figure out why this stupid layout is required!
     QHBoxLayout* layout = new QHBoxLayout( this );
     layout->setMargin( 0 );
@@ -70,6 +74,12 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
 Sidebar::~Sidebar()
 {
 
+}
+
+void Sidebar::slotNoteSelected(const QModelIndex& index)
+{
+    Nepomuk::Resource res = index.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
+    emit noteSelected( res );
 }
 
 

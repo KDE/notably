@@ -47,6 +47,10 @@ public:
     void saveNote();
 
     void reset();
+
+public slots:
+    void setNote(const Nepomuk::Resource& res);
+
 private:
     Nepomuk::Resource lastUsedNote() const;
 

@@ -22,6 +22,7 @@
 #define SIDEBAR_H
 
 #include "notesview.h"
+#include <Nepomuk/Resource>
 
 class Sidebar : public QWidget
 {
@@ -29,6 +30,12 @@ class Sidebar : public QWidget
 public:
     explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~Sidebar();
+
+signals:
+    void noteSelected(const Nepomuk::Resource &note);
+
+private slots:
+    void slotNoteSelected(const QModelIndex &index);
 
 private:
     NotesView *m_notesView;
