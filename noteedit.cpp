@@ -53,6 +53,8 @@ void NoteEdit::setResource(const Nepomuk::Resource& note)
         m_noteResource = note;
         setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
         moveCursor( QTextCursor::End );
+
+        document()->setModified( false );
     }
 }
 

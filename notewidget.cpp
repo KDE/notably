@@ -54,9 +54,10 @@ NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     horzLayout->addItem( layout );
     horzLayout->addWidget( sidebar );
 
-    Nepomuk::Resource lastNote = lastUsedNote();
-    m_noteEditor->setResource( lastNote );
-    m_tagEditor->setTags( lastNote.tags() );
+    setNote( lastUsedNote() );
+
+    //FIXME: Move the sidebar out of here
+    connect( sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), this, SLOT(setNote(Nepomuk::Resource)) );
 }
 
 NoteWidget::~NoteWidget()
@@ -107,4 +108,13 @@ void NoteWidget::reset()
     m_noteEditor->document()->setModified( false );
 
     m_tagEditor->reset();
+}
+
+void NoteWidget::setNote(const Nepomuk::Resource& res)
+{
+    //FIXME: This shouldn't be called over here!
+    saveNote();
+
+    m_noteEditor->setResource( res );
+    m_tagEditor->setTags( res.tags() );
 }
