@@ -62,7 +62,7 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     QDateTime creationDate = res.property( NAO::created() ).toDateTime();
 
     //TODO: Find a way to convert this date into "4 hours ago" format
-    QString dateString = creationDate.toString();
+    QString dateString = creationDate.toLocalTime().toString();
 
     painter->save();
     QFont f = painter->font();
