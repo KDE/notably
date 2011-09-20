@@ -23,6 +23,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QAbstractItemView>
+#include <QtGui/QSortFilterProxyModel>
 #include <Nepomuk/Resource>
 
 class NotesView;
@@ -35,6 +36,9 @@ public:
     explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~Sidebar();
 
+public slots:
+    void noteSaved(const Nepomuk::Resource &note);
+
 signals:
     void noteSelected(const Nepomuk::Resource &note);
 
@@ -44,6 +48,8 @@ private slots:
 private:
     NotesView *m_notesView;
     NotesModel *m_notesModel;
+
+    QSortFilterProxyModel *m_sortingModel;
 };
 
 #endif // SIDEBAR_H

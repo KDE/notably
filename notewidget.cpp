@@ -68,8 +68,11 @@ void NoteWidget::newNote()
 void NoteWidget::saveNote()
 {
     //FIXME: Show some visual representation that the note has been modfied
-    if( m_noteEditor->document()->isModified() )
+    bool saved = false;
+    if( m_noteEditor->document()->isModified() ) {
+        saved = true;
         m_noteEditor->save();
+    }
 
     Nepomuk::Resource noteResource = m_noteEditor->resource();
     QList<Nepomuk::Tag> newTags = m_tagEditor->tags();
@@ -77,7 +80,11 @@ void NoteWidget::saveNote()
     if( newTags !=  noteResource.tags() ) {
         kDebug() << "Saving Tags: " << newTags;
         noteResource.setTags( newTags );
+        saved = true;
     }
+
+    if( saved )
+        emit noteSaved( noteResource );
 }
 
 Nepomuk::Resource NoteWidget::lastUsedNote() const
