@@ -73,7 +73,11 @@ void TagEditor::addTag(const Nepomuk::Tag& tag)
 
 void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
 {
+    if( m_tagList == tags )
+        return;
+
     m_tagList = tags;
+    clear();
 
     if( m_tagList.isEmpty() )
         return;

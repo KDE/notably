@@ -33,6 +33,7 @@
 
 #include <Nepomuk/Vocabulary/PIMO>
 #include <Soprano/Vocabulary/NAO>
+#include <KDebug>
 
 using namespace Nepomuk::Vocabulary;
 using namespace Soprano::Vocabulary;
@@ -80,9 +81,11 @@ void NoteWidget::saveNote()
         m_noteEditor->save();
 
     Nepomuk::Resource noteResource = m_noteEditor->resource();
+    QList<Nepomuk::Tag> newTags = m_tagEditor->tags();
     // Only save the tags if the previous and current tags are different
-    if( m_tagEditor->tags() !=  noteResource.tags() ) {
-        noteResource.setTags( m_tagEditor->tags() );
+    if( newTags !=  noteResource.tags() ) {
+        kDebug() << "Saving Tags: " << newTags;
+        noteResource.setTags( newTags );
     }
 }
 
