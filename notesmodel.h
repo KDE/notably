@@ -21,6 +21,7 @@
 #ifndef NOTESMODEL_H
 #define NOTESMODEL_H
 
+#include <QtCore/QHash>
 #include <Nepomuk/Utils/SimpleResourceModel>
 
 class NotesModel : public Nepomuk::Utils::SimpleResourceModel
@@ -30,6 +31,13 @@ public:
     virtual ~NotesModel();
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+    QUrl propertyForRole( int role ) const;
+    int roleForProperty( const QUrl& property );
+
+private:
+    QHash<QUrl, int> m_propertyRoleHash;
+    QHash<int, QUrl> m_rolePropertyHash;
 };
 
 #endif // NOTESMODEL_H
