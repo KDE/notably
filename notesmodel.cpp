@@ -61,12 +61,41 @@ QVariant NotesModel::data(const QModelIndex& index, int role) const
     if( !index.isValid() )
         return QVariant();
 
+    Nepomuk::Resource res = resourceForIndex( index );
+
     switch( role ) {
         case Nepomuk::Utils::ResourceModel::ResourceRole: {
-            Nepomuk::Resource res = resourceForIndex( index );
             return QVariant::fromValue( res );
         }
     }
 
+    QUrl prop = propertyForRole( role );
+    if( !prop.isEmpty() ) {
+        return res.property( prop ).variant();
+    }
+
     return QVariant();
+}
+
+QUrl NotesModel::propertyForRole(int role) const
+{
+    QHash< int, QUrl >::const_iterator it = m_rolePropertyHash.constFind( role );
+    if( it != m_rolePropertyHash.constEnd() )
+        return it.value();
+
+    return QUrl();
+}
+
+int NotesModel::roleForProperty(const QUrl& property)
+{
+    QHash< QUrl, int >::const_iterator it = m_propertyRoleHash.constFind( property );
+    if( it != m_propertyRoleHash.constEnd() )
+        return it.value();
+
+    // 5800 is a random number I've chosen
+    int role = 5800 + m_propertyRoleHash.size();
+    m_propertyRoleHash.insert( property, role );
+    m_rolePropertyHash.insert( role, property );
+
+    return role;
 }
