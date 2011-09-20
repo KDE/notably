@@ -48,6 +48,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
 
     Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
     Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
