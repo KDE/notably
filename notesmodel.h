@@ -35,6 +35,7 @@ public:
     QUrl propertyForRole( int role ) const;
     int roleForProperty( const QUrl& property );
 
+    void emitDataUpdated( const Nepomuk::Resource& res );
 private:
     QHash<QUrl, int> m_propertyRoleHash;
     QHash<int, QUrl> m_rolePropertyHash;

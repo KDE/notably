@@ -22,15 +22,27 @@
 #include "notesview.h"
 #include "notesmodel.h"
 
+#include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHBoxLayout>
+
+#include <Soprano/Vocabulary/NAO>
+#include <KDebug>
+
+using namespace Soprano::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
     m_notesModel = new NotesModel( this );
+    m_sortingModel = new QSortFilterProxyModel( this );
+    m_sortingModel->setSourceModel( m_notesModel );
+    m_sortingModel->setSortRole( m_notesModel->roleForProperty( NAO::lastModified() ) );
+
+    // vHanda: Why does sorting not work without this?
+    m_sortingModel->setDynamicSortFilter( true );
 
     m_notesView = new NotesView( this );
-    m_notesView->setModel( m_notesModel );
+    m_notesView->setModel( m_sortingModel );
 
     connect( m_notesView, SIGNAL(doubleClicked(QModelIndex)),
              this, SLOT(slotNoteSelected(QModelIndex)) );
@@ -55,4 +67,21 @@ void Sidebar::slotNoteSelected(const QModelIndex& index)
     emit noteSelected( res );
 }
 
+void Sidebar::noteSaved(const Nepomuk::Resource& note)
+{
+    // If it already exists, then just update the view
+    for( int i=0; i<m_notesModel->rowCount(); i++ ) {
+        QModelIndex index = m_notesModel->index( i, 0 );
+        Nepomuk::Resource res = m_notesModel->resourceForIndex( index );
 
+        if( note == res ) {
+            m_notesModel->emitDataUpdated( note );
+            return;
+        }
+    }
+
+    // Otherwise add the note
+    m_notesModel->addResource( note );
+    // TODO: Find a a better way!
+    m_sortingModel->sort( 0, Qt::DescendingOrder );
+}

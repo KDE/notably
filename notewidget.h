@@ -51,6 +51,9 @@ public:
 public slots:
     void setNote(const Nepomuk::Resource& res);
 
+signals:
+    void noteSaved( const Nepomuk::Resource &note );
+
 private:
     Nepomuk::Resource lastUsedNote() const;
 

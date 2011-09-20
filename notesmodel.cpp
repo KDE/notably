@@ -99,3 +99,9 @@ int NotesModel::roleForProperty(const QUrl& property)
 
     return role;
 }
+
+void NotesModel::emitDataUpdated(const Nepomuk::Resource& res)
+{
+    QModelIndex index = indexForResource( res );
+    emit dataChanged( index, index );
+}
