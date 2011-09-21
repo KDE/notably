@@ -31,12 +31,13 @@
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("nnotes", 0, ki18n("NepomukNotes"),
-                         "0.1",
-                         ki18n("A simple note taking application using Nepomuk"),
-                         KAboutData::License_LGPL_V2,
+    KAboutData aboutData("notably", 0, ki18n("Notably"),
+                         "0.3",
+                         ki18n("A note taking application based on the Nepomuk framework"),
+                         KAboutData::License_GPL_V2,
                          ki18n("(C) 2011, Vishesh Handa"));
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer and developer"), "handa.vish@gmail.com");
+    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer and developer"),
+                        "handa.vish@gmail.com", "http://vhanda.in");
 
     KCmdLineArgs::init(argc, argv, &aboutData);
     KUniqueApplication app;
