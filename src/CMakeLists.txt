@@ -1,9 +1,4 @@
-project(nepomuknotes)
-
-find_package(KDE4 REQUIRED)
-find_package(Nepomuk REQUIRED)
-
-include(SopranoAddOntology)
+include (SopranoAddOntology)
 include (KDE4Defaults)
 
 include_directories(
@@ -37,9 +32,9 @@ kde4_add_ui_files(SRCS
     config/windowsettings.ui
 )
 
-kde4_add_executable(nnotes ${SRCS})
+kde4_add_executable(notably ${SRCS})
 
-target_link_libraries( nnotes
+target_link_libraries( notably
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
   ${KDE4_KNOTIFYCONFIG_LIBRARY}
@@ -51,5 +46,5 @@ target_link_libraries( nnotes
   nepomukdatamanagement
   )
 
-install(TARGETS nnotes
+install(TARGETS notably
         DESTINATION ${BIN_INSTALL_DIR})
