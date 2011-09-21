@@ -1,0 +1,14 @@
+0.3
+===
+* Add a side bar which allows note browsing
+
+0.2
+===
+* Added background blur
+* Added a tagging widget
+
+0.1
+===
+* Inital Launch
+* A simple text editor which could be used to edit the last modified note
+* Notes are automatically saved
