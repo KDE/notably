@@ -50,6 +50,8 @@ NoteEdit::~NoteEdit()
 void NoteEdit::setResource(const Nepomuk::Resource& note)
 {
     if( note.isValid() ) {
+        reset();
+
         m_noteResource = note;
         setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
         moveCursor( QTextCursor::End );
