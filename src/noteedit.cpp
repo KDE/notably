@@ -83,15 +83,17 @@ void NoteEdit::reset()
 
 void NoteEdit::keyPressEvent(QKeyEvent* event)
 {
-    const QString plainText = toPlainText();
-    QChar lastChar;
-    if( !plainText.isEmpty() )
-        lastChar = plainText.at( plainText.length() - 1 );
+    QTextCursor cur = textCursor();
+    cur.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
+    QString text = cur.selectedText();
+    if( text.length() == 1 ) {
+        QChar lastChar = text.at( 0 );
 
-    // Do not allow double spaces while typing
-    if( event->key() == Qt::Key_Space && lastChar.isSpace() ) {
-        event->accept();
-        return;
+        // Do not allow double spaces while typing
+        if( event->key() == Qt::Key_Space && lastChar.isSpace() ) {
+            event->accept();
+            return;
+        }
     }
 
     KTextEdit::keyPressEvent( event );
