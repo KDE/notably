@@ -80,8 +80,13 @@ void Sidebar::noteSaved(const Nepomuk::Resource& note)
         }
     }
 
+    /*
+    // TODO: Find a a better way!
+    //       sorting the model again is not an option, neither is re-creating the entire model
     // Otherwise add the note
     m_notesModel->addResource( note );
-    // TODO: Find a a better way!
     m_sortingModel->sort( 0, Qt::DescendingOrder );
+    */
+
+    m_notesModel->reset();
 }

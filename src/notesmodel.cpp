@@ -38,6 +38,13 @@ using namespace Soprano::Vocabulary;
 
 NotesModel::NotesModel(QObject* parent): SimpleResourceModel(parent)
 {
+    reset();
+}
+
+void NotesModel::reset()
+{
+    clear();
+
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
