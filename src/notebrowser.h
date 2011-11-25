@@ -18,34 +18,32 @@
 */
 
 
-#ifndef NOTESMODEL_H
-#define NOTESMODEL_H
+#ifndef NOTEBROWSER_H
+#define NOTEBROWSER_H
 
-#include <QtCore/QHash>
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/Query/Query>
+#include <QtGui/QWidget>
+#include <QtCore/QModelIndex>
+#include <Nepomuk/Resource>
 
-class NotesModel : public Nepomuk::Utils::SimpleResourceModel
+class NotesView;
+class NotesModel;
+
+class NoteBrowser : public QWidget
 {
     Q_OBJECT
 public:
-    NotesModel(QObject* parent = 0);
-    virtual ~NotesModel();
+    explicit NoteBrowser(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    virtual ~NoteBrowser();
 
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+signals:
+    void noteSelected(const Nepomuk::Resource &note);
 
-    QUrl propertyForRole( int role ) const;
-    int roleForProperty( const QUrl& property );
+private slots:
+    void slotNoteSelected(const QModelIndex &index);
 
-    void emitDataUpdated( const Nepomuk::Resource& res );
-
-    void setQuery( Nepomuk::Query::Query& query );
 private:
-    QHash<QUrl, int> m_propertyRoleHash;
-    QHash<int, QUrl> m_rolePropertyHash;
-
-public slots:
-     void newEntries(const QList<Nepomuk::Query::Result>& results);
+    NotesView *m_view;
+    NotesModel *m_model;
 };
 
-#endif // NOTESMODEL_H
+#endif // NOTEBROWSER_H

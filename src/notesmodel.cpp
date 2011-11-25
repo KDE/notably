@@ -20,41 +20,28 @@
 
 #include "notesmodel.h"
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/ComparisonTerm>
 #include <Nepomuk/Query/QueryServiceClient>
 
 #include <Nepomuk/Types/Class>
 #include <Nepomuk/Variant>
-
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Soprano/Vocabulary/NAO>
-
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
-using namespace Soprano::Vocabulary;
 
 NotesModel::NotesModel(QObject* parent): SimpleResourceModel(parent)
 {
-    reset();
 }
 
-void NotesModel::reset()
+void NotesModel::setQuery(Nepomuk::Query::Query& query)
 {
     clear();
 
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
-    connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
+    //connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
+    //         this, SLOT(newEntries(QList<Nepomuk::Query::Result>)) );
+    //connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
 
-    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
-    compTerm.setSortWeight( 1, Qt::DescendingOrder );
-
-    Nepomuk::Query::Query query( typeTerm && compTerm );
     client->query( query );
 }
 
@@ -111,4 +98,12 @@ void NotesModel::emitDataUpdated(const Nepomuk::Resource& res)
 {
     QModelIndex index = indexForResource( res );
     emit dataChanged( index, index );
+}
+
+void NotesModel::newEntries(const QList< Nepomuk::Query::Result > & results)
+{
+    kDebug() << "----------";
+    foreach( const Nepomuk::Query::Result & res, results ) {
+        kDebug() << res.resource();
+    }
 }

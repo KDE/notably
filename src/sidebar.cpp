@@ -19,8 +19,7 @@
 
 
 #include "sidebar.h"
-#include "notesview.h"
-#include "notesmodel.h"
+#include "notebrowser.h"
 
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QHBoxLayout>
@@ -33,52 +32,34 @@ using namespace Soprano::Vocabulary;
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
-    m_notesModel = new NotesModel( this );
-    m_sortingModel = new QSortFilterProxyModel( this );
-    m_sortingModel->setSourceModel( m_notesModel );
-    m_sortingModel->setSortRole( m_notesModel->roleForProperty( NAO::lastModified() ) );
-
-    // vHanda: Why does sorting not work without this?
-    m_sortingModel->setDynamicSortFilter( true );
-
-    m_notesView = new NotesView( this );
-    m_notesView->setModel( m_sortingModel );
-
-    connect( m_notesView, SIGNAL(doubleClicked(QModelIndex)),
-             this, SLOT(slotNoteSelected(QModelIndex)) );
+    m_noteBrowser = new NoteBrowser( this );
+    connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
 
     //FIXME: Figure out why this stupid layout is required!
     QHBoxLayout* layout = new QHBoxLayout( this );
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
-    layout->addWidget( m_notesView );
-    setLayout( layout );
+    layout->addWidget( m_noteBrowser );
 }
 
 Sidebar::~Sidebar()
 {
-
-}
-
-void Sidebar::slotNoteSelected(const QModelIndex& index)
-{
-    Nepomuk::Resource res = m_notesModel->resourceForIndex(index);
-    emit noteSelected( res );
 }
 
 void Sidebar::noteSaved(const Nepomuk::Resource& note)
 {
-    // If it already exists, then just update the view
-    for( int i=0; i<m_notesModel->rowCount(); i++ ) {
-        QModelIndex index = m_notesModel->index( i, 0 );
-        Nepomuk::Resource res = m_notesModel->resourceForIndex( index );
-
-        if( note == res ) {
-            m_notesModel->emitDataUpdated( note );
-            return;
-        }
-    }
+//     // If it already exists, then just update the view
+//     for( int i=0; i<m_notesModel->rowCount(); i++ ) {
+//         QModelIndex index = m_notesModel->index( i, 0 );
+//         Nepomuk::Resource res = m_notesModel->resourceForIndex( index );
+//
+//         if( note == res ) {
+//             m_notesModel->emitDataUpdated( note );
+//             return;
+//         }
+//     }
 
     /*
     // TODO: Find a a better way!
@@ -88,5 +69,5 @@ void Sidebar::noteSaved(const Nepomuk::Resource& note)
     m_sortingModel->sort( 0, Qt::DescendingOrder );
     */
 
-    m_notesModel->reset();
+//     m_notesModel->reset();
 }

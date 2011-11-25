@@ -28,6 +28,7 @@
 
 class NotesView;
 class NotesModel;
+class NoteBrowser;
 
 class Sidebar : public QWidget
 {
@@ -42,12 +43,8 @@ public slots:
 signals:
     void noteSelected(const Nepomuk::Resource &note);
 
-private slots:
-    void slotNoteSelected(const QModelIndex &index);
-
 private:
-    NotesView *m_notesView;
-    NotesModel *m_notesModel;
+    NoteBrowser *m_noteBrowser;
 
     QSortFilterProxyModel *m_sortingModel;
 };
