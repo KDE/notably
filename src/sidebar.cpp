@@ -21,8 +21,12 @@
 #include "sidebar.h"
 #include "notebrowser.h"
 
+#include <QtCore/QCoreApplication>
+
 #include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QHBoxLayout>
+#include <QtGui/QBoxLayout>
+#include <QtGui/QPushButton>
+#include <QtGui/QStackedLayout>
 
 #include <Soprano/Vocabulary/NAO>
 #include <KDebug>
@@ -36,12 +40,32 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
              this, SIGNAL(noteSelected(Nepomuk::Resource)) );
 
-    //FIXME: Figure out why this stupid layout is required!
-    QHBoxLayout* layout = new QHBoxLayout( this );
+    QWidget *menu = new QWidget( this );
+    QPushButton *newNoteButton = new QPushButton(i18n("New Note"));
+    QPushButton *browseButton = new QPushButton(i18n("Browse Notes"));
+    QPushButton *quitButton = new QPushButton(i18n("Quit"));
+
+    //FIXME: Find a better way!
+    newNoteButton->setMaximumHeight( 5000 );
+    browseButton->setMaximumHeight( 5000 );
+    quitButton->setMaximumHeight( 5000 );
+
+    connect( newNoteButton, SIGNAL(clicked(bool)), this, SIGNAL(newNote()) );
+    connect( browseButton, SIGNAL(clicked(bool)), this, SLOT(slotBrowseNotes()) );
+    connect( quitButton, SIGNAL(clicked(bool)), QCoreApplication::instance(), SLOT(quit()) );
+
+    QVBoxLayout* layout = new QVBoxLayout( menu );
+    layout->addWidget( newNoteButton );
+    layout->addWidget( browseButton );
+    layout->addWidget( quitButton );
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
-    layout->addWidget( m_noteBrowser );
+    m_stackedLayout = new QStackedLayout( this );
+    m_stackedLayout->addWidget( menu );
+    m_stackedLayout->addWidget( m_noteBrowser );
+    m_stackedLayout->setSpacing( 0 );
+    m_stackedLayout->setMargin( 0 );
 }
 
 Sidebar::~Sidebar()
@@ -50,6 +74,7 @@ Sidebar::~Sidebar()
 
 void Sidebar::noteSaved(const Nepomuk::Resource& note)
 {
+    Q_UNUSED(note);
 //     // If it already exists, then just update the view
 //     for( int i=0; i<m_notesModel->rowCount(); i++ ) {
 //         QModelIndex index = m_notesModel->index( i, 0 );
@@ -70,4 +95,9 @@ void Sidebar::noteSaved(const Nepomuk::Resource& note)
     */
 
 //     m_notesModel->reset();
+}
+
+void Sidebar::slotBrowseNotes()
+{
+    m_stackedLayout->setCurrentWidget( m_noteBrowser );
 }

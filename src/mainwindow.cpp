@@ -93,6 +93,7 @@ void MainWindow::setupGUI()
     m_mainLayout->addItem( horzLayout );
 
     connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
+    connect( m_sidebar, SIGNAL(newNote()), m_noteWidget, SLOT(newNote()) );
     connect( m_noteWidget, SIGNAL(noteSaved(Nepomuk::Resource)), m_sidebar, SLOT(noteSaved(Nepomuk::Resource)) );
 
     // Window flags to make it look pretier

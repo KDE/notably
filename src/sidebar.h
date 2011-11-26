@@ -24,6 +24,8 @@
 #include <QtGui/QWidget>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QSortFilterProxyModel>
+#include <QtGui/QStackedLayout>
+
 #include <Nepomuk/Resource>
 
 class NotesView;
@@ -42,11 +44,14 @@ public slots:
 
 signals:
     void noteSelected(const Nepomuk::Resource &note);
+    void newNote();
+
+private slots:
+    void slotBrowseNotes();
 
 private:
     NoteBrowser *m_noteBrowser;
-
-    QSortFilterProxyModel *m_sortingModel;
+    QStackedLayout *m_stackedLayout;
 };
 
 #endif // SIDEBAR_H

@@ -35,6 +35,7 @@ public:
     explicit NoteWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~NoteWidget();
 
+public slots:
     /**
      * The existing note is saved, but creating a new note.
      */
@@ -48,7 +49,6 @@ public:
 
     void reset();
 
-public slots:
     void setNote(const Nepomuk::Resource& res);
 
 signals:
