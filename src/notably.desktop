@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Notably
+GenericName=Note Taker
+Comment=A note taking application
+TryExec=notably
+Exec=notably
+Icon=nepomuk
+Type=Application
+Terminal=false
+Categories=Qt;KDE;Utilities;

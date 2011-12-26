@@ -49,3 +49,6 @@ target_link_libraries( notably
 
 install(TARGETS notably
         DESTINATION ${BIN_INSTALL_DIR})
+
+install(FILES notably.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+
