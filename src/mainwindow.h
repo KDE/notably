@@ -36,7 +36,6 @@
 
 class NoteWidget;
 class Sidebar;
-class TitleBar;
 
 class MainWindow : public KMainWindow
 {
@@ -86,8 +85,6 @@ private:
     KMenu *m_windowWidthMenu;
     KHelpMenu *m_helpMenu;
     KActionCollection *m_actionCollection;
-
-    TitleBar *m_titleBar;
 
     QBoxLayout *m_mainLayout;
 };

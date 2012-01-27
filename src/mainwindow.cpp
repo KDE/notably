@@ -26,7 +26,6 @@
 #include "mainwindow.h"
 #include "notewidget.h"
 #include "settings.h"
-#include "titlebar.h"
 #include "sidebar.h"
 #include "config/windowsettings.h"
 
@@ -59,7 +58,6 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
 {
     m_menu = new KMenu(this);
     m_helpMenu = new KHelpMenu(this, KGlobal::mainComponent().aboutData());
-    m_titleBar = new TitleBar( this );
 
     setupActions();
     setupMenus();
@@ -78,19 +76,12 @@ void MainWindow::setupGUI()
     QWidget *outerWidget = new QWidget( this );
     setCentralWidget( outerWidget );
 
-    m_mainLayout = new QVBoxLayout(outerWidget);
-    m_mainLayout->setSpacing( 0 );
-    m_mainLayout->setMargin( 0 );
-
     m_noteWidget = new NoteWidget( this );
     m_sidebar = new Sidebar( this );
 
-    QLayout *horzLayout = new QHBoxLayout( this );
-    horzLayout->addWidget( m_noteWidget );
-    horzLayout->addWidget( m_sidebar );
-
-    m_mainLayout->addWidget( m_titleBar );
-    m_mainLayout->addItem( horzLayout );
+    m_mainLayout = new QHBoxLayout( outerWidget );
+    m_mainLayout->addWidget( m_noteWidget );
+    m_mainLayout->addWidget( m_sidebar );
 
     connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
     connect( m_sidebar, SIGNAL(newNote()), m_noteWidget, SLOT(newNote()) );
