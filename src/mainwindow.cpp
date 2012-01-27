@@ -95,20 +95,6 @@ void MainWindow::setupGUI()
     connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
     connect( m_sidebar, SIGNAL(newNote()), m_noteWidget, SLOT(newNote()) );
     connect( m_noteWidget, SIGNAL(noteSaved(Nepomuk::Resource)), m_sidebar, SLOT(noteSaved(Nepomuk::Resource)) );
-
-    // Window flags to make it look pretier
-    setWindowFlags( Qt::FramelessWindowHint );
-    KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
-
-    // Blur background
-    setAttribute(Qt::WA_TranslucentBackground);
-
-#ifdef Q_WS_X11
-    Atom net_wm_blur_region = XInternAtom(QX11Info::display(), "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
-
-    XChangeProperty(QX11Info::display(), winId(), net_wm_blur_region, XA_CARDINAL,
-                    32, PropModeReplace, 0, 0);
-#endif
 }
 
 void MainWindow::toggleWindowState()
@@ -125,7 +111,6 @@ void MainWindow::toggleWindowState()
         fadeAnimation->start();
     }
     else {
-        KWindowSystem::setState(winId(), NET::Sticky | NET::SkipTaskbar | NET::SkipPager | NET::KeepAbove );
         show();
 
         // Start the show animation
@@ -137,15 +122,6 @@ void MainWindow::toggleWindowState()
         connect( fadeAnimation, SIGNAL(finished()), fadeAnimation, SLOT(deleteLater()) );
         fadeAnimation->start();
     }
-//     bool visible = isVisible();
-//     // Visible but not active
-//     if(visible && !isActiveWindow()) {
-//         KWindowSystem::activateWindow(winId());
-//         KWindowSystem::forceActiveWindow(winId());
-//     }
-//     else {
-//         // Call the showing/hiding animation based on the visibility
-//     }
 }
 
 void MainWindow::slotNewNote()
@@ -204,14 +180,6 @@ void MainWindow::setupMenus()
     m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
     m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
 
-//    m_menu->addAction(actionCollection()->action("view-full-screen"));
-//     m_menu->addAction(actionCollection()->action("keep-open"));
-//
-//     m_screenMenu = new KMenu(this);
-//     connect(m_screenMenu, SIGNAL(triggered(QAction*)), this, SLOT(setScreen(QAction*)));
-//     m_screenMenu->setTitle(i18nc("@title:menu", "Screen"));
-//     m_menu->addMenu(m_screenMenu);
-//
     m_windowWidthMenu = new KMenu(this);
     connect(m_windowWidthMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowWidth(QAction*)));
     m_windowWidthMenu->setTitle(i18nc("@title:menu", "Width"));
@@ -365,29 +333,18 @@ void MainWindow::applyWindowGeometry()
     //TODO: Find a better way of setting the width and height
     const QRect screen = KWindowSystem::workArea();
 
-    if( Settings::blurBackground() ) {
-        setWindowState(windowState() | Qt::WindowFullScreen);
-        setGeometry( screen );
+    setWindowState(windowState() & ~Qt::WindowFullScreen);
 
-        int w = screen.width() * (100-Settings::width())/100.0 * 0.5;
-        int h = screen.height() * (100-Settings::height())/100.0 * 0.5;
+    QRect newGeometry;
+    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
+    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
 
-        m_mainLayout->setContentsMargins( w, h, w, h );
-    }
-    else {
-        setWindowState(windowState() & ~Qt::WindowFullScreen);
+    // FIXME: Who changes the minimum size?
+    setMinimumSize( newGeometry.size() );
+    setGeometry( newGeometry );
 
-        QRect newGeometry;
-        newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
-        newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
-
-        // FIXME: Who changes the minimum size?
-        setMinimumSize( newGeometry.size() );
-        setGeometry( newGeometry );
-
-        // Move to the center of the screen
-        // TODO:: Make configurable
-        move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
-              screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
-    }
+    // Move to the center of the screen
+    // TODO:: Make configurable
+    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
+            screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
 }
