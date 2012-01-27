@@ -119,11 +119,17 @@ void MainWindow::toggleWindowState()
 void MainWindow::slotNewNote()
 {
     m_noteWidget->newNote();
+    m_sidebar->newNote();
 }
 
 void MainWindow::slotSaveNote()
 {
-    m_noteWidget->saveNote();
+    bool saved = false;
+
+    if( m_noteWidget->saveNote() ) saved = true;
+    if( m_sidebar->saveNote( m_noteWidget->note() ) ) saved = true;
+
+    //TODO: Use saved to give some kind of visual notification
 }
 
 void MainWindow::setupActions()

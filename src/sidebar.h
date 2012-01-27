@@ -46,9 +46,12 @@ public slots:
     void push(QWidget* widget);
     void showInfo(const Nepomuk::Resource &note);
 
+    bool saveNote(const Nepomuk::Resource& note);
+    void newNote();
+
 signals:
     void noteSelected(const Nepomuk::Resource &note);
-    void newNote();
+    //void newNote();
 
 private slots:
     void slotBrowseNotes();

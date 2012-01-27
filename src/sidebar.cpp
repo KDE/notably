@@ -155,3 +155,13 @@ void Sidebar::showInfo(const Nepomuk::Resource& note)
     m_stackedLayout->setCurrentWidget( m_noteInfo );
     updateButtons();
 }
+
+bool Sidebar::saveNote(const Nepomuk::Resource& note)
+{
+    return m_noteInfo->saveNote( note );
+}
+
+void Sidebar::newNote()
+{
+    m_noteInfo->newNote();
+}

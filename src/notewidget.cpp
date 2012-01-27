@@ -40,14 +40,12 @@ using namespace Soprano::Vocabulary;
 NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
     m_noteEditor = new NoteEdit( this );
-    m_tagEditor = new TagEditor( this );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setMargin( 0 );
     layout->setSpacing( 0 );
 
     layout->addWidget( m_noteEditor );
-    layout->addWidget( m_tagEditor );
 
     setNote( lastUsedNote() );
 }
@@ -65,27 +63,16 @@ void NoteWidget::newNote()
     m_noteEditor->setFocus();
 }
 
-void NoteWidget::saveNote()
+bool NoteWidget::saveNote()
 {
     //FIXME: Show some visual representation that the note has been modfied
-    bool saved = false;
     if( m_noteEditor->document()->isModified() ) {
-        saved = true;
         m_noteEditor->save();
+        emit infoRequired(m_noteEditor->resource());
+        return true;
     }
 
-    Nepomuk::Resource noteResource = m_noteEditor->resource();
-    QList<Nepomuk::Tag> newTags = m_tagEditor->tags();
-    // Only save the tags if the previous and current tags are different
-    if( newTags !=  noteResource.tags() ) {
-        kDebug() << "Saving Tags: " << newTags;
-        noteResource.setTags( newTags );
-        saved = true;
-    }
-
-    if( saved ) {
-        emit infoRequired(noteResource);
-    }
+    return false;
 }
 
 Nepomuk::Resource NoteWidget::lastUsedNote() const
@@ -108,8 +95,6 @@ void NoteWidget::reset()
 {
     m_noteEditor->reset();
     m_noteEditor->document()->setModified( false );
-
-    m_tagEditor->reset();
 }
 
 void NoteWidget::setNote(const Nepomuk::Resource& res)
@@ -118,5 +103,9 @@ void NoteWidget::setNote(const Nepomuk::Resource& res)
     saveNote();
 
     m_noteEditor->setResource( res );
-    m_tagEditor->setTags( res.tags() );
+}
+
+Nepomuk::Resource NoteWidget::note() const
+{
+    return m_noteEditor->resource();
 }
