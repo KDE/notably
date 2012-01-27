@@ -63,12 +63,13 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
     setupMenus();
     setupGUI();
 
-    applyWindowGeometry();
+    setAutoSaveSettings();
 }
 
 MainWindow::~MainWindow()
 {
     Settings::self()->writeConfig();
+    saveGeometry();
 }
 
 void MainWindow::setupGUI()
@@ -171,18 +172,6 @@ void MainWindow::setupMenus()
     m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::New)) );
     m_menu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Save)) );
 
-    m_windowWidthMenu = new KMenu(this);
-    connect(m_windowWidthMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowWidth(QAction*)));
-    m_windowWidthMenu->setTitle(i18nc("@title:menu", "Width"));
-    m_menu->addMenu(m_windowWidthMenu);
-
-    m_windowHeightMenu = new KMenu(this);
-    connect(m_windowHeightMenu, SIGNAL(triggered(QAction*)), this, SLOT(setWindowHeight(QAction*)));
-    m_windowHeightMenu->setTitle(i18nc("@title:menu", "Height"));
-    m_menu->addMenu(m_windowHeightMenu);
-
-    updateWindowSizeMenus();
-
     m_menu->addTitle(i18nc("@title:menu", "Settings"));
     //m_menu->addAction(actionCollection()->action("manage-profiles"));
     m_menu->addAction(actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)));
@@ -200,142 +189,7 @@ void MainWindow::configureNotifications()
     KNotifyConfigWidget::configure(this);
 }
 
-void MainWindow::configureApp()
-{
-    if (KConfigDialog::showDialog("settings")) return;
-
-    KConfigDialog* settingsDialog = new KConfigDialog(this, "settings", Settings::self());
-    settingsDialog->setFaceType(KPageDialog::List);
-    connect(settingsDialog, SIGNAL(settingsChanged(QString)), this, SLOT(applySettings()));
-    connect(settingsDialog, SIGNAL(hidden()), this, SLOT(activate()));
-    connect(settingsDialog, SIGNAL(cancelClicked()), this, SLOT(applyWindowGeometry()));
-
-    WindowSettings* windowSettings = new WindowSettings(settingsDialog);
-    settingsDialog->addPage(windowSettings, i18nc("@title Preferences page name", "Window"), "Nepomuk Notes");
-    connect(windowSettings, SIGNAL(updateWindowGeometry(int,int)),
-            this, SLOT(setWindowGeometry(int,int)));
-
-    //QWidget* behaviorSettings = new QWidget(settingsDialog);
-    //Ui::BehaviorSettings behaviorSettingsUi;
-    //behaviorSettingsUi.setupUi(behaviorSettings);
-    //settingsDialog->addPage(behaviorSettings, i18nc("@title Preferences page name", "Behavior"),
-    //                        "preferences-other");
-
-    settingsDialog->show();
-}
-
-void MainWindow::applySettings()
-{
-    applyWindowGeometry();
-    updateWindowSizeMenus();
-}
-
 void MainWindow::activate()
 {
     KWindowSystem::activateWindow(winId());
-}
-
-void MainWindow::updateWindowWidthMenu()
-{
-    QAction* action = 0;
-
-    if(m_windowWidthMenu->isEmpty()) {
-        for(int i = 10; i <= 100; i += 10) {
-            action = m_windowWidthMenu->addAction(QString::number(i) + '%');
-            action->setCheckable(true);
-            action->setData(i);
-            action->setChecked(i == Settings::width());
-        }
-    } else {
-        QListIterator<QAction*> i(m_windowWidthMenu->actions());
-
-        while (i.hasNext()) {
-            action = i.next();
-            action->setChecked(action->data().toInt() == Settings::width());
-        }
-    }
-}
-
-void MainWindow::updateWindowHeightMenu()
-{
-    QAction* action = 0;
-
-    if(m_windowWidthMenu->isEmpty()) {
-        for(int i = 10; i <= 100; i += 10) {
-            action = m_windowHeightMenu->addAction(QString::number(i) + '%');
-            action->setCheckable(true);
-            action->setData(i);
-            action->setChecked(i == Settings::height());
-        }
-    } else {
-        QListIterator<QAction*> i(m_windowHeightMenu->actions());
-
-        while (i.hasNext()) {
-            action = i.next();
-            action->setChecked(action->data().toInt() == Settings::height());
-        }
-    }
-}
-
-void MainWindow::updateWindowSizeMenus()
-{
-    updateWindowHeightMenu();
-    updateWindowWidthMenu();
-}
-
-void MainWindow::setWindowHeight(QAction* action)
-{
-    setWindowHeight(action->data().toInt());
-}
-
-void MainWindow::setWindowWidth(QAction* action)
-{
-    setWindowWidth(action->data().toInt());
-}
-
-void MainWindow::setWindowHeight(int height)
-{
-    Settings::setHeight(height);
-
-    applyWindowGeometry();
-    updateWindowHeightMenu();
-}
-
-void MainWindow::setWindowWidth(int width)
-{
-    Settings::setWidth(width);
-
-    applyWindowGeometry();
-    updateWindowWidthMenu();
-}
-
-void MainWindow::setWindowGeometry(int width, int height)
-{
-    setWindowWidth( width );
-    setWindowHeight( height );
-}
-
-
-void MainWindow::applyWindowGeometry()
-{
-    m_mainLayout->setMargin( 0 );
-    m_mainLayout->setSpacing( 0 );
-
-    //TODO: Find a better way of setting the width and height
-    const QRect screen = KWindowSystem::workArea();
-
-    setWindowState(windowState() & ~Qt::WindowFullScreen);
-
-    QRect newGeometry;
-    newGeometry.setWidth( screen.width() * Settings::width()/100.0 );
-    newGeometry.setHeight( screen.height() * Settings::height()/100.0 );
-
-    // FIXME: Who changes the minimum size?
-    setMinimumSize( newGeometry.size() );
-    setGeometry( newGeometry );
-
-    // Move to the center of the screen
-    // TODO:: Make configurable
-    move( screen.center().x() - (rect().width() * Settings::horziontalPosition()/100.0),
-            screen.center().y() - (rect().height() * Settings::verticalPosition()/100.0) );
 }
