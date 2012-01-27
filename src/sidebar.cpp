@@ -1,6 +1,6 @@
 /*
     <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2011  Vishesh Handa <handa.vish@gmail.com>
+    Copyright (C) 2011-12  Vishesh Handa <handa.vish@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,7 @@
 
 #include "sidebar.h"
 #include "notebrowser.h"
+#include "mainmenu.h"
 
 #include <QtCore/QCoreApplication>
 
@@ -40,29 +41,12 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
              this, SIGNAL(noteSelected(Nepomuk::Resource)) );
 
-    QWidget *menu = new QWidget( this );
-    QPushButton *newNoteButton = new QPushButton(i18n("New Note"));
-    QPushButton *browseButton = new QPushButton(i18n("Browse Notes"));
-    QPushButton *quitButton = new QPushButton(i18n("Quit"));
-
-    //FIXME: Find a better way!
-    newNoteButton->setMaximumHeight( 5000 );
-    browseButton->setMaximumHeight( 5000 );
-    quitButton->setMaximumHeight( 5000 );
-
-    connect( newNoteButton, SIGNAL(clicked(bool)), this, SIGNAL(newNote()) );
-    connect( browseButton, SIGNAL(clicked(bool)), this, SLOT(slotBrowseNotes()) );
-    connect( quitButton, SIGNAL(clicked(bool)), QCoreApplication::instance(), SLOT(quit()) );
-
-    QVBoxLayout* layout = new QVBoxLayout( menu );
-    layout->addWidget( newNoteButton );
-    layout->addWidget( browseButton );
-    layout->addWidget( quitButton );
-    layout->setMargin( 0 );
-    layout->setSpacing( 0 );
+    m_mainMenu = new MainMenu( this );
+    connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNote()) );
+    connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
     m_stackedLayout = new QStackedLayout( this );
-    m_stackedLayout->addWidget( menu );
+    m_stackedLayout->addWidget( m_mainMenu );
     m_stackedLayout->addWidget( m_noteBrowser );
     m_stackedLayout->setSpacing( 0 );
     m_stackedLayout->setMargin( 0 );

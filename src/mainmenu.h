@@ -1,6 +1,6 @@
 /*
     <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2011-12  Vishesh Handa <handa.vish@gmail.com>
+    Copyright (C) 2012  Vishesh Handa <handa.vish@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -18,40 +18,23 @@
 */
 
 
-#ifndef SIDEBAR_H
-#define SIDEBAR_H
+#ifndef MAINMENU_H
+#define MAINMENU_H
 
 #include <QtGui/QWidget>
-#include <QtGui/QAbstractItemView>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QStackedLayout>
 
-#include <Nepomuk/Resource>
-
-class MainMenu;
-class NoteBrowser;
-
-class Sidebar : public QWidget
+class MainMenu : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Sidebar(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~Sidebar();
-
-public slots:
-    void noteSaved(const Nepomuk::Resource &note);
+    explicit MainMenu(QWidget* parent = 0, Qt::WindowFlags f = 0);
 
 signals:
-    void noteSelected(const Nepomuk::Resource &note);
     void newNote();
-
-private slots:
-    void slotBrowseNotes();
-
+    void browseNotes();
+    void settings();
 private:
-    MainMenu *m_mainMenu;
-    NoteBrowser *m_noteBrowser;
-    QStackedLayout *m_stackedLayout;
+
 };
 
-#endif // SIDEBAR_H
+#endif // MAINMENU_H

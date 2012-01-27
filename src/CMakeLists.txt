@@ -21,6 +21,7 @@ set( SRCS
   notesmodel.cpp
   noteitemdelegate.cpp
   notebrowser.cpp
+  mainmenu.cpp
   config/windowsettings.cpp
 
   porterstemmer.cpp
