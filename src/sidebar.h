@@ -25,6 +25,8 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QStackedLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 
 #include <Nepomuk/Resource>
 
@@ -39,7 +41,8 @@ public:
     virtual ~Sidebar();
 
 public slots:
-    void noteSaved(const Nepomuk::Resource &note);
+    void setTitle(const QString& title);
+    void push(QWidget* widget);
 
 signals:
     void noteSelected(const Nepomuk::Resource &note);
@@ -47,11 +50,19 @@ signals:
 
 private slots:
     void slotBrowseNotes();
+    void slotMoveForward();
+    void slotMoveBackward();
 
 private:
+    void updateButtons();
+
     MainMenu *m_mainMenu;
     NoteBrowser *m_noteBrowser;
     QStackedLayout *m_stackedLayout;
+
+    QLabel *m_title;
+    QPushButton *m_backButton;
+    QPushButton *m_forwardButton;
 };
 
 #endif // SIDEBAR_H

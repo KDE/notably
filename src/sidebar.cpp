@@ -28,15 +28,36 @@
 #include <QtGui/QBoxLayout>
 #include <QtGui/QPushButton>
 #include <QtGui/QStackedLayout>
+#include <QtGui/QLabel>
 
 #include <Soprano/Vocabulary/NAO>
 #include <KDebug>
+#include <KIcon>
 
 using namespace Soprano::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
+    QWidget *navigationWidget = new QWidget();
+    QHBoxLayout *hLayout = new QHBoxLayout( navigationWidget );
+    hLayout->setMargin(0);
+    hLayout->setSpacing(0);
+
+    m_backButton = new QPushButton(KIcon("draw-arrow-back"), "");
+    m_backButton->setFlat(true);
+    connect( m_backButton, SIGNAL(clicked(bool)), this, SLOT(slotMoveBackward()) );
+
+    m_forwardButton = new QPushButton(KIcon("draw-arrow-forward"), "");
+    m_forwardButton->setFlat(true);
+    connect( m_forwardButton, SIGNAL(clicked(bool)), this, SLOT(slotMoveForward()) );
+
+    m_title = new QLabel(QLatin1String("Main Menu"));
+
+    hLayout->addWidget( m_backButton, 0, Qt::AlignLeft );
+    hLayout->addWidget( m_title, 100, Qt::AlignCenter );
+    hLayout->addWidget( m_forwardButton, 0, Qt::AlignRight );
+
     m_noteBrowser = new NoteBrowser( this );
     connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
              this, SIGNAL(noteSelected(Nepomuk::Resource)) );
@@ -45,43 +66,81 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNote()) );
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
-    m_stackedLayout = new QStackedLayout( this );
+    m_stackedLayout = new QStackedLayout();
     m_stackedLayout->addWidget( m_mainMenu );
     m_stackedLayout->addWidget( m_noteBrowser );
     m_stackedLayout->setSpacing( 0 );
     m_stackedLayout->setMargin( 0 );
+
+    QVBoxLayout * mainLayout = new QVBoxLayout( this );
+    mainLayout->setSpacing(0);
+    mainLayout->setMargin(0);
+    mainLayout->addWidget( navigationWidget );
+    mainLayout->addItem(m_stackedLayout);
+
+    updateButtons();
 }
 
 Sidebar::~Sidebar()
 {
 }
 
-void Sidebar::noteSaved(const Nepomuk::Resource& note)
-{
-    Q_UNUSED(note);
-//     // If it already exists, then just update the view
-//     for( int i=0; i<m_notesModel->rowCount(); i++ ) {
-//         QModelIndex index = m_notesModel->index( i, 0 );
-//         Nepomuk::Resource res = m_notesModel->resourceForIndex( index );
-//
-//         if( note == res ) {
-//             m_notesModel->emitDataUpdated( note );
-//             return;
-//         }
-//     }
-
-    /*
-    // TODO: Find a a better way!
-    //       sorting the model again is not an option, neither is re-creating the entire model
-    // Otherwise add the note
-    m_notesModel->addResource( note );
-    m_sortingModel->sort( 0, Qt::DescendingOrder );
-    */
-
-//     m_notesModel->reset();
-}
-
 void Sidebar::slotBrowseNotes()
 {
+    setTitle("Browse Notes");
     m_stackedLayout->setCurrentWidget( m_noteBrowser );
+    updateButtons();
+}
+
+void Sidebar::setTitle(const QString& title)
+{
+    m_title->setText(title);
+}
+
+void Sidebar::slotMoveBackward()
+{
+    int index = m_stackedLayout->currentIndex();
+    if( index > 0 ) {
+        index--;
+        m_stackedLayout->setCurrentIndex(index);
+
+        updateButtons();
+    }
+}
+
+void Sidebar::slotMoveForward()
+{
+    int index = m_stackedLayout->currentIndex();
+    if( index < m_stackedLayout->count()-1 ) {
+        index++;
+        m_stackedLayout->setCurrentIndex(index);
+
+        updateButtons();
+    }
+}
+
+void Sidebar::updateButtons()
+{
+    int index = m_stackedLayout->currentIndex();
+    if( index == 0 ) {
+        m_backButton->setDisabled( true );
+        m_forwardButton->setDisabled( false );
+    }
+    else if( index == m_stackedLayout->count()-1 ) {
+        m_backButton->setDisabled( false );
+        m_forwardButton->setDisabled( true );
+    }
+    else {
+        m_backButton->setDisabled( false );
+        m_forwardButton->setDisabled( false );
+    }
+}
+
+void Sidebar::push(QWidget* widget)
+{
+    int index = m_stackedLayout->currentIndex();
+    // Remove all the widgets after index
+    for(int i=index+1; i<m_stackedLayout->count(); i++)
+        m_stackedLayout->takeAt(i);
+    m_stackedLayout->addWidget( widget );
 }
