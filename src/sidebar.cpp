@@ -21,6 +21,7 @@
 #include "sidebar.h"
 #include "notebrowser.h"
 #include "mainmenu.h"
+#include "noteinformation.h"
 
 #include <QtCore/QCoreApplication>
 
@@ -66,9 +67,12 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNote()) );
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
+    m_noteInfo = new NoteInformation( this );
+
     m_stackedLayout = new QStackedLayout();
     m_stackedLayout->addWidget( m_mainMenu );
     m_stackedLayout->addWidget( m_noteBrowser );
+    m_stackedLayout->addWidget( m_noteInfo );
     m_stackedLayout->setSpacing( 0 );
     m_stackedLayout->setMargin( 0 );
 
@@ -143,4 +147,11 @@ void Sidebar::push(QWidget* widget)
     for(int i=index+1; i<m_stackedLayout->count(); i++)
         m_stackedLayout->takeAt(i);
     m_stackedLayout->addWidget( widget );
+}
+
+void Sidebar::showInfo(const Nepomuk::Resource& note)
+{
+    m_noteInfo->setNote( note );
+    m_stackedLayout->setCurrentWidget( m_noteInfo );
+    updateButtons();
 }

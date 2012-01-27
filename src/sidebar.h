@@ -32,6 +32,7 @@
 
 class MainMenu;
 class NoteBrowser;
+class NoteInformation;
 
 class Sidebar : public QWidget
 {
@@ -43,6 +44,7 @@ public:
 public slots:
     void setTitle(const QString& title);
     void push(QWidget* widget);
+    void showInfo(const Nepomuk::Resource &note);
 
 signals:
     void noteSelected(const Nepomuk::Resource &note);
@@ -58,6 +60,7 @@ private:
 
     MainMenu *m_mainMenu;
     NoteBrowser *m_noteBrowser;
+    NoteInformation *m_noteInfo;
     QStackedLayout *m_stackedLayout;
 
     QLabel *m_title;

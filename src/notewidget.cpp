@@ -83,8 +83,9 @@ void NoteWidget::saveNote()
         saved = true;
     }
 
-    if( saved )
-        emit noteSaved( noteResource );
+    if( saved ) {
+        emit infoRequired(noteResource);
+    }
 }
 
 Nepomuk::Resource NoteWidget::lastUsedNote() const
