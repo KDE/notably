@@ -24,12 +24,13 @@
 #include <QtGui/QVBoxLayout>
 
 #include <KLocale>
+#include <KIcon>
 
 MainMenu::MainMenu(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
-    QPushButton *newNoteButton = new QPushButton(i18n("New Note"));
-    QPushButton *browseButton = new QPushButton(i18n("Browse Notes"));
-    QPushButton *settingsButton = new QPushButton(i18n("Settings"));
+    QPushButton *newNoteButton = new QPushButton(KIcon("document-new"), i18n("New Note"));
+    QPushButton *browseButton = new QPushButton(KIcon("folder-grey"), i18n("Browse Notes"));
+    QPushButton *settingsButton = new QPushButton(KIcon("configure"), i18n("Settings"));
 
     //FIXME: Find a better way!
     newNoteButton->setMaximumHeight( 5000 );
