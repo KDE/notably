@@ -53,7 +53,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     m_forwardButton->setFlat(true);
     connect( m_forwardButton, SIGNAL(clicked(bool)), this, SLOT(slotMoveForward()) );
 
-    m_title = new QLabel(QLatin1String("Main Menu"));
+    m_title = new QLabel(this);
 
     hLayout->addWidget( m_backButton, 0, Qt::AlignLeft );
     hLayout->addWidget( m_title, 100, Qt::AlignCenter );
@@ -70,11 +70,13 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     m_noteInfo = new NoteInformation( this );
 
     m_stackedLayout = new QStackedLayout();
-    m_stackedLayout->addWidget( m_mainMenu );
-    m_stackedLayout->addWidget( m_noteBrowser );
-    m_stackedLayout->addWidget( m_noteInfo );
     m_stackedLayout->setSpacing( 0 );
     m_stackedLayout->setMargin( 0 );
+    push(QLatin1String("Main Menu"), m_mainMenu);
+    push(QLatin1String("Note Browser"), m_noteBrowser);
+    push(QLatin1String("Note Information"), m_noteInfo);
+
+    m_title->setText(m_titleList[0]);
 
     QVBoxLayout * mainLayout = new QVBoxLayout( this );
     mainLayout->setSpacing(0);
@@ -107,6 +109,7 @@ void Sidebar::slotMoveBackward()
     if( index > 0 ) {
         index--;
         m_stackedLayout->setCurrentIndex(index);
+        setTitle( m_titleList[index] );
 
         updateButtons();
     }
@@ -118,7 +121,7 @@ void Sidebar::slotMoveForward()
     if( index < m_stackedLayout->count()-1 ) {
         index++;
         m_stackedLayout->setCurrentIndex(index);
-
+        setTitle( m_titleList[index] );
         updateButtons();
     }
 }
@@ -140,13 +143,19 @@ void Sidebar::updateButtons()
     }
 }
 
-void Sidebar::push(QWidget* widget)
+void Sidebar::push(const QString& title, QWidget* widget)
 {
     int index = m_stackedLayout->currentIndex();
-    // Remove all the widgets after index
-    for(int i=index+1; i<m_stackedLayout->count(); i++)
-        m_stackedLayout->takeAt(i);
+    if( index > 0 ) {
+        // Remove all the widgets after index
+        for(int i=index+1; i<m_stackedLayout->count(); i++) {
+            kDebug() << "Removing " << i;
+            m_stackedLayout->takeAt(i);
+            m_titleList.removeAt(i);
+        }
+    }
     m_stackedLayout->addWidget( widget );
+    m_titleList.append( title );
 }
 
 void Sidebar::showInfo(const Nepomuk::Resource& note)

@@ -43,7 +43,7 @@ public:
 
 public slots:
     void setTitle(const QString& title);
-    void push(QWidget* widget);
+    void push(const QString& title, QWidget* widget);
     void showInfo(const Nepomuk::Resource &note);
 
     bool saveNote(const Nepomuk::Resource& note);
@@ -65,6 +65,7 @@ private:
     NoteBrowser *m_noteBrowser;
     NoteInformation *m_noteInfo;
     QStackedLayout *m_stackedLayout;
+    QStringList m_titleList;
 
     QLabel *m_title;
     QPushButton *m_backButton;
