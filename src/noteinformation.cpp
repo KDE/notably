@@ -19,7 +19,7 @@
 
 
 #include "noteinformation.h"
-#include "tageditor/tageditor.h"
+#include "tageditor/tagwidget.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -65,12 +65,12 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     wLayout->addWidget( new Row("<b>Created:</b>", m_createdLabel, this) );
     wLayout->addWidget( new Row("<b>Modified:</b>", m_modifiedLabel, this) );
 
-    m_tagEditor = new TagEditor;
+    m_tagWidget = new TagWidget;
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );
     mainLayout->addSpacing(100);
-    mainLayout->addWidget( m_tagEditor, 0, Qt::AlignBottom );
+    mainLayout->addWidget( m_tagWidget, 0, Qt::AlignBottom );
 }
 
 void NoteInformation::setNote(const Nepomuk::Resource& note)
@@ -89,7 +89,7 @@ void NoteInformation::updateView()
     m_modifiedLabel->setText( KGlobal::locale()->formatDateTime(modified) );
     m_createdLabel->setText( KGlobal::locale()->formatDateTime(created) );
 
-    m_tagEditor->setTags( m_note.tags() );
+    m_tagWidget->setTags( m_note.tags() );
 
     QString title = m_note.property(NIE::title()).toString();
     m_titleEdit->setText(title);
@@ -101,7 +101,7 @@ bool NoteInformation::saveNote(const Nepomuk::Resource& note)
         m_note = note;
 
     bool saved = false;
-    QList<Nepomuk::Tag> newTags = m_tagEditor->tags();
+    QList<Nepomuk::Tag> newTags = m_tagWidget->tags();
     if( newTags !=  m_note.tags() ) {
         m_note.setTags( newTags );
         saved = true;

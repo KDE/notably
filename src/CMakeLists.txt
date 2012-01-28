@@ -23,6 +23,7 @@ set( SRCS
   noteinformation.cpp
   config/windowsettings.cpp
 
+  tageditor/tagwidget.cpp
   tageditor/tageditor.cpp
   tageditor/tagcompleter.cpp
   porterstemmer.cpp

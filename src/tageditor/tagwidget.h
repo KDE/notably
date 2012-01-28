@@ -18,41 +18,33 @@
 */
 
 
-#ifndef NOTEINFORMATION_H
-#define NOTEINFORMATION_H
+#ifndef TAGWIDGET_H
+#define TAGWIDGET_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
+#include <QtGui/QListView>
+#include <QtGui/QStringListModel>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
 
-#include <KLineEdit>
+class TagEditor;
 
-class TagWidget;
-
-class NoteInformation : public QWidget
+class TagWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit NoteInformation(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    explicit TagWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
 
-
-public slots:
-    void setNote( const Nepomuk::Resource& note );
-    bool saveNote( const Nepomuk::Resource& note );
-    void newNote();
+    QList<Nepomuk::Tag> tags();
+    void setTags(const QList<Nepomuk::Tag>& tags);
+    void addTags(const QList<Nepomuk::Tag>& tags);
 
 private slots:
-    void updateView();
+    void slotAddTags();
 
 private:
-    Nepomuk::Resource m_note;
-
-    KLineEdit* m_titleEdit;
-    QLabel* m_modifiedLabel;
-    QLabel* m_createdLabel;
-
-    TagWidget* m_tagWidget;
+    TagEditor *m_tagEditor;
+    QListView *m_tagView;
+    QStringListModel *m_tagModel;
 };
 
-#endif // NOTEINFORMATION_H
+#endif // TAGWIDGET_H
