@@ -25,19 +25,24 @@
 #include <QtGui/QBoxLayout>
 
 #include <Soprano/Vocabulary/NAO>
+#include <Nepomuk/Vocabulary/NIE>
 
 #include <Nepomuk/Variant>
 
 using namespace Soprano::Vocabulary;
+using namespace Nepomuk::Vocabulary;
 
 NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
 
-    //TODO: Add a title box
+    m_titleEdit = new KLineEdit();
+    m_titleEdit->setPlaceholderText(i18n("Set note title"));
+
     m_createdLabel = new QLabel();
     m_modifiedLabel = new QLabel();
 
+    mainLayout->addWidget( m_titleEdit );
     mainLayout->addWidget( m_createdLabel );
     mainLayout->addWidget( m_modifiedLabel );
 
@@ -62,6 +67,9 @@ void NoteInformation::updateView()
     m_createdLabel->setText( created );
 
     m_tagEditor->setTags( m_note.tags() );
+
+    QString title = m_note.property(NIE::title()).toString();
+    m_titleEdit->setText(title);
 }
 
 bool NoteInformation::saveNote(const Nepomuk::Resource& note)
@@ -69,15 +77,22 @@ bool NoteInformation::saveNote(const Nepomuk::Resource& note)
     if( note != m_note )
         m_note = note;
 
+    bool saved = false;
     QList<Nepomuk::Tag> newTags = m_tagEditor->tags();
     if( newTags !=  m_note.tags() ) {
         m_note.setTags( newTags );
-        return true;
+        saved = true;
     }
-    return false;
+
+    QString title = m_note.property(NIE::title()).toString();
+    if( m_titleEdit->text() != title ) {
+        m_note.setProperty(NIE::title(), m_titleEdit->text());
+    }
+    return saved;
 }
 
 void NoteInformation::newNote()
 {
     m_note = Nepomuk::Resource();
+    m_titleEdit->clear();
 }

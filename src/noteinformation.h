@@ -26,6 +26,8 @@
 
 #include <Nepomuk/Resource>
 
+#include <KLineEdit>
+
 #include "tageditor.h"
 
 class NoteInformation : public QWidget
@@ -46,6 +48,7 @@ private slots:
 private:
     Nepomuk::Resource m_note;
 
+    KLineEdit* m_titleEdit;
     QLabel* m_modifiedLabel;
     QLabel* m_createdLabel;
 
