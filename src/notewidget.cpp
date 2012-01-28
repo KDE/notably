@@ -48,6 +48,8 @@ NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     layout->addWidget( m_noteEditor );
 
     setNote( lastUsedNote() );
+
+    connect( m_noteEditor, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()) );
 }
 
 NoteWidget::~NoteWidget()
@@ -68,11 +70,16 @@ bool NoteWidget::saveNote()
     //FIXME: Show some visual representation that the note has been modfied
     if( m_noteEditor->document()->isModified() ) {
         m_noteEditor->save();
-        emit infoRequired(m_noteEditor->resource());
         return true;
     }
 
     return false;
+}
+
+void NoteWidget::slotCursorPositionChanged()
+{
+    // Maybe this should be done after a certain time lag
+    emit infoRequired(m_noteEditor->resource());
 }
 
 Nepomuk::Resource NoteWidget::lastUsedNote() const

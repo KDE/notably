@@ -54,6 +54,9 @@ public slots:
 signals:
     void infoRequired( const Nepomuk::Resource &note );
 
+private slots:
+    void slotCursorPositionChanged();
+
 private:
     Nepomuk::Resource lastUsedNote() const;
 
