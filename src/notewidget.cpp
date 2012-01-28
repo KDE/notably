@@ -20,7 +20,6 @@
 
 #include "notewidget.h"
 #include "noteedit.h"
-#include "tageditor.h"
 
 #include <QtGui/QVBoxLayout>
 

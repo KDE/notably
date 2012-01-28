@@ -19,6 +19,7 @@
 
 
 #include "noteinformation.h"
+#include "tageditor/tageditor.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>

@@ -28,7 +28,7 @@
 
 #include <KLineEdit>
 
-#include "tageditor.h"
+class TagEditor;
 
 class NoteInformation : public QWidget
 {

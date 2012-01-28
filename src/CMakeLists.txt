@@ -14,8 +14,6 @@ set( SRCS
   mainwindow.cpp
   notewidget.cpp
   noteedit.cpp
-  tageditor.cpp
-  tagcompleter.cpp
   sidebar.cpp
   notesview.cpp
   notesmodel.cpp
@@ -25,6 +23,8 @@ set( SRCS
   noteinformation.cpp
   config/windowsettings.cpp
 
+  tageditor/tageditor.cpp
+  tageditor/tagcompleter.cpp
   porterstemmer.cpp
 )
 
