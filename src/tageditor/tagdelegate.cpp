@@ -28,17 +28,21 @@
 #include <KLocale>
 #include <KApplication>
 #include <KGlobalSettings>
+#include <KIcon>
 
 TagDelegate::TagDelegate(QObject* parent): QStyledItemDelegate(parent)
 {
-    m_margin = 4;
+    m_margin = 3;
 }
 
 void TagDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     painter->save();
     QStyle* style = KApplication::style();
-    style->drawPrimitive(QStyle::PE_PanelTipLabel, &option, painter);
+    QStyleOptionViewItem textOption(option);
+    textOption.rect.setWidth( textOption.rect.width() - (16+m_margin) );
+
+    style->drawPrimitive(QStyle::PE_PanelTipLabel/*QStyle::PE_PanelItemViewItem*/, &textOption, painter);
     painter->drawRoundedRect( option.rect, 6, 6 );
 
     QString tagLabel = index.data().toString();
@@ -48,6 +52,13 @@ void TagDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, c
     style->drawItemText(painter, rect, 0, option.palette, true, tagLabel );
 
     //QStyledItemDelegate::paint(painter, option, index);
+    KIcon icon("edit-delete");
+    rect.setX( rect.x() + QFontMetrics(option.font).width(tagLabel) + m_margin );
+
+    QStyleOption buttonOpt(option);
+    buttonOpt.rect.setX( buttonOpt.rect.x() + QFontMetrics(option.font).width(tagLabel) + m_margin*2 );
+    style->drawPrimitive(QStyle::PE_PanelButtonTool, &buttonOpt, painter);
+    style->drawItemPixmap( painter, rect, 0, icon.pixmap(QSize(16,16)) );
     painter->restore();
 }
 
@@ -61,8 +72,15 @@ QSize TagDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelInde
 
     QString tagLabel = index.data().toString();
 
-    x += fm.width( tagLabel ) + m_margin*2;
+    x += fm.width( tagLabel ) + m_margin*2; // Text
+    x += m_margin + 16; // Icon
     y += fm.height() + m_margin*2;
 
     return QSize( x, y );
+}
+
+bool TagDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
+                              const QStyleOptionViewItem& option, const QModelIndex& index)
+{
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

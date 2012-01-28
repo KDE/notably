@@ -18,34 +18,25 @@
 */
 
 
-#ifndef TAGWIDGET_H
-#define TAGWIDGET_H
+#ifndef TAGVIEW_H
+#define TAGVIEW_H
 
-#include <QtGui/QStringListModel>
+#include <QtGui/QListView>
 
 #include <Nepomuk/Tag>
 
-class TagEditor;
-class TagView;
-
-class TagWidget : public QWidget
+class TagView : public QListView
 {
     Q_OBJECT
 public:
-    explicit TagWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    explicit TagView(QWidget* parent = 0);
 
-    QList<Nepomuk::Tag> tags();
-    void setTags(const QList<Nepomuk::Tag>& tags);
-    void addTags(const QList<Nepomuk::Tag>& tags);
+signals:
+    void tagClicked(const QModelIndex& index);
+    void tagDeleted(const QModelIndex& index);
 
-private slots:
-    void slotAddTags();
-    void slotRemoveTags(const QModelIndex& index);
-
-private:
-    TagEditor *m_tagEditor;
-    TagView *m_tagView;
-    QStringListModel *m_tagModel;
+protected:
+    void mousePressEvent(QMouseEvent* event);
 };
 
-#endif // TAGWIDGET_H
+#endif // TAGVIEW_H

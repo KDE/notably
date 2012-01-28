@@ -20,7 +20,7 @@
 
 #include "tagwidget.h"
 #include "tageditor.h"
-#include "tagdelegate.h"
+#include "tagview.h"
 
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
@@ -39,9 +39,10 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     hLayout->addWidget( addButton, 0 );
 
     m_tagModel = new QStringListModel();
-    m_tagView = new QListView();
-    m_tagView->setItemDelegate( new TagDelegate( this ) );
+
+    m_tagView = new TagView();
     m_tagView->setModel( m_tagModel );
+    connect( m_tagView, SIGNAL(tagDeleted(QModelIndex)), this, SLOT(slotRemoveTags(QModelIndex)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addItem( hLayout );
@@ -80,6 +81,14 @@ void TagWidget::addTags(const QList< Nepomuk::Tag >& tags)
             list.append(label);
     }
 
+    m_tagModel->setStringList(list);
+}
+
+void TagWidget::slotRemoveTags(const QModelIndex& index)
+{
+    QString tagLabel = index.data().toString();
+    QStringList list = m_tagModel->stringList();
+    list.removeAll(tagLabel);
     m_tagModel->setStringList(list);
 }
 
