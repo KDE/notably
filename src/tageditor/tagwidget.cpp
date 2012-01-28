@@ -20,6 +20,7 @@
 
 #include "tagwidget.h"
 #include "tageditor.h"
+#include "tagdelegate.h"
 
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
@@ -39,6 +40,7 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 
     m_tagModel = new QStringListModel();
     m_tagView = new QListView();
+    m_tagView->setItemDelegate( new TagDelegate( this ) );
     m_tagView->setModel( m_tagModel );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
