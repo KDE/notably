@@ -25,6 +25,7 @@
 #include <QtGui/QLabel>
 
 #include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
 
 #include <KLineEdit>
 
@@ -41,6 +42,9 @@ public slots:
     void setNote( const Nepomuk::Resource& note );
     bool saveNote( const Nepomuk::Resource& note );
     void newNote();
+
+signals:
+    void tagSelected(const Nepomuk::Tag& tag);
 
 private slots:
     void updateView();

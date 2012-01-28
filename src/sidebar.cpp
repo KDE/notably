@@ -60,6 +60,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     hLayout->addWidget( m_forwardButton, 0, Qt::AlignRight );
 
     m_noteBrowser = new NoteBrowser( this );
+    m_noteBrowser->get();
     connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
              this, SIGNAL(noteSelected(Nepomuk::Resource)) );
 
@@ -68,6 +69,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
     m_noteInfo = new NoteInformation( this );
+    connect( m_noteInfo, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
 
     m_stackedLayout = new QStackedLayout();
     m_stackedLayout->setSpacing( 0 );
@@ -149,8 +151,10 @@ void Sidebar::push(const QString& title, QWidget* widget)
     if( index > 0 ) {
         // Remove all the widgets after index
         for(int i=index+1; i<m_stackedLayout->count(); i++) {
-            kDebug() << "Removing " << i;
-            m_stackedLayout->takeAt(i);
+            QWidget* widget = m_stackedLayout->widget(i);
+            m_stackedLayout->removeWidget( widget );
+            widget->deleteLater();
+
             m_titleList.removeAt(i);
         }
     }
@@ -173,4 +177,19 @@ bool Sidebar::saveNote(const Nepomuk::Resource& note)
 void Sidebar::newNote()
 {
     m_noteInfo->newNote();
+}
+
+void Sidebar::showTagInBrowser(const Nepomuk::Tag& tag)
+{
+    NoteBrowser* browser = new NoteBrowser( this );
+    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    browser->setTag( tag );
+    browser->get();
+
+    QString label = QLatin1String("has Tag \"") + tag.genericLabel() + "\"";
+    push( label, browser );
+
+    // Maybe this should be done in push
+    slotMoveForward();
 }

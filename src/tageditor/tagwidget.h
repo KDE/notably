@@ -38,9 +38,13 @@ public:
     void setTags(const QList<Nepomuk::Tag>& tags);
     void addTags(const QList<Nepomuk::Tag>& tags);
 
+signals:
+    void tagSelected(const Nepomuk::Tag &tag);
+
 private slots:
     void slotAddTags();
     void slotRemoveTags(const QModelIndex& index);
+    void slotTagSelected(const QModelIndex& index);
 
 private:
     TagEditor *m_tagEditor;

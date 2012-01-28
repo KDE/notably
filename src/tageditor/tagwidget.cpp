@@ -43,6 +43,7 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     m_tagView = new TagView();
     m_tagView->setModel( m_tagModel );
     connect( m_tagView, SIGNAL(tagDeleted(QModelIndex)), this, SLOT(slotRemoveTags(QModelIndex)) );
+    connect( m_tagView, SIGNAL(tagClicked(QModelIndex)), this, SLOT(slotTagSelected(QModelIndex)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addItem( hLayout );
@@ -92,3 +93,8 @@ void TagWidget::slotRemoveTags(const QModelIndex& index)
     m_tagModel->setStringList(list);
 }
 
+void TagWidget::slotTagSelected(const QModelIndex& index)
+{
+    const QString tagLabel = index.data().toString();
+    emit tagSelected( Nepomuk::Tag(tagLabel) );
+}

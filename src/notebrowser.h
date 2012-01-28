@@ -23,7 +23,10 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QModelIndex>
+
 #include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
+#include <Nepomuk/Query/Query>
 
 class NotesView;
 class NotesModel;
@@ -33,8 +36,14 @@ class NoteBrowser : public QWidget
     Q_OBJECT
 public:
     explicit NoteBrowser(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    NoteBrowser(const Nepomuk::Tag& tag, QWidget* parent);
+
     virtual ~NoteBrowser();
 
+    void setTag(const Nepomuk::Tag& tag);
+
+    // Need a better method name
+    void get();
 signals:
     void noteSelected(const Nepomuk::Resource &note);
 
@@ -44,6 +53,8 @@ private slots:
 private:
     NotesView *m_view;
     NotesModel *m_model;
+
+    Nepomuk::Query::Query m_query;
 };
 
 #endif // NOTEBROWSER_H

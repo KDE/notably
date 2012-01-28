@@ -29,6 +29,7 @@
 #include <QtGui/QPushButton>
 
 #include <Nepomuk/Resource>
+#include <Nepomuk/Tag>
 
 class MainMenu;
 class NoteBrowser;
@@ -58,6 +59,7 @@ private slots:
     void slotMoveForward();
     void slotMoveBackward();
 
+    void showTagInBrowser(const Nepomuk::Tag& tag);
 private:
     void updateButtons();
 

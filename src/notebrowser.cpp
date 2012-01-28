@@ -27,6 +27,7 @@
 
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk/Query/ResourceTerm>
 #include <Nepomuk/Query/ComparisonTerm>
 
 #include <Nepomuk/Vocabulary/PIMO>
@@ -57,8 +58,7 @@ NoteBrowser::NoteBrowser(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
     compTerm.setSortWeight( 1, Qt::DescendingOrder );
 
-    Nepomuk::Query::Query query( typeTerm && compTerm );
-    m_model->setQuery( query );
+    m_query = typeTerm && compTerm;
 
     //FIXME: Figure out why this stupid layout is required!
     QHBoxLayout* layout = new QHBoxLayout( this );
@@ -76,6 +76,17 @@ void NoteBrowser::slotNoteSelected(const QModelIndex& index)
 {
     Nepomuk::Resource res = m_model->resourceForIndex(index);
     emit noteSelected( res );
+}
+
+void NoteBrowser::setTag(const Nepomuk::Tag& tag)
+{
+    m_query = m_query && Nepomuk::Query::ComparisonTerm(NAO::hasTag(),
+                                                        Nepomuk::Query::ResourceTerm(tag));
+}
+
+void NoteBrowser::get()
+{
+    m_model->setQuery( m_query );
 }
 
 
