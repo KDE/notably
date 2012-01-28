@@ -28,26 +28,48 @@
 #include <Nepomuk/Vocabulary/NIE>
 
 #include <Nepomuk/Variant>
+#include <KDebug>
 
 using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
 
+namespace {
+    class Row: public QWidget {
+    public:
+        Row(const QString& labelString, QWidget* other, QWidget* parent)
+        : QWidget(parent)
+        {
+            QHBoxLayout* layout = new QHBoxLayout(this);
+            QLabel* label = new QLabel(labelString);
+            layout->addStretch(100);
+            layout->addWidget(label);
+            layout->addWidget(other);
+        }
+    };
+}
+
 NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
-    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+    QWidget *widget = new QWidget( this );
+    QVBoxLayout *wLayout = new QVBoxLayout(widget);
 
     m_titleEdit = new KLineEdit();
+    m_titleEdit->setAlignment(Qt::AlignRight);
     m_titleEdit->setPlaceholderText(i18n("Set note title"));
 
     m_createdLabel = new QLabel();
     m_modifiedLabel = new QLabel();
 
-    mainLayout->addWidget( m_titleEdit );
-    mainLayout->addWidget( m_createdLabel );
-    mainLayout->addWidget( m_modifiedLabel );
+    wLayout->addWidget( m_titleEdit );
+    wLayout->addWidget( new Row("<b>Created:</b>", m_createdLabel, this) );
+    wLayout->addWidget( new Row("<b>Modified:</b>", m_modifiedLabel, this) );
 
     m_tagEditor = new TagEditor;
-    mainLayout->addWidget( m_tagEditor );
+
+    QVBoxLayout* mainLayout = new QVBoxLayout( this );
+    mainLayout->addWidget( widget, 0, Qt::AlignTop );
+    mainLayout->addSpacing(100);
+    mainLayout->addWidget( m_tagEditor, 0, Qt::AlignBottom );
 }
 
 void NoteInformation::setNote(const Nepomuk::Resource& note)
@@ -60,11 +82,11 @@ void NoteInformation::setNote(const Nepomuk::Resource& note)
 
 void NoteInformation::updateView()
 {
-    QString modified = m_note.property(NAO::lastModified()).toDateTime().toString();
-    QString created = m_note.property(NAO::created()).toDateTime().toString();
+    QDateTime modified = m_note.property(NAO::lastModified()).toDateTime().toLocalTime();
+    QDateTime created = m_note.property(NAO::created()).toDateTime().toLocalTime();
 
-    m_modifiedLabel->setText( modified );
-    m_createdLabel->setText( created );
+    m_modifiedLabel->setText( KGlobal::locale()->formatDateTime(modified) );
+    m_createdLabel->setText( KGlobal::locale()->formatDateTime(created) );
 
     m_tagEditor->setTags( m_note.tags() );
 
