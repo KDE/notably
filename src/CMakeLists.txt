@@ -20,6 +20,7 @@ set( SRCS
   noteitemdelegate.cpp
   notebrowser.cpp
   mainmenu.cpp
+  browsemenu.cpp
   noteinformation.cpp
   config/windowsettings.cpp
 

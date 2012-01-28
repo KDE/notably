@@ -21,6 +21,7 @@
 #include "sidebar.h"
 #include "notebrowser.h"
 #include "mainmenu.h"
+#include "browsemenu.h"
 #include "noteinformation.h"
 
 #include <QtCore/QCoreApplication>
@@ -59,11 +60,6 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     hLayout->addWidget( m_title, 100, Qt::AlignCenter );
     hLayout->addWidget( m_forwardButton, 0, Qt::AlignRight );
 
-    m_noteBrowser = new NoteBrowser( this );
-    m_noteBrowser->get();
-    connect( m_noteBrowser, SIGNAL(noteSelected(Nepomuk::Resource)),
-             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
-
     m_mainMenu = new MainMenu( this );
     connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNote()) );
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
@@ -75,8 +71,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     m_stackedLayout->setSpacing( 0 );
     m_stackedLayout->setMargin( 0 );
     push(QLatin1String("Main Menu"), m_mainMenu);
-    push(QLatin1String("Note Browser"), m_noteBrowser);
-    push(QLatin1String("Note Information"), m_noteInfo);
+    //push(QLatin1String("Note Information"), m_noteInfo);
 
     m_title->setText(m_titleList[0]);
 
@@ -95,9 +90,12 @@ Sidebar::~Sidebar()
 
 void Sidebar::slotBrowseNotes()
 {
-    setTitle("Browse Notes");
-    m_stackedLayout->setCurrentWidget( m_noteBrowser );
-    updateButtons();
+    BrowseMenu* menu = new BrowseMenu(this);
+    connect( menu, SIGNAL(browseByDateSelected()), this, SLOT(slotBrowseByDate()) );
+    connect( menu, SIGNAL(browseByTagsSelected()), this, SLOT(slotBrowseByTags()) );
+
+    push(i18n("Browse Notes"), menu);
+    slotMoveForward();
 }
 
 void Sidebar::setTitle(const QString& title)
@@ -148,15 +146,16 @@ void Sidebar::updateButtons()
 void Sidebar::push(const QString& title, QWidget* widget)
 {
     int index = m_stackedLayout->currentIndex();
-    if( index > 0 ) {
-        // Remove all the widgets after index
-        for(int i=index+1; i<m_stackedLayout->count(); i++) {
-            QWidget* widget = m_stackedLayout->widget(i);
-            m_stackedLayout->removeWidget( widget );
+
+    // Remove all the widgets after index
+    for(int i=index+1; i<m_stackedLayout->count(); i++) {
+        QWidget* widget = m_stackedLayout->widget(i);
+        m_stackedLayout->removeWidget( widget );
+        //WARNING: Special case for m_noteInfo
+        if( widget != m_noteInfo )
             widget->deleteLater();
 
-            m_titleList.removeAt(i);
-        }
+        m_titleList.removeAt(i);
     }
     m_stackedLayout->addWidget( widget );
     m_titleList.append( title );
@@ -165,8 +164,14 @@ void Sidebar::push(const QString& title, QWidget* widget)
 void Sidebar::showInfo(const Nepomuk::Resource& note)
 {
     m_noteInfo->setNote( note );
-    m_stackedLayout->setCurrentWidget( m_noteInfo );
-    updateButtons();
+
+    int current = m_stackedLayout->currentIndex();
+    if( m_stackedLayout->widget(current) == m_noteInfo ) {
+        return;
+    }
+
+    push(i18n("Note Information"), m_noteInfo);
+    slotMoveForward();
 }
 
 bool Sidebar::saveNote(const Nepomuk::Resource& note)
@@ -187,9 +192,28 @@ void Sidebar::showTagInBrowser(const Nepomuk::Tag& tag)
     browser->setTag( tag );
     browser->get();
 
-    QString label = QLatin1String("has Tag \"") + tag.genericLabel() + "\"";
+    QString label = i18n("has Tag \"") + tag.genericLabel() + "\"";
     push( label, browser );
 
     // Maybe this should be done in push
     slotMoveForward();
+}
+
+void Sidebar::slotBrowseByDate()
+{
+    NoteBrowser *browser = new NoteBrowser( this );
+    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    browser->get();
+
+    QString label = i18n("Browse by date");
+    push( label, browser );
+
+    // Maybe this should be done in push
+    slotMoveForward();
+}
+
+void Sidebar::slotBrowseByTags()
+{
+    //TODO: Add a tagCloud over here
 }

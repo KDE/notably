@@ -32,7 +32,6 @@
 #include <Nepomuk/Tag>
 
 class MainMenu;
-class NoteBrowser;
 class NoteInformation;
 
 class Sidebar : public QWidget
@@ -56,6 +55,9 @@ signals:
 
 private slots:
     void slotBrowseNotes();
+    void slotBrowseByDate();
+    void slotBrowseByTags();
+
     void slotMoveForward();
     void slotMoveBackward();
 
@@ -64,8 +66,8 @@ private:
     void updateButtons();
 
     MainMenu *m_mainMenu;
-    NoteBrowser *m_noteBrowser;
     NoteInformation *m_noteInfo;
+
     QStackedLayout *m_stackedLayout;
     QStringList m_titleList;
 
