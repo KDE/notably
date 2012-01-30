@@ -37,12 +37,12 @@ TagDelegate::TagDelegate(QObject* parent): QStyledItemDelegate(parent)
 
 void TagDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    painter->save();
     QStyle* style = KApplication::style();
-    QStyleOptionViewItem textOption(option);
-    textOption.rect.setWidth( textOption.rect.width() - (16+m_margin) );
 
-    style->drawPrimitive(QStyle::PE_PanelTipLabel/*QStyle::PE_PanelItemViewItem*/, &textOption, painter);
+    painter->save();
+    painter->setBackground( option.palette.alternateBase() );
+    painter->setBrush( QBrush(option.palette.alternateBase()) );
+    painter->setRenderHint( QPainter::Antialiasing );
     painter->drawRoundedRect( option.rect, 6, 6 );
 
     QString tagLabel = index.data().toString();
@@ -51,14 +51,16 @@ void TagDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, c
 
     style->drawItemText(painter, rect, 0, option.palette, true, tagLabel );
 
-    //QStyledItemDelegate::paint(painter, option, index);
-    KIcon icon("edit-delete");
-    rect.setX( rect.x() + QFontMetrics(option.font).width(tagLabel) + m_margin );
+    if( m_buttonPixmap.isNull() ) {
+        QFontMetrics fm(option.font);
+        KIcon icon("edit-delete");
+        const_cast<TagDelegate*>(this)->m_buttonPixmap =  icon.pixmap( QSize(fm.height(), fm.height()) );
+    }
 
     QStyleOption buttonOpt(option);
-    buttonOpt.rect.setX( buttonOpt.rect.x() + QFontMetrics(option.font).width(tagLabel) + m_margin*2 );
-    style->drawPrimitive(QStyle::PE_PanelButtonTool, &buttonOpt, painter);
-    style->drawItemPixmap( painter, rect, 0, icon.pixmap(QSize(16,16)) );
+    rect.setX( rect.x() + QFontMetrics(option.font).width(tagLabel) + m_margin );
+    buttonOpt.rect = rect;
+    style->drawItemPixmap( painter, rect, 0, m_buttonPixmap );
     painter->restore();
 }
 

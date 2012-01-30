@@ -35,10 +35,16 @@ TagView::TagView(QWidget* parent): QListView(parent)
     setSpacing( 2 );
     setSelectionMode(QAbstractItemView::NoSelection);
     setMouseTracking( true );
-
     setFocusPolicy(Qt::NoFocus);
     setMinimumHeight( 0 );
     setMaximumHeight( 30 * 3 );
+
+    // Remove the background and border
+    setAttribute( Qt::WA_NoSystemBackground );
+    setAttribute( Qt::WA_NoBackground );
+    setAutoFillBackground( false );
+    setStyleSheet("background-color: transparent;");
+    setFrameShape(QFrame::NoFrame);
 }
 
 void TagView::mousePressEvent(QMouseEvent* event)

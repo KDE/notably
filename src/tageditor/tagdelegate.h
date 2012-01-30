@@ -36,6 +36,7 @@ public:
                      const QStyleOptionViewItem& option, const QModelIndex& index);
 private:
     int m_margin;
+    QPixmap m_buttonPixmap;
 };
 
 #endif // TAGDELEGATE_H
