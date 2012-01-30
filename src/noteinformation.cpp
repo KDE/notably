@@ -87,8 +87,16 @@ void NoteInformation::updateView()
     QDateTime modified = m_note.property(NAO::lastModified()).toDateTime().toLocalTime();
     QDateTime created = m_note.property(NAO::created()).toDateTime().toLocalTime();
 
-    m_modifiedLabel->setText( KGlobal::locale()->formatDateTime(modified) );
-    m_createdLabel->setText( KGlobal::locale()->formatDateTime(created) );
+    QString modifiedString;
+    QString createdString;
+
+    if( modified.isValid() )
+        modifiedString = KGlobal::locale()->formatDateTime(modified);
+    if( created.isValid() )
+        createdString = KGlobal::locale()->formatDateTime(created);
+
+    m_modifiedLabel->setText( modifiedString );
+    m_createdLabel->setText( createdString );
 
     m_tagWidget->setTags( m_note.tags() );
 
@@ -118,5 +126,5 @@ bool NoteInformation::saveNote(const Nepomuk::Resource& note)
 void NoteInformation::newNote()
 {
     m_note = Nepomuk::Resource();
-    m_titleEdit->clear();
+    updateView();
 }

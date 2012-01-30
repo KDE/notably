@@ -61,7 +61,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     hLayout->addWidget( m_forwardButton, 0, Qt::AlignRight );
 
     m_mainMenu = new MainMenu( this );
-    connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNote()) );
+    connect( m_mainMenu, SIGNAL(newNote()), this, SIGNAL(newNoteSelected()) );
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
     m_noteInfo = new NoteInformation( this );

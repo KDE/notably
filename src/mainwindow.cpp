@@ -85,7 +85,7 @@ void MainWindow::setupGUI()
     m_mainLayout->addWidget( m_sidebar );
 
     connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
-    connect( m_sidebar, SIGNAL(newNote()), m_noteWidget, SLOT(newNote()) );
+    connect( m_sidebar, SIGNAL(newNoteSelected()), this, SLOT(slotNewNote()) );
     connect( m_noteWidget, SIGNAL(infoRequired(Nepomuk::Resource)), m_sidebar, SLOT(showInfo(Nepomuk::Resource)) );
 }
 

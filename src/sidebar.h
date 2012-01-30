@@ -51,7 +51,7 @@ public slots:
 
 signals:
     void noteSelected(const Nepomuk::Resource &note);
-    //void newNote();
+    void newNoteSelected();
 
 private slots:
     void slotBrowseNotes();
