@@ -96,5 +96,6 @@ void TagWidget::slotRemoveTags(const QModelIndex& index)
 void TagWidget::slotTagSelected(const QModelIndex& index)
 {
     const QString tagLabel = index.data().toString();
-    emit tagSelected( Nepomuk::Tag(tagLabel) );
+    if( !tagLabel.isEmpty() )
+        emit tagSelected( Nepomuk::Tag(tagLabel) );
 }
