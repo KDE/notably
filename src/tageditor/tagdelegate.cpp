@@ -40,10 +40,13 @@ void TagDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, c
     QStyle* style = KApplication::style();
 
     painter->save();
-    painter->setBackground( option.palette.alternateBase() );
-    painter->setBrush( QBrush(option.palette.alternateBase()) );
+    QPen origPen = painter->pen();
+    if( option.state & QStyle::State_MouseOver )
+        painter->setPen( option.palette.highlight().color() );
+    painter->setBrush( option.palette.alternateBase() );
     painter->setRenderHint( QPainter::Antialiasing );
     painter->drawRoundedRect( option.rect, 6, 6 );
+    painter->setPen( origPen );
 
     QString tagLabel = index.data().toString();
     QRect rect( option.rect );
