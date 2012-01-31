@@ -25,7 +25,8 @@
 
 TagView::TagView(QWidget* parent): QListView(parent)
 {
-    setItemDelegate( new TagDelegate( this ) );
+    m_delegate = new TagDelegate( this );
+    setItemDelegate( m_delegate );
 
     // For Grid
     setFlow( QListView::LeftToRight );
@@ -55,8 +56,8 @@ void TagView::mousePressEvent(QMouseEvent* event)
 
     QRect deleteRect( rect );
     QString tagLabel = index.data().toString();
-    // The "+3" are for the margins
-    deleteRect.setX( deleteRect.x() + 3 + QFontMetrics(font()).width(tagLabel) + 3 );
+    int margin = m_delegate->margin();
+    deleteRect.setX( deleteRect.x() + margin + QFontMetrics(font()).width(tagLabel) + margin );
     if( deleteRect.contains(pos) )
         emit tagDeleted(index);
     else

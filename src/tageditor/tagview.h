@@ -25,6 +25,8 @@
 
 #include <Nepomuk/Tag>
 
+class TagDelegate;
+
 class TagView : public QListView
 {
     Q_OBJECT
@@ -37,6 +39,9 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent* event);
+
+private:
+    TagDelegate* m_delegate;
 };
 
 #endif // TAGVIEW_H

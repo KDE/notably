@@ -77,15 +77,9 @@ QSize TagDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelInde
 
     QString tagLabel = index.data().toString();
 
-    x += fm.width( tagLabel ) + m_margin*2; // Text
-    x += m_margin + 16; // Icon
+    x += m_margin + fm.width( tagLabel ) + m_margin; // Text
+    x += fm.height() + m_margin; // Icon
     y += fm.height() + m_margin*2;
 
     return QSize( x, y );
-}
-
-bool TagDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
-                              const QStyleOptionViewItem& option, const QModelIndex& index)
-{
-    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
