@@ -29,6 +29,7 @@ set( SRCS
   tageditor/tagcompleter.cpp
   tageditor/tagdelegate.cpp
   tageditor/tagview.cpp
+  tageditor/tagcloud.cpp
 
   porterstemmer.cpp
 )

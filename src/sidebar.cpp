@@ -23,6 +23,7 @@
 #include "mainmenu.h"
 #include "browsemenu.h"
 #include "noteinformation.h"
+#include "tageditor/tagcloud.h"
 
 #include <QtCore/QCoreApplication>
 
@@ -215,5 +216,9 @@ void Sidebar::slotBrowseByDate()
 
 void Sidebar::slotBrowseByTags()
 {
-    //TODO: Add a tagCloud over here
+    TagCloud* cloud = new TagCloud( this );
+    connect( cloud, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
+
+    push(i18n("Choose a tag"), cloud);
+    slotMoveForward();
 }
