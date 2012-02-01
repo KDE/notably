@@ -49,7 +49,7 @@ signals:
     void tagsChanged( const QList<Nepomuk::Tag> &tagList );
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
+//    virtual void paintEvent(QPaintEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
 
 private slots:

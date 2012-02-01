@@ -113,6 +113,7 @@ QList<Nepomuk::Tag> TagEditor::tags() const
     return tagList;
 }
 
+#if 0
 void TagEditor::paintEvent(QPaintEvent* event)
 {
     KTextEdit::paintEvent(event);
@@ -141,6 +142,7 @@ void TagEditor::paintEvent(QPaintEvent* event)
         }
     }
 }
+#endif
 
 void TagEditor::slotDocumentSizeChanged()
 {
