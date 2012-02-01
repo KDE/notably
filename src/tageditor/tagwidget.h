@@ -43,13 +43,10 @@ signals:
 
 private slots:
     void slotAddTags();
-    void slotRemoveTags(const QModelIndex& index);
-    void slotTagSelected(const QModelIndex& index);
 
 private:
     TagEditor *m_tagEditor;
     TagView *m_tagView;
-    QStringListModel *m_tagModel;
 };
 
 #endif // TAGWIDGET_H

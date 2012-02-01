@@ -19,50 +19,72 @@
 
 
 #include "tagview.h"
-#include "tagdelegate.h"
+#include "tag.h"
 
 #include <QtGui/QMouseEvent>
 
-TagView::TagView(QWidget* parent): QListView(parent)
+TagView::TagView(QWidget* parent): QWidget(parent)
 {
-    m_delegate = new TagDelegate( this );
-    setItemDelegate( m_delegate );
-
-    // For Grid
-    setFlow( QListView::LeftToRight );
-    setWrapping( true );
-    setResizeMode( QListView::Adjust );
-
-    setSpacing( 2 );
-    setSelectionMode(QAbstractItemView::NoSelection);
-    setMouseTracking( true );
-    setFocusPolicy(Qt::NoFocus);
-    setMinimumHeight( 0 );
-    setMaximumHeight( 30 * 3 );
+    m_layout = new FlowLayout( this );
 
     // Remove the background and border
     setAttribute( Qt::WA_NoSystemBackground );
     setAttribute( Qt::WA_NoBackground );
     setAutoFillBackground( false );
     setStyleSheet("background-color: transparent;");
-    setFrameShape(QFrame::NoFrame);
 }
 
-void TagView::mousePressEvent(QMouseEvent* event)
+void TagView::addTags(const QList< Nepomuk::Tag >& tags)
 {
-    QPoint pos = event->pos();
-    QModelIndex index = indexAt(pos);
-    QRect rect = visualRect(index);
+    foreach( const Nepomuk::Tag& t, tags ) {
+        Tag *tagWidget = new Tag(this);
+        tagWidget->setTag( t );
+        connect( tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagClicked(Nepomuk::Tag)) );
+        connect( tagWidget, SIGNAL(tagDeleted(Nepomuk::Tag)), this, SLOT(slotTagDeleted(Nepomuk::Tag)) );
 
-    QRect deleteRect( rect );
-    QString tagLabel = index.data().toString();
-    int margin = m_delegate->margin();
-    deleteRect.setX( deleteRect.x() + margin + QFontMetrics(font()).width(tagLabel) + margin );
-    if( deleteRect.contains(pos) )
-        emit tagDeleted(index);
-    else
-        emit tagClicked(index);
-
-    QAbstractItemView::mousePressEvent(event);
+        m_tags.append( tagWidget );
+        m_layout->addWidget( tagWidget );
+    }
 }
 
+void TagView::setTags(const QList< Nepomuk::Tag >& tags)
+{
+    clearTags();
+    addTags( tags );
+}
+
+void TagView::clearTags()
+{
+    for( int i=0; i<m_tags.size(); i++ ) {
+        QWidget *widget = m_layout->takeAt(0)->widget();
+        widget->deleteLater();
+    }
+}
+
+QList< Nepomuk::Tag > TagView::tags()
+{
+    QList<Nepomuk::Tag> tags;
+    foreach( Tag* t, m_tags )
+        tags << t->tag();
+    return tags;
+}
+
+void TagView::slotTagDeleted(const Nepomuk::Tag& tag)
+{
+    int index = -1;
+    for(int i=0; i<m_tags.size(); i++) {
+        Tag* tagWidget = m_tags[i];
+        if( tagWidget->tag() == tag ) {
+            index = i;
+            break;
+        }
+    }
+
+    if( index == -1 )
+        return;
+
+    Tag* tagWidget = m_tags[index];
+    m_tags.removeAt( index );
+    m_layout->takeAt( index );
+    tagWidget->deleteLater();
+}

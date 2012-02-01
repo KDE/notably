@@ -21,27 +21,34 @@
 #ifndef TAGVIEW_H
 #define TAGVIEW_H
 
+#include "flowlayout.h"
+#include "tag.h"
 #include <QtGui/QListView>
 
 #include <Nepomuk/Tag>
 
-class TagDelegate;
+class Tag;
 
-class TagView : public QListView
+class TagView : public QWidget
 {
     Q_OBJECT
 public:
     explicit TagView(QWidget* parent = 0);
 
-signals:
-    void tagClicked(const QModelIndex& index);
-    void tagDeleted(const QModelIndex& index);
+    void addTags( const QList<Nepomuk::Tag> &tags );
+    void setTags( const QList<Nepomuk::Tag> &tags );
+    void clearTags();
+    QList<Nepomuk::Tag> tags();
 
-protected:
-    void mousePressEvent(QMouseEvent* event);
+signals:
+    void tagClicked(const Nepomuk::Tag& tag);
+
+private slots:
+    void slotTagDeleted(const Nepomuk::Tag& tag);
 
 private:
-    TagDelegate* m_delegate;
+    FlowLayout* m_layout;
+    QList<Tag*> m_tags;
 };
 
 #endif // TAGVIEW_H

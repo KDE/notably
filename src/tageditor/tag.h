@@ -18,24 +18,32 @@
 */
 
 
-#ifndef TAGDELEGATE_H
-#define TAGDELEGATE_H
+#ifndef TAG_H
+#define TAG_H
 
-#include <QStyledItemDelegate>
+#include <QtGui/QWidget>
+#include <Nepomuk/Tag>
 
-
-class TagDelegate : public QStyledItemDelegate
+class Tag : public QWidget
 {
+    Q_OBJECT
 public:
-    explicit TagDelegate(QObject* parent = 0);
+    explicit Tag(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    virtual QSize sizeHint() const;
 
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    void setTag(const Nepomuk::Tag& tag);
+    Nepomuk::Tag tag() const;
 
-    int margin() const { return m_margin; }
+signals:
+    void tagSelected(const Nepomuk::Tag& tag);
+    void tagDeleted(const Nepomuk::Tag& tag);
+
+protected:
+    virtual void mousePressEvent(QMouseEvent* );
+    virtual void paintEvent(QPaintEvent* event );
+
 private:
-    int m_margin;
-    QPixmap m_buttonPixmap;
+    Nepomuk::Tag m_tagResource;
 };
 
-#endif // TAGDELEGATE_H
+#endif // TAG_H

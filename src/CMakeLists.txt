@@ -27,9 +27,10 @@ set( SRCS
   tageditor/tagwidget.cpp
   tageditor/tageditor.cpp
   tageditor/tagcompleter.cpp
-  tageditor/tagdelegate.cpp
   tageditor/tagview.cpp
   tageditor/tagcloud.cpp
+  tageditor/tag.cpp
+  tageditor/flowlayout.cpp
 
   porterstemmer.cpp
 )

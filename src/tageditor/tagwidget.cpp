@@ -38,12 +38,8 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     hLayout->addWidget( m_tagEditor, 0 );
     hLayout->addWidget( addButton, 0 );
 
-    m_tagModel = new QStringListModel();
-
     m_tagView = new TagView();
-    m_tagView->setModel( m_tagModel );
-    connect( m_tagView, SIGNAL(tagDeleted(QModelIndex)), this, SLOT(slotRemoveTags(QModelIndex)) );
-    connect( m_tagView, SIGNAL(tagClicked(QModelIndex)), this, SLOT(slotTagSelected(QModelIndex)) );
+    connect( m_tagView, SIGNAL(tagClicked(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addItem( hLayout );
@@ -59,43 +55,16 @@ void TagWidget::slotAddTags()
 
 QList< Nepomuk::Tag > TagWidget::tags()
 {
-    QStringList list = m_tagModel->stringList();
-    QList<Nepomuk::Tag> tags;
-    foreach( const QString& label, list )
-        tags << label;
-
-    return tags;
+    return m_tagView->tags();
 }
 
 void TagWidget::setTags(const QList< Nepomuk::Tag >& tags)
 {
-    m_tagModel->setStringList( QStringList() );
-    addTags( tags );
+    m_tagView->setTags( tags );
 }
 
 void TagWidget::addTags(const QList< Nepomuk::Tag >& tags)
 {
-    QStringList list = m_tagModel->stringList();
-    foreach( const Nepomuk::Tag& t, tags ) {
-        QString label = t.genericLabel();
-        if( !list.contains(label) )
-            list.append(label);
-    }
-
-    m_tagModel->setStringList(list);
+    m_tagView->addTags( tags );
 }
 
-void TagWidget::slotRemoveTags(const QModelIndex& index)
-{
-    QString tagLabel = index.data().toString();
-    QStringList list = m_tagModel->stringList();
-    list.removeAll(tagLabel);
-    m_tagModel->setStringList(list);
-}
-
-void TagWidget::slotTagSelected(const QModelIndex& index)
-{
-    const QString tagLabel = index.data().toString();
-    if( !tagLabel.isEmpty() )
-        emit tagSelected( Nepomuk::Tag(tagLabel) );
-}
