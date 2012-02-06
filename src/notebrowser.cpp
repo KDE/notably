@@ -44,7 +44,7 @@ NoteBrowser::NoteBrowser(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 
     QSortFilterProxyModel * sortingModel = new QSortFilterProxyModel( this );
     sortingModel->setSourceModel( m_model );
-    sortingModel->setSortRole( m_model->roleForProperty( NAO::lastModified() ) );
+    sortingModel->setSortRole( m_model->roleForProperty( NAO::created() ) );
     sortingModel->setDynamicSortFilter( true );
     sortingModel->sort( 0, Qt::DescendingOrder );
 
@@ -55,7 +55,7 @@ NoteBrowser::NoteBrowser(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
              this, SLOT(slotNoteSelected(QModelIndex)) );
 
     Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::ComparisonTerm compTerm( NAO::lastModified(), Nepomuk::Query::Term() );
+    Nepomuk::Query::ComparisonTerm compTerm( NAO::created(), Nepomuk::Query::Term() );
     compTerm.setSortWeight( 1, Qt::DescendingOrder );
 
     m_query = typeTerm && compTerm;
