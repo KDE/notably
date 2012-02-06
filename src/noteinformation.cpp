@@ -120,6 +120,8 @@ bool NoteInformation::saveNote(const Nepomuk::Resource& note)
     if( m_titleEdit->text() != title ) {
         m_note.setProperty(NIE::title(), m_titleEdit->text());
     }
+
+    updateView();
     return saved;
 }
 
