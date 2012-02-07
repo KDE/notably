@@ -24,13 +24,13 @@ set( SRCS
   noteinformation.cpp
   config/windowsettings.cpp
 
-  tageditor/tagwidget.cpp
-  tageditor/tageditor.cpp
-  tageditor/tagcompleter.cpp
-  tageditor/tagview.cpp
-  tageditor/tagcloud.cpp
-  tageditor/tag.cpp
-  tageditor/flowlayout.cpp
+  tags/tagwidget.cpp
+  tags/tageditor.cpp
+  tags/tagcompleter.cpp
+  tags/tagview.cpp
+  tags/tagcloud.cpp
+  tags/tag.cpp
+  tags/flowlayout.cpp
 
   porterstemmer.cpp
 )

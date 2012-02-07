@@ -23,7 +23,7 @@
 #include "mainmenu.h"
 #include "browsemenu.h"
 #include "noteinformation.h"
-#include "tageditor/tagcloud.h"
+#include "tags/tagcloud.h"
 
 #include <QtCore/QCoreApplication>
 
