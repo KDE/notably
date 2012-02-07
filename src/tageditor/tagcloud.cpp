@@ -72,7 +72,9 @@ void TagCloud::createBrowser()
 
     QMap<QString, float>::const_iterator iter = m_hashMap.constBegin();
     for( ; iter!=m_hashMap.constEnd(); iter++ ) {
-        int fontSize = m_minFontSize + (m_maxFontSize - m_minFontSize) * iter.value();
+        int fontSize = m_minFontSize + (m_maxFontSize - m_minFontSize) * iter.value()*10;
+        if( fontSize > m_maxFontSize )
+            fontSize = m_maxFontSize;
 
         QString htmlTag = QString::fromLatin1("<a href='%1'><font style='font-size: %2px'>%3"
                                               "</font></a>")
@@ -86,5 +88,8 @@ void TagCloud::createBrowser()
 
 void TagCloud::slotAnchorClicked(const QUrl& url)
 {
-    kDebug() << url;
+    emit tagSelected( Nepomuk::Tag(url.toString()) );
+
+    // FIXME: Find a better way
+    createBrowser();
 }
