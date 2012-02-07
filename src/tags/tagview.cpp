@@ -59,6 +59,7 @@ void TagView::clearTags()
         QWidget *widget = m_layout->takeAt(0)->widget();
         widget->deleteLater();
     }
+    m_tags.clear();
 }
 
 QList< Nepomuk::Tag > TagView::tags()
