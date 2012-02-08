@@ -56,8 +56,11 @@ void TagView::setTags(const QList< Nepomuk::Tag >& tags)
 void TagView::clearTags()
 {
     for( int i=0; i<m_tags.size(); i++ ) {
-        QWidget *widget = m_layout->takeAt(0)->widget();
-        widget->deleteLater();
+        QLayoutItem *item = m_layout->takeAt(0);
+        if( item ) {
+            QWidget *widget = item->widget();
+            widget->deleteLater();
+        }
     }
     m_tags.clear();
 }
