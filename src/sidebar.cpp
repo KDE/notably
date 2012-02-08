@@ -149,15 +149,19 @@ void Sidebar::push(const QString& title, QWidget* widget)
     int index = m_stackedLayout->currentIndex();
 
     // Remove all the widgets after index
-    for(int i=index+1; i<m_stackedLayout->count(); i++) {
+    while( m_stackedLayout->count() != index+1 ) {
+        int i = index+1;
         QWidget* widget = m_stackedLayout->widget(i);
         m_stackedLayout->removeWidget( widget );
+
         //WARNING: Special case for m_noteInfo
         if( widget != m_noteInfo )
             widget->deleteLater();
 
         m_titleList.removeAt(i);
     }
+    Q_ASSERT( index < 0 || m_stackedLayout->count() == index+1 );
+
     m_stackedLayout->addWidget( widget );
     m_titleList.append( title );
 }
