@@ -20,8 +20,13 @@
 */
 
 #include "noteedit.h"
+#include "person/personmodel.h"
+#include "person/persondelegate.h"
 
 #include <QtGui/QKeyEvent>
+#include <QtGui/QListView>
+#include <QtGui/QScrollBar>
+#include <QtGui/QFontMetrics>
 
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
@@ -41,6 +46,19 @@ NoteEdit::NoteEdit(QWidget* parent)
     setCheckSpellingEnabled( true );
 
 //     setAutoFormatting( QTextEdit::AutoBulletList );
+    PersonModel* model = new PersonModel( this );
+
+    QListView* view = new QListView( this );
+    view->setModel( model );
+    view->setItemDelegateForColumn( 0, new PersonDelegate(this) );
+
+    m_completer = new QCompleter( model, this );
+    m_completer->setWidget( this );
+    m_completer->setCompletionRole( Qt::DisplayRole );
+    m_completer->setPopup( view );
+    m_completer->setCaseSensitivity( Qt::CaseInsensitive );
+
+    connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
 }
 
 NoteEdit::~NoteEdit()
@@ -83,18 +101,75 @@ void NoteEdit::reset()
 
 void NoteEdit::keyPressEvent(QKeyEvent* event)
 {
-    QTextCursor cur = textCursor();
-    cur.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
-    QString text = cur.selectedText();
-    if( text.length() == 1 ) {
-        QChar lastChar = text.at( 0 );
-
-        // Do not allow double spaces while typing
-        if( event->key() == Qt::Key_Space && lastChar.isSpace() ) {
-            event->accept();
-            return;
+    if( m_completer->popup()->isVisible() ) {
+        switch (event->key()) {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Escape:
+            case Qt::Key_Tab:
+            case Qt::Key_Backtab:
+                event->ignore();
+                return; // let the completer do default behavior
+            default:
+                break;
         }
     }
+    else if( event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter ) {
+        //event->ignore();
+        //return;
+    }
 
-    KTextEdit::keyPressEvent( event );
+    KTextEdit::keyPressEvent(event);
+
+    QString text = wordUnderCursor();
+    kDebug() << "Word under cursor: " << text;
+    if( text.isEmpty() )
+        return;
+
+    m_completer->setCompletionPrefix( text );
+
+    if( text.length() < 2 )
+        return;
+
+    // Get the cursor at the start of the tag
+    // FIXME: Find a better way!
+    QTextCursor origCursor = textCursor();
+    QTextCursor tc = textCursor();
+    tc.movePosition( QTextCursor::Left, QTextCursor::MoveAnchor, text.length() );
+    setTextCursor( tc );
+    QRect cr = cursorRect();
+    setTextCursor( origCursor );
+
+    cr.setWidth( m_completer->popup()->sizeHintForColumn(0)
+                 + m_completer->popup()->verticalScrollBar()->sizeHint().width()*5 );
+    m_completer->complete( cr );
+}
+
+QString NoteEdit::wordUnderCursor() const
+{
+    QTextCursor tc = textCursor();
+
+    tc.anchor();
+    while( 1 ) {
+        // The '-1' is cause the TextCursor is always placed between characters
+        int pos = tc.position() - 1;
+        // FIXME: Maybe use other delimiters as well
+        if( pos < 0 || document()->characterAt(pos) == QChar::fromAscii(' ') )
+            break;
+        tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
+    }
+    return tc.selectedText().trimmed();
+}
+
+void NoteEdit::insertCompletion(const QString& string)
+{
+    QString compPrefix = m_completer->completionPrefix();
+
+    QTextCursor tc = textCursor();
+    tc.anchor();
+    tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor, compPrefix.length() );
+    tc.removeSelectedText();
+    tc.insertText( string );
+
+    setTextCursor( tc );
 }

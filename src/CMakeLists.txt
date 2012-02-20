@@ -32,6 +32,12 @@ set( SRCS
   tags/tag.cpp
   tags/flowlayout.cpp
 
+  person/person.cpp
+  person/personmodel.cpp
+  person/persondelegate.cpp
+  person/persondelegate.cpp
+  person/persontooltip.cpp
+
   porterstemmer.cpp
 )
 

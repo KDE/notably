@@ -24,6 +24,7 @@
 #define NOTEEDIT_H
 
 #include <KTextEdit>
+#include <QtGui/QCompleter>
 #include <Nepomuk/Resource>
 
 class NoteEdit : public KTextEdit
@@ -49,8 +50,14 @@ public slots:
      */
     void save();
 
+private slots:
+    void insertCompletion(const QString& string);
+
 private:
     Nepomuk::Resource m_noteResource;
+    QCompleter* m_completer;
+
+    QString wordUnderCursor() const;
 };
 
 #endif // NOTEEDIT_H
