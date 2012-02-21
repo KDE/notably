@@ -48,8 +48,10 @@ void PersonDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
 
     QString name = index.model()->data( index, Qt::DisplayRole ).toString();
 
-    pic = pic.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
-    style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pic );
+    if( !pic.isNull() ) {
+        pic = pic.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
+        style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pic );
+    }
 
     if( option.state & QStyle::State_Selected )
         painter->fillRect( option.rect, option.palette.highlight() );
