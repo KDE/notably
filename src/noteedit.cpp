@@ -148,14 +148,25 @@ void NoteEdit::keyPressEvent(QKeyEvent* event)
 QString NoteEdit::wordUnderCursor() const
 {
     QTextCursor tc = textCursor();
+    static QSet<QChar> delimiters;
+    if( delimiters.isEmpty() ) {
+        delimiters.insert( QChar::fromAscii(',') );
+        delimiters.insert( QChar::fromAscii('!') );
+        delimiters.insert( QChar::fromAscii('.') );
+    }
 
     tc.anchor();
     while( 1 ) {
         // The '-1' is cause the TextCursor is always placed between characters
         int pos = tc.position() - 1;
-        // FIXME: Maybe use other delimiters as well
-        if( pos < 0 || document()->characterAt(pos) == QChar::fromAscii(' ') )
+        if( pos < 0 )
             break;
+
+        QChar ch = document()->characterAt(pos);
+        // FIXME: Maybe use other delimiters as well
+        if( ch.isSpace() || delimiters.contains(ch) )
+            break;
+
         tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
     }
     return tc.selectedText().trimmed();
