@@ -79,15 +79,18 @@ PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
     setSpacing( 1 );
 
     m_tooltip = new PersonToolTip( Nepomuk::Resource(), this );
+    m_tooltipTimer.setSingleShot( true );
+    m_tooltipTimer.setInterval( 800 );
+    connect( &m_tooltipTimer, SIGNAL(timeout()), this, SLOT(showToolTip()) );
 
     setMouseTracking( true );
-    connect( this, SIGNAL(entered(QModelIndex)), this, SLOT(showToolTip(QModelIndex)) );
+    connect( this, SIGNAL(entered(QModelIndex)), this, SLOT(startTimer(QModelIndex)) );
     connect( this, SIGNAL(viewportEntered()), this, SLOT(hideToolTip()) );
 }
 
-void PersonGrid::showToolTip(const QModelIndex & index)
+void PersonGrid::showToolTip()
 {
-    QRect rect = visualRect(index);
+    QRect rect = visualRect(m_toolTipIndex);
     rect.setTopLeft( mapToGlobal(rect.topLeft()) );
     rect.setBottomRight( mapToGlobal(rect.bottomRight()) );
 
@@ -98,5 +101,20 @@ void PersonGrid::showToolTip(const QModelIndex & index)
 void PersonGrid::hideToolTip()
 {
     m_tooltip->hide();
+    m_tooltipTimer.stop();
 }
 
+void PersonGrid::startTimer(const QModelIndex& index)
+{
+    hideToolTip();
+
+    m_toolTipIndex = index;
+    m_tooltipTimer.start();
+}
+
+void PersonGrid::leaveEvent(QEvent* event)
+{
+    hideToolTip();
+
+    QWidget::leaveEvent(event);
+}

@@ -22,6 +22,9 @@
 #define PERSONGRID_H
 
 #include <QtGui/QListView>
+#include <QtCore/QEvent>
+#include <QtCore/QTimer>
+
 #include "persontooltip.h"
 
 class PersonGrid : public QListView
@@ -31,11 +34,16 @@ public:
     explicit PersonGrid(QWidget* parent = 0);
 
 private slots:
-    void showToolTip(const QModelIndex& index);
+    void startTimer(const QModelIndex& index);
+    void showToolTip();
     void hideToolTip();
 
+protected:
+    virtual void leaveEvent(QEvent* event);
 private:
     PersonToolTip * m_tooltip;
+    QTimer m_tooltipTimer;
+    QModelIndex m_toolTipIndex;
 };
 
 #endif // PERSONGRID_H
