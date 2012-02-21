@@ -20,6 +20,7 @@
 
 #include "noteinformation.h"
 #include "tags/tagwidget.h"
+#include "person/persongrid.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -68,9 +69,12 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     m_tagWidget = new TagWidget;
     connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
 
+    m_personGrid = new Nepomuk::PersonGrid;
+
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );
     mainLayout->addSpacing(100);
+    mainLayout->addWidget( m_personGrid );
     mainLayout->addWidget( m_tagWidget, 0, Qt::AlignBottom );
 }
 
