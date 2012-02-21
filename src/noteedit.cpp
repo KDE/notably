@@ -122,14 +122,18 @@ void NoteEdit::keyPressEvent(QKeyEvent* event)
     KTextEdit::keyPressEvent(event);
 
     QString text = wordUnderCursor();
-    kDebug() << "Word under cursor: " << text;
+    //kDebug() << "Word under cursor: " << text;
     if( text.isEmpty() )
         return;
 
-    m_completer->setCompletionPrefix( text );
-
-    if( text.length() < 2 )
-        return;
+    if( text[0] == QChar::fromAscii('@') ) {
+        m_completer->setCompletionPrefix( text.mid( 1) );
+    }
+    else {
+        if( text.length() <= 2 )
+            return;
+        m_completer->setCompletionPrefix( text );
+    }
 
     // Get the cursor at the start of the tag
     // FIXME: Find a better way!
@@ -172,6 +176,18 @@ QString NoteEdit::wordUnderCursor() const
     return tc.selectedText().trimmed();
 }
 
+namespace {
+    QChar charOnLeft(const QTextCursor& textCursor) {
+        QTextCursor tc(textCursor);
+        tc.clearSelection();
+        tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
+        QString text = tc.selectedText();
+        if( text.length() == 1 )
+            return text[0];
+
+        return QChar();
+    }
+}
 void NoteEdit::insertCompletion(const QString& string)
 {
     QString compPrefix = m_completer->completionPrefix();
@@ -179,6 +195,12 @@ void NoteEdit::insertCompletion(const QString& string)
     QTextCursor tc = textCursor();
     tc.anchor();
     tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor, compPrefix.length() );
+
+    // Remove the '@' if present
+    QChar leftChar = charOnLeft( tc );
+    if( leftChar == QChar::fromAscii('@') )
+        tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
+
     tc.removeSelectedText();
     tc.insertText( string );
 
