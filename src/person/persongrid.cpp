@@ -21,13 +21,52 @@
 #include "persongrid.h"
 #include "persondelegate.h"
 #include "personmodel.h"
-#include <QEvent>
+
+#include <QtCore/QEvent>
+#include <QtGui/QApplication>
+#include <QPainter>
 
 #include <KDebug>
 
+class PersonGridDelegate: public QStyledItemDelegate {
+public:
+    explicit PersonGridDelegate(QObject* parent = 0);
+
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+};
+
+PersonGridDelegate::PersonGridDelegate(QObject* parent): QStyledItemDelegate(parent)
+{
+}
+
+void PersonGridDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    painter->setRenderHint( QPainter::HighQualityAntialiasing );
+    painter->setRenderHint( QPainter::SmoothPixmapTransform );
+
+    QStyle * style = QApplication::style();
+    style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
+
+    QUrl pictureUrl = index.model()->data( index, PersonModel::PictureRole ).toUrl();
+    if( !pictureUrl.isEmpty() ) {
+        QPixmap pic;
+        pic.load( pictureUrl.toLocalFile() );
+
+        pic = pic.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
+        style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pic );
+    }
+}
+
+QSize PersonGridDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    return QSize(32,32);
+}
+
+
 PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
 {
-    setItemDelegate( new PersonDelegate(this) );
+    setItemDelegate( new PersonGridDelegate(this) );
 
     setModel( new PersonModel(this) );
     setFlow( QListView::LeftToRight );
