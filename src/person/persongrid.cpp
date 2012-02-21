@@ -27,6 +27,7 @@
 #include <QPainter>
 
 #include <KDebug>
+#include <KIcon>
 
 class PersonGridDelegate: public QStyledItemDelegate {
 public:
@@ -49,13 +50,16 @@ void PersonGridDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
 
     QUrl pictureUrl = index.model()->data( index, PersonModel::PictureRole ).toUrl();
-    if( !pictureUrl.isEmpty() ) {
-        QPixmap pic;
-        pic.load( pictureUrl.toLocalFile() );
-
-        pic = pic.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
-        style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pic );
+    QPixmap pixmap;
+    if( pictureUrl.isEmpty() ) {
+        pixmap = KIcon("im-user").pixmap( QSize(32, 32) );
     }
+    else {
+        pixmap.load( pictureUrl.toLocalFile() );
+        pixmap = pixmap.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
+    }
+
+    style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pixmap );
 }
 
 QSize PersonGridDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
