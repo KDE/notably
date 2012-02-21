@@ -64,7 +64,7 @@ QVariant PersonModel::data(const QModelIndex& index, int role) const
     if( index.row() < 0 || index.row() >= m_people.size() )
         return QVariant();
 
-    const Nepomuk::Person person = m_people.at( index.row() );
+    const Person person = m_people.at( index.row() );
     switch( role ) {
         case PictureRole:
             return person.photo();
@@ -86,9 +86,14 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
 {
     beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + results.size() );
     foreach( const Nepomuk::Query::Result &res, results ) {
-        Nepomuk::Person person( res.resource().resourceUri() );
-        if( !person.isEmpty() )
+        if( m_people.size() >= 10 )
+            break;
+
+        Person person( res.resource().resourceUri() );
+        if( !person.isEmpty() ) {
             m_people << person;
+            kDebug() << m_people.size() << "Loaded " << person.nickName();
+        }
     }
     endInsertRows();
 }

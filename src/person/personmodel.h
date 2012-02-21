@@ -42,7 +42,7 @@ public:
     };
 
 private:
-    QList<Nepomuk::Person> m_people;
+    QList<Person> m_people;
 
 private slots:
     void addResults(const QList<Nepomuk::Query::Result> &results);

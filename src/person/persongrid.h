@@ -24,20 +24,18 @@
 #include <QtGui/QListView>
 #include "persontooltip.h"
 
-namespace Nepomuk {
-    class PersonGrid : public QListView
-    {
-        Q_OBJECT
-    public:
-        explicit PersonGrid(QWidget* parent = 0);
+class PersonGrid : public QListView
+{
+    Q_OBJECT
+public:
+    explicit PersonGrid(QWidget* parent = 0);
 
-    private slots:
-        void showToolTip(const QModelIndex& index);
-        void hideToolTip();
+private slots:
+    void showToolTip(const QModelIndex& index);
+    void hideToolTip();
 
-    private:
-        Nepomuk::PersonToolTip * m_tooltip;
-    };
-}
+private:
+    PersonToolTip * m_tooltip;
+};
 
 #endif // PERSONGRID_H

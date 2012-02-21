@@ -28,7 +28,7 @@
 
 #include <KSeparator>
 
-Nepomuk::PersonToolTip::PersonToolTip(const Nepomuk::Resource& resource, QWidget* parent, Qt::WindowFlags f)
+PersonToolTip::PersonToolTip(const Nepomuk::Resource& resource, QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
     setAttribute( Qt::WA_TranslucentBackground );
@@ -65,12 +65,12 @@ Nepomuk::PersonToolTip::PersonToolTip(const Nepomuk::Resource& resource, QWidget
     setLayout( hLayout );
 }
 
-Nepomuk::PersonToolTip::~PersonToolTip()
+PersonToolTip::~PersonToolTip()
 {
 
 }
 
-void Nepomuk::PersonToolTip::paintEvent(QPaintEvent* event)
+void PersonToolTip::paintEvent(QPaintEvent* event)
 {
     QStylePainter painter(this);
     QStyleOptionFrame option;

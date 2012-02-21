@@ -26,22 +26,18 @@
 
 #include <Nepomuk/Resource>
 
-namespace Nepomuk {
+class PersonToolTip : public QWidget
+{
+    Q_OBJECT
+public:
+    PersonToolTip(const Nepomuk::Resource & resource, QWidget* parent = 0, Qt::WindowFlags f = 0);
+    virtual ~PersonToolTip();
 
-    class PersonToolTip : public QWidget
-    {
-        Q_OBJECT
-    public:
-        PersonToolTip(const Nepomuk::Resource & resource, QWidget* parent = 0, Qt::WindowFlags f = 0);
-        virtual ~PersonToolTip();
+protected:
+    virtual void paintEvent(QPaintEvent* event );
 
-    protected:
-        virtual void paintEvent(QPaintEvent* event );
-
-    private:
-        QLabel *m_preview;
-    };
-
-}
+private:
+    QLabel *m_preview;
+};
 
 #endif // PERSONTOOLTIP_H

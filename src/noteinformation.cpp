@@ -69,7 +69,7 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     m_tagWidget = new TagWidget;
     connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
 
-    m_personGrid = new Nepomuk::PersonGrid;
+    m_personGrid = new PersonGrid();
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );

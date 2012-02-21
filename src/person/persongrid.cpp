@@ -25,7 +25,7 @@
 
 #include <KDebug>
 
-Nepomuk::PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
+PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
 {
     setItemDelegate( new PersonDelegate(this) );
 
@@ -35,14 +35,14 @@ Nepomuk::PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
     setResizeMode( QListView::Adjust );
     setSpacing( 1 );
 
-    m_tooltip = new Nepomuk::PersonToolTip( Nepomuk::Resource(), this );
+    m_tooltip = new PersonToolTip( Nepomuk::Resource(), this );
 
     setMouseTracking( true );
     connect( this, SIGNAL(entered(QModelIndex)), this, SLOT(showToolTip(QModelIndex)) );
     connect( this, SIGNAL(viewportEntered()), this, SLOT(hideToolTip()) );
 }
 
-void Nepomuk::PersonGrid::showToolTip(const QModelIndex & index)
+void PersonGrid::showToolTip(const QModelIndex & index)
 {
     QRect rect = visualRect(index);
     rect.setTopLeft( mapToGlobal(rect.topLeft()) );
@@ -52,7 +52,7 @@ void Nepomuk::PersonGrid::showToolTip(const QModelIndex & index)
     m_tooltip->move( rect.left() + rect.width()/2 - m_tooltip->sizeHint().width()/2, rect.bottom() );
 }
 
-void Nepomuk::PersonGrid::hideToolTip()
+void PersonGrid::hideToolTip()
 {
     m_tooltip->hide();
 }

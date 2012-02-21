@@ -29,11 +29,11 @@
 
 using namespace Nepomuk::Vocabulary;
 
-Nepomuk::Person::Person(QObject* parent): QObject(parent)
+Person::Person(QObject* parent): QObject(parent)
 {
 }
 
-Nepomuk::Person::Person(const Nepomuk::Person& p): QObject()
+Person::Person(const Person& p): QObject()
 {
     m_fullName = p.m_fullName;
     m_nickName = p.m_nickName;
@@ -41,7 +41,7 @@ Nepomuk::Person::Person(const Nepomuk::Person& p): QObject()
     m_pimoPerson = p.m_pimoPerson;
 }
 
-Nepomuk::Person::Person(const QUrl& uri, QObject* parent): QObject(parent)
+Person::Person(const QUrl& uri, QObject* parent): QObject(parent)
 {
     m_pimoPerson = Nepomuk::Resource::fromResourceUri(uri);
     if( !m_pimoPerson.hasType(PIMO::Person()) ) {
@@ -51,9 +51,9 @@ Nepomuk::Person::Person(const QUrl& uri, QObject* parent): QObject(parent)
 
     //FIXME: Check if the pimo:Person has been given a name, and photo
 
-    QList<Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
-    QList<Resource> contacts;
-    foreach( const Resource &res, occurances ) {
+    QList<Nepomuk::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
+    QList<Nepomuk::Resource> contacts;
+    foreach( const Nepomuk::Resource &res, occurances ) {
         if( res.hasType(NCO::PersonContact()) )
             contacts << res;
     }
@@ -61,19 +61,19 @@ Nepomuk::Person::Person(const QUrl& uri, QObject* parent): QObject(parent)
 
     setProperties(contacts);
 
-    QList<Resource> imAccounts;
+    QList<Nepomuk::Resource> imAccounts;
     if( m_fullName.isEmpty() || m_nickName.isEmpty() || m_photoUrl.isEmpty() ) {
-        foreach( const Resource &con, contacts ) {
+        foreach( const Nepomuk::Resource &con, contacts ) {
             imAccounts << con.property(NCO::hasIMAccount()).toResourceList();
         }
         setProperties(imAccounts);
     }
 }
 
-void Nepomuk::Person::setProperties(const QList< Nepomuk::Resource >& resources)
+void Person::setProperties(const QList< Nepomuk::Resource >& resources)
 {
     //kDebug() << resources.size();
-    foreach( const Resource &res, resources ) {
+    foreach( const Nepomuk::Resource &res, resources ) {
         if( m_fullName.isEmpty() ) {
             QString name = res.property(NCO::fullname()).toString();
             if( !name.isEmpty() )
@@ -100,22 +100,22 @@ void Nepomuk::Person::setProperties(const QList< Nepomuk::Resource >& resources)
     }
 }
 
-QString Nepomuk::Person::fullName() const
+QString Person::fullName() const
 {
     return m_fullName;
 }
 
-QString Nepomuk::Person::nickName() const
+QString Person::nickName() const
 {
     return m_nickName;
 }
 
-QUrl Nepomuk::Person::photo() const
+QUrl Person::photo() const
 {
     return m_photoUrl;
 }
 
-bool Nepomuk::Person::isEmpty() const
+bool Person::isEmpty() const
 {
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();
 }

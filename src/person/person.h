@@ -26,8 +26,6 @@
 
 #include <Nepomuk/Resource>
 
-namespace Nepomuk {
-
 class Person : public QObject
 {
     Q_OBJECT
@@ -53,5 +51,4 @@ private:
     void setProperties(const QList<Nepomuk::Resource> &resources);
 };
 
-}
 #endif // PERSON_H

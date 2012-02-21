@@ -28,9 +28,9 @@
 #include <Nepomuk/Tag>
 
 #include <KLineEdit>
-#include "person/persongrid.h"
 
 class TagWidget;
+class PersonGrid;
 
 class NoteInformation : public QWidget
 {
@@ -58,7 +58,7 @@ private:
     QLabel* m_createdLabel;
 
     TagWidget* m_tagWidget;
-    Nepomuk::PersonGrid* m_personGrid;
+    PersonGrid* m_personGrid;
 };
 
 #endif // NOTEINFORMATION_H
