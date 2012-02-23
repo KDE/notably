@@ -26,65 +26,67 @@
 #include <QtGui/QStyleOptionViewItemV4>
 
 #include <KStyle>
+#include <KIcon>
 #include <KDebug>
 #include <KGlobalSettings>
 
-#include <QDebug>
 #include <QApplication>
 
 PersonDelegate::PersonDelegate(QObject* parent): QStyledItemDelegate(parent)
 {
-
+    m_spacing = 3;
+    m_pictureSize = 32;
 }
 
 void PersonDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
+    QStyleOptionViewItemV4 optv4( option );
+
+    painter->save();
+    painter->setRenderHints( QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
+    painter->setClipRect( optv4.rect );
+
     QStyle * style = QApplication::style();
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
 
+    QRect iconRect = optv4.rect;
+    iconRect.setSize( QSize(m_pictureSize, m_pictureSize) );
+    iconRect.moveTo( QPoint(iconRect.x() + m_spacing, iconRect.y() + m_spacing) );
+
     QUrl pictureUrl = index.model()->data( index, PersonModel::PictureRole ).toUrl();
-    QPixmap pic;
-    pic.load( pictureUrl.toLocalFile() );
+    QPixmap pixmap;
+    pixmap.load( pictureUrl.toLocalFile() );
+
+    //TODO: Cache the pixmaps
+    if( !pixmap.isNull() ) {
+        pixmap = pixmap.scaled( iconRect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    }
+    else {
+        pixmap = KIcon("im-user").pixmap( iconRect.size() );
+    }
+
+    style->drawItemPixmap( painter, option.rect, Qt::AlignVCenter | Qt::AlignLeft, pixmap );
 
     QString name = index.model()->data( index, Qt::DisplayRole ).toString();
 
-    if( !pic.isNull() ) {
-        pic = pic.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
-        style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pic );
-    }
+    QRect nameRect( optv4.rect );
+    nameRect.moveTo( nameRect.x() + iconRect.width() + m_spacing, nameRect.y() );
 
-    if( option.state & QStyle::State_Selected )
-        painter->fillRect( option.rect, option.palette.highlight() );
+    style->drawItemText( painter, nameRect, Qt::AlignVCenter, optv4.palette, true, name );
 
-    QRect rect = option.rect;
-    rect.setLeft( rect.left() + pic.width() );
-    style->drawItemText( painter, rect, Qt::AlignVCenter, option.palette, true, name );
-    //painter->drawText( rect.x(), pos.y() - option.fontMetrics.height(), name );
-
-    //if( ) {
-        //FIXME: This is so hacky!
-    //    pos += QPoint( 32 + decorationSize.width()/2 , 32 );
-    //}
-    //painter->drawText( rect.topLeft().x()+20, rect.topLeft().y(), QLatin1String("fire!") );
-    //QStyledItemDelegate::paint(painter, option, index);
+    painter->restore();
 }
 
 QSize PersonDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     const QAbstractItemModel *model = index.model();
-    QPixmap pic = model->data( index, PersonModel::PictureRole ).value<QPixmap>();
+    QUrl pictureUrl = model->data( index, PersonModel::PictureRole ).toUrl();
     QString name = model->data( index, Qt::DisplayRole ).toString();
 
-//     int w = 0;
-//     w += 32;
-//     w += option.fontMetrics.width( name );
+    QFontMetrics fm(option.font);
 
-    QSize size = option.decorationSize;
-    size.setWidth( size.width() + 32 );
-    size.setHeight( size.height() + 32 );
+    QSize size( m_pictureSize, m_pictureSize );
+    size.setWidth( m_spacing + fm.width(name) );
 
-    //qDebug() << size;
     return size;
-    //return pic.size() + option.decorationSize;
-    //return QStyledItemDelegate::sizeHint(option, index);
 }
