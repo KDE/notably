@@ -145,7 +145,7 @@ void NoteEdit::keyPressEvent(QKeyEvent* event)
     setTextCursor( origCursor );
 
     cr.setWidth( m_completer->popup()->sizeHintForColumn(0)
-                 + m_completer->popup()->verticalScrollBar()->sizeHint().width()*5 );
+                 + m_completer->popup()->horizontalScrollBar()->sizeHint().width() );
     m_completer->complete( cr );
 }
 
