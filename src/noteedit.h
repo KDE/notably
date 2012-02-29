@@ -25,6 +25,7 @@
 
 #include <KTextEdit>
 #include <QtGui/QCompleter>
+#include <QtCore/QSet>
 #include <Nepomuk/Resource>
 
 class NoteEdit : public KTextEdit
@@ -58,6 +59,7 @@ private:
     QCompleter* m_completer;
 
     QString wordUnderCursor() const;
+    QSet<QUrl> links() const;
 };
 
 #endif // NOTEEDIT_H

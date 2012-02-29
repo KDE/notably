@@ -30,15 +30,20 @@
 #include <QtGui/QTextDocumentFragment>
 #include <QtGui/QAbstractProxyModel>
 
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomNodeList>
+
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
 
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Vocabulary/PIMO>
+#include <Soprano//Vocabulary/NAO>
 
 #include <KDebug>
 
 using namespace Nepomuk::Vocabulary;
+using namespace Soprano::Vocabulary;
 
 NoteEdit::NoteEdit(QWidget* parent)
     : KTextEdit(parent)
@@ -92,6 +97,25 @@ void NoteEdit::save()
     kDebug() << toPlainText();
     m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
     m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
+
+    // Get the links in the note. In the future they could be something other than people.
+    QSet<QUrl> people = links();
+    m_noteResource.setProperty( NAO::isRelated(), Nepomuk::Variant(people.toList()) );
+}
+
+QSet< QUrl > NoteEdit::links() const
+{
+    QDomDocument document;
+    document.setContent( toHtml() );
+
+    QDomNodeList nodeList = document.elementsByTagName( QLatin1String("a") );
+    QSet<QUrl> linksSet;
+    for( int i=0; i<nodeList.size(); i++ ) {
+        QDomNode node = nodeList.at( i );
+        linksSet << node.attributes().namedItem("href").nodeValue();
+    }
+
+    return linksSet;
 }
 
 void NoteEdit::reset()
