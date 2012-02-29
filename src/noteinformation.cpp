@@ -25,6 +25,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QBoxLayout>
+#include <QtGui/QGroupBox>
 
 #include <Soprano/Vocabulary/NAO>
 #include <Nepomuk/Vocabulary/NIE>
@@ -66,16 +67,21 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     wLayout->addWidget( new Row("<b>Created:</b>", m_createdLabel, this) );
     wLayout->addWidget( new Row("<b>Modified:</b>", m_modifiedLabel, this) );
 
-    m_tagWidget = new TagWidget;
+    QGroupBox* tagBox = new QGroupBox( i18n("Tags"), this );
+    QVBoxLayout* tagLayout = new QVBoxLayout( tagBox );
+    m_tagWidget = new TagWidget( tagBox );
+    tagLayout->addWidget( m_tagWidget );
     connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
 
-    m_personGrid = new PersonGrid();
+    QGroupBox* personBox = new QGroupBox( i18n("People"), this );
+    QVBoxLayout* personLayout = new QVBoxLayout( personBox );
+    m_personGrid = new PersonGrid( personBox );
+    personLayout->addWidget( m_personGrid );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );
-    mainLayout->addSpacing(100);
-    mainLayout->addWidget( m_personGrid );
-    mainLayout->addWidget( m_tagWidget, 0, Qt::AlignBottom );
+    mainLayout->addWidget( personBox, 0, Qt::AlignBottom );
+    mainLayout->addWidget( tagBox, 0, Qt::AlignBottom );
 }
 
 void NoteInformation::setNote(const Nepomuk::Resource& note)
