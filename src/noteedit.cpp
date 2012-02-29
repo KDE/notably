@@ -71,7 +71,7 @@ void NoteEdit::setResource(const Nepomuk::Resource& note)
         reset();
 
         m_noteResource = note;
-        setPlainText( m_noteResource.property( NIE::plainTextContent() ).toString() );
+        setHtml( m_noteResource.property( NIE::htmlContent() ).toString() );
         moveCursor( QTextCursor::End );
 
         document()->setModified( false );
