@@ -1,6 +1,6 @@
 /*
     <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2011  Vishesh Handa <handa.vish@gmail.com>
+    Copyright (C) 2011-12  Vishesh Handa <handa.vish@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,8 @@
 
 #include <QtCore/QEvent>
 #include <QtGui/QApplication>
-#include <QPainter>
+#include <QtGui/QPainter>
+#include <QtGui/QStyleOptionViewItemV4>
 
 #include <KDebug>
 #include <KIcon>
@@ -43,28 +44,37 @@ PersonGridDelegate::PersonGridDelegate(QObject* parent): QStyledItemDelegate(par
 
 void PersonGridDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    painter->setRenderHint( QPainter::HighQualityAntialiasing );
-    painter->setRenderHint( QPainter::SmoothPixmapTransform );
+    QStyleOptionViewItemV4 opt4(option);
 
-    QStyle * style = QApplication::style();
+    painter->save();
+    painter->setRenderHints( QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform );
+    painter->setClipRect( option.rect );
+
+    QStyle* style = QApplication::style();
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter);
+
+    QRect iconRect = opt4.rect;
+    iconRect.setSize( QSize(32, 32) );
+    iconRect.moveTo( QPoint(iconRect.x() + 2, iconRect.y() + 2) );
 
     QUrl pictureUrl = index.model()->data( index, PersonModel::PictureRole ).toUrl();
     QPixmap pixmap;
     if( pictureUrl.isEmpty() ) {
-        pixmap = KIcon("im-user").pixmap( QSize(32, 32) );
+        pixmap = KIcon("im-user").pixmap( iconRect.size() );
     }
     else {
         pixmap.load( pictureUrl.toLocalFile() );
-        pixmap = pixmap.scaled( option.rect.width(), option.rect.height(), Qt::KeepAspectRatio );
+        //FIXME: Cache the pixmaps
+        pixmap = pixmap.scaled( iconRect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
     }
 
-    style->drawItemPixmap( painter, option.rect, Qt::AlignCenter, pixmap );
+    style->drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+    painter->restore();
 }
 
 QSize PersonGridDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    return QSize(32,32);
+    return QSize(32, 32);
 }
 
 
