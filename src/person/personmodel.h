@@ -38,7 +38,8 @@ public:
     enum PersonRole {
         PictureRole = 56,
         NameRole,
-        NicknameRole
+        NicknameRole,
+        UriRole
     };
 
 private:

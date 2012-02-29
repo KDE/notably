@@ -39,6 +39,7 @@ public:
     QString fullName() const;
     QString nickName() const;
     QUrl photo() const;
+    QUrl uri() const;
 
     bool isEmpty() const;
 private:

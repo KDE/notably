@@ -67,6 +67,7 @@ QVariant PersonModel::data(const QModelIndex& index, int role) const
     const Person person = m_people.at( index.row() );
     switch( role ) {
         case PictureRole:
+        case Qt::DecorationRole:
             return person.photo();
 
         case Qt::DisplayRole :
@@ -77,6 +78,9 @@ QVariant PersonModel::data(const QModelIndex& index, int role) const
 
         case NicknameRole:
             return person.nickName();
+
+        case UriRole:
+            return person.uri();
     }
 
     return QVariant();

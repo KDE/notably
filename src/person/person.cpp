@@ -115,6 +115,11 @@ QUrl Person::photo() const
     return m_photoUrl;
 }
 
+QUrl Person::uri() const
+{
+    return m_pimoPerson.resourceUri();
+}
+
 bool Person::isEmpty() const
 {
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();

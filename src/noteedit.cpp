@@ -27,6 +27,8 @@
 #include <QtGui/QListView>
 #include <QtGui/QScrollBar>
 #include <QtGui/QFontMetrics>
+#include <QtGui/QTextDocumentFragment>
+#include <QtGui/QAbstractProxyModel>
 
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
@@ -188,8 +190,14 @@ namespace {
         return QChar();
     }
 }
+
 void NoteEdit::insertCompletion(const QString& string)
 {
+    QAbstractProxyModel* proxyModel = qobject_cast<QAbstractProxyModel*>(m_completer->completionModel());
+    Q_ASSERT(proxyModel != 0);
+
+    QModelIndex index = proxyModel->mapToSource(m_completer->currentIndex());
+    QUrl resourceUri = index.data( PersonModel::UriRole ).toUrl();
     QString compPrefix = m_completer->completionPrefix();
 
     QTextCursor tc = textCursor();
@@ -202,7 +210,10 @@ void NoteEdit::insertCompletion(const QString& string)
         tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
 
     tc.removeSelectedText();
-    tc.insertText( string );
+    QTextCharFormat format = currentCharFormat();
+    QString str = QString::fromLatin1("<a href='%1'>%2</a>").arg( resourceUri.toString(), string );
+    tc.insertFragment( QTextDocumentFragment::fromHtml( str ) );
 
     setTextCursor( tc );
+    setCurrentCharFormat( format );
 }
