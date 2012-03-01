@@ -34,10 +34,15 @@
 #include <QtGui/QLabel>
 
 #include <Soprano/Vocabulary/NAO>
+#include <Nepomuk/Vocabulary/NCO>
+
+#include <Nepomuk/Variant>
+
 #include <KDebug>
 #include <KIcon>
 
 using namespace Soprano::Vocabulary;
+using namespace Nepomuk::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
@@ -67,6 +72,7 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
 
     m_noteInfo = new NoteInformation( this );
     connect( m_noteInfo, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
+    connect( m_noteInfo, SIGNAL(personSelected(Nepomuk::Resource)), this, SLOT(showPersonInBrowser(Nepomuk::Resource)) );
 
     m_stackedLayout = new QStackedLayout();
     m_stackedLayout->setSpacing( 0 );
@@ -198,6 +204,22 @@ void Sidebar::showTagInBrowser(const Nepomuk::Tag& tag)
     browser->get();
 
     QString label = i18n("has Tag \"") + tag.genericLabel() + "\"";
+    push( label, browser );
+
+    // Maybe this should be done in push
+    slotMoveForward();
+}
+
+void Sidebar::showPersonInBrowser(const Nepomuk::Resource& person)
+{
+    NoteBrowser* browser = new NoteBrowser( this );
+    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    browser->setPerson( person );
+    browser->get();
+
+    QString label = i18n("Person \"") + person.property( NCO::nickname() ).toString() + "\"";
+    // TODO: Maybe show something better than a label?
     push( label, browser );
 
     // Maybe this should be done in push

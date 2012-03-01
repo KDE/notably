@@ -40,7 +40,11 @@ public:
 
     virtual ~NoteBrowser();
 
+    void setQuery(const Nepomuk::Query::Query& query);
+    Nepomuk::Query::Query query() const;
+
     void setTag(const Nepomuk::Tag& tag);
+    void setPerson(const Nepomuk::Resource& person);
 
     // Need a better method name
     void get();

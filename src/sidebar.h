@@ -62,6 +62,7 @@ private slots:
     void slotMoveBackward();
 
     void showTagInBrowser(const Nepomuk::Tag& tag);
+    void showPersonInBrowser(const Nepomuk::Resource& resource);
 private:
     void updateButtons();
 

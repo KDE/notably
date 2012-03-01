@@ -36,6 +36,10 @@ public:
 
     void setPeople(const QList<Nepomuk::Resource> &resources);
     QList<Nepomuk::Resource> people() const;
+
+signals:
+    void personSelected(const Nepomuk::Resource& person);
+
 protected:
     virtual void leaveEvent(QEvent* event);
 
@@ -44,6 +48,7 @@ private slots:
     void showToolTip();
     void hideToolTip();
 
+    void slotSelected(const QModelIndex& index);
 private:
     PersonModel* m_model;
     PersonToolTip * m_tooltip;

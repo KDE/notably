@@ -72,12 +72,15 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     QVBoxLayout* tagLayout = new QVBoxLayout( tagBox );
     m_tagWidget = new TagWidget( tagBox );
     tagLayout->addWidget( m_tagWidget );
-    connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
+    connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)),
+             this, SIGNAL(tagSelected(Nepomuk::Tag)) );
 
     QGroupBox* personBox = new QGroupBox( i18n("People"), this );
     QVBoxLayout* personLayout = new QVBoxLayout( personBox );
     m_personGrid = new PersonGrid( personBox );
     personLayout->addWidget( m_personGrid );
+    connect( m_personGrid, SIGNAL(personSelected(Nepomuk::Resource)),
+             this, SIGNAL(personSelected(Nepomuk::Resource)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );

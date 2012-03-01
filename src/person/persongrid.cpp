@@ -97,6 +97,9 @@ PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
     setMouseTracking( true );
     connect( this, SIGNAL(entered(QModelIndex)), this, SLOT(startTimer(QModelIndex)) );
     connect( this, SIGNAL(viewportEntered()), this, SLOT(hideToolTip()) );
+
+    connect( this, SIGNAL(activated(QModelIndex)), this, SLOT(slotSelected(QModelIndex)) );
+    connect( this, SIGNAL(clicked(QModelIndex)), this, SLOT(slotSelected(QModelIndex)) );
 }
 
 void PersonGrid::showToolTip()
@@ -139,4 +142,9 @@ void PersonGrid::setPeople(const QList< Nepomuk::Resource >& resources)
 QList< Nepomuk::Resource > PersonGrid::people() const
 {
     return m_model->toList();
+}
+
+void PersonGrid::slotSelected(const QModelIndex& index)
+{
+    emit personSelected( index.data(PersonModel::UriRole).toUrl() );
 }

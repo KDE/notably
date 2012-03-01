@@ -84,9 +84,24 @@ void NoteBrowser::setTag(const Nepomuk::Tag& tag)
                                                         Nepomuk::Query::ResourceTerm(tag));
 }
 
+void NoteBrowser::setPerson(const Nepomuk::Resource& person)
+{
+    m_query = m_query && Nepomuk::Query::ComparisonTerm(PIMO::isRelated(),
+                                                        Nepomuk::Query::ResourceTerm(person));
+}
+
 void NoteBrowser::get()
 {
     m_model->setQuery( m_query );
 }
 
+Nepomuk::Query::Query NoteBrowser::query() const
+{
+    return m_query;
+}
+
+void NoteBrowser::setQuery(const Nepomuk::Query::Query& query)
+{
+    m_query = query;
+}
 

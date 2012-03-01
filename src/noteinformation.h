@@ -46,6 +46,7 @@ public slots:
 
 signals:
     void tagSelected(const Nepomuk::Tag& tag);
+    void personSelected(const Nepomuk::Resource& person);
 
 private slots:
     void updateView();
