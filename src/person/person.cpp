@@ -120,6 +120,11 @@ QUrl Person::uri() const
     return m_pimoPerson.resourceUri();
 }
 
+Nepomuk::Resource Person::resource() const
+{
+    return m_pimoPerson;
+}
+
 bool Person::isEmpty() const
 {
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();

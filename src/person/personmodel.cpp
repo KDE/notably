@@ -31,20 +31,7 @@ using namespace Nepomuk::Vocabulary;
 
 PersonModel::PersonModel(QObject* parent): QAbstractListModel(parent)
 {
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
-
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient(this);
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             this, SLOT(newEntries(QList<Nepomuk::Query::Result>)) );
-    connect( client, SIGNAL(finishedListing()), client, SLOT(close()) );
-
-    kDebug() << q.toSparqlQuery();
-    client->query( q );
 }
-
 
 int PersonModel::rowCount(const QModelIndex& parent) const
 {
@@ -101,3 +88,35 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
     }
     endInsertRows();
 }
+
+void PersonModel::setQuery(Nepomuk::Query::Query& query)
+{
+    m_people.clear();
+
+    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient(this);
+    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
+             this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    connect( client, SIGNAL(finishedListing()), client, SLOT(close()) );
+
+    client->query( query );
+}
+
+void PersonModel::setList(const QList< Nepomuk::Resource >& people)
+{
+    foreach( const Nepomuk::Resource& res, people ) {
+        Person person( res.resourceUri() );
+        if( !person.isEmpty() ) {
+            m_people << person;
+        }
+    }
+}
+
+QList< Nepomuk::Resource > PersonModel::toList()
+{
+    QList<Nepomuk::Resource> resList;
+    foreach( const Person& person, m_people ) {
+        resList << person.resource();
+    }
+    return resList;
+}
+

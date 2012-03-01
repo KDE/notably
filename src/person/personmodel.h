@@ -22,6 +22,7 @@
 #define PERSONMODEL_H
 
 #include <Nepomuk/Utils/SimpleResourceModel>
+#include <Nepomuk/Query/Query>
 
 #include "person.h"
 
@@ -42,6 +43,9 @@ public:
         UriRole
     };
 
+    void setQuery( Nepomuk::Query::Query& query );
+    void setList( const QList<Nepomuk::Resource>& people );
+    QList<Nepomuk::Resource> toList();
 private:
     QList<Person> m_people;
 

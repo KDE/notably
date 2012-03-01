@@ -35,6 +35,8 @@
 
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
+#include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk/Query/Query>
 
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Vocabulary/PIMO>
@@ -52,12 +54,17 @@ NoteEdit::NoteEdit(QWidget* parent)
 
     setCheckSpellingEnabled( true );
 
-//     setAutoFormatting( QTextEdit::AutoBulletList );
+    // TODO: Move all of this to a separate person completer
+    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk::Query::Query q(term);
+
     PersonModel* model = new PersonModel( this );
+    model->setQuery( q );
 
     QListView* view = new QListView( this );
-    view->setModel( model );
     view->setItemDelegateForColumn( 0, new PersonDelegate(this) );
+    view->setResizeMode( QListView::Adjust );
+    view->setUniformItemSizes( false );
 
     m_completer = new QCompleter( model, this );
     m_completer->setWidget( this );

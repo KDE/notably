@@ -40,6 +40,7 @@ public:
     QString nickName() const;
     QUrl photo() const;
     QUrl uri() const;
+    Nepomuk::Resource resource() const;
 
     bool isEmpty() const;
 private:
