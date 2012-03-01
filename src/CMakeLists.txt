@@ -15,6 +15,7 @@ set( SRCS
   notewidget.cpp
   noteedit.cpp
   notedocument.cpp
+  persontextobject.cpp
   sidebar.cpp
   notesview.cpp
   notesmodel.cpp

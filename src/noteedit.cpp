@@ -21,6 +21,7 @@
 
 #include "noteedit.h"
 #include "notedocument.h"
+#include "persontextobject.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
 
@@ -58,6 +59,11 @@ NoteEdit::NoteEdit(QWidget* parent)
     m_completer->setWidget( this );
 
     connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
+
+    // So that we can render the people differently
+    QObject *personTextInterfaceObject = new PersonTextObject;
+    m_document->documentLayout()->registerHandler( PersonTextObject::PersonTextFormat,
+                                                   personTextInterfaceObject );
 }
 
 NoteEdit::~NoteEdit()
@@ -229,14 +235,14 @@ void NoteEdit::insertCompletion(const QString& string)
         tc.movePosition( QTextCursor::Left, QTextCursor::KeepAnchor );
 
     tc.removeSelectedText();
-    QTextCharFormat format = currentCharFormat();
-    QString str = QString::fromLatin1("<a href='%1'>%2</a>").arg( resourceUri.toString(), string );
-    tc.insertFragment( QTextDocumentFragment::fromHtml( str ) );
 
-    // QTextDocument* doc = document();
-    // I think this should be done in a test environment
-    // doc->addResource( QTextDocument::UserResource, resourceUri, string );
+    QTextCharFormat personFormat;
+    personFormat.setObjectType( PersonTextObject::PersonTextFormat );
 
+    personFormat.setProperty( PersonTextObject::PersonName, string );
+    personFormat.setProperty( PersonTextObject::PersonUri, resourceUri );
+    personFormat.setProperty( PersonTextObject::Font, QVariant::fromValue<QFont>(font()) );
+
+    tc.insertText( QString(QChar::ObjectReplacementCharacter), personFormat );
     setTextCursor( tc );
-    setCurrentCharFormat( format );
 }
