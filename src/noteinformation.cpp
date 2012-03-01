@@ -29,6 +29,7 @@
 
 #include <Soprano/Vocabulary/NAO>
 #include <Nepomuk/Vocabulary/NIE>
+#include <Nepomuk/Vocabulary/PIMO>
 
 #include <Nepomuk/Variant>
 #include <KDebug>
@@ -110,7 +111,7 @@ void NoteInformation::updateView()
 
     m_tagWidget->setTags( m_note.tags() );
     // FIXME: Other types of resources could also be related!
-    m_personGrid->setPeople( m_note.property( NAO::isRelated() ).toResourceList() );
+    m_personGrid->setPeople( m_note.property( PIMO::isRelated() ).toResourceList() );
 
     QString title = m_note.property(NIE::title()).toString();
     m_titleEdit->setText(title);

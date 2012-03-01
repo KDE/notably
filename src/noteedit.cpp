@@ -107,7 +107,7 @@ void NoteEdit::save()
 
     // Get the links in the note. In the future they could be something other than people.
     QSet<QUrl> people = links();
-    m_noteResource.setProperty( NAO::isRelated(), Nepomuk::Variant(people.toList()) );
+    m_noteResource.setProperty( PIMO::isRelated(), Nepomuk::Variant(people.toList()) );
 }
 
 QSet< QUrl > NoteEdit::links() const
