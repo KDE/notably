@@ -89,7 +89,7 @@ PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
     setResizeMode( QListView::Adjust );
     setSpacing( 1 );
 
-    m_tooltip = new PersonToolTip( Nepomuk::Resource(), this );
+    m_tooltip = new PersonToolTip( this );
     m_tooltipTimer.setSingleShot( true );
     m_tooltipTimer.setInterval( 800 );
     connect( &m_tooltipTimer, SIGNAL(timeout()), this, SLOT(showToolTip()) );
@@ -105,6 +105,7 @@ void PersonGrid::showToolTip()
     rect.setTopLeft( mapToGlobal(rect.topLeft()) );
     rect.setBottomRight( mapToGlobal(rect.bottomRight()) );
 
+    m_tooltip->setPerson( m_toolTipIndex.data( PersonModel::UriRole ).toUrl() );
     m_tooltip->show();
     m_tooltip->move( rect.left() + rect.width()/2 - m_tooltip->sizeHint().width()/2, rect.bottom() );
 }

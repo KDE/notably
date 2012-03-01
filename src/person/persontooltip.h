@@ -1,6 +1,6 @@
 /*
     <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2011  Vishesh Handa <handa.vish@gmail.com>
+    Copyright (C) 2011-12  Vishesh Handa <handa.vish@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -30,14 +30,18 @@ class PersonToolTip : public QWidget
 {
     Q_OBJECT
 public:
-    PersonToolTip(const Nepomuk::Resource & resource, QWidget* parent = 0, Qt::WindowFlags f = 0);
+    PersonToolTip(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~PersonToolTip();
 
+    void setPerson(const Nepomuk::Resource& resource);
+    Nepomuk::Resource person() const;
 protected:
     virtual void paintEvent(QPaintEvent* event );
 
 private:
+    QLabel *m_name;
     QLabel *m_preview;
+    Nepomuk::Resource m_person;
 };
 
 #endif // PERSONTOOLTIP_H
