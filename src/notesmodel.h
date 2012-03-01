@@ -40,12 +40,10 @@ public:
     void emitDataUpdated( const Nepomuk::Resource& res );
 
     void setQuery( Nepomuk::Query::Query& query );
+
 private:
     QHash<QUrl, int> m_propertyRoleHash;
     QHash<int, QUrl> m_rolePropertyHash;
-
-public slots:
-     void newEntries(const QList<Nepomuk::Query::Result>& results);
 };
 
 #endif // NOTESMODEL_H

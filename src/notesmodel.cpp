@@ -38,9 +38,9 @@ void NotesModel::setQuery(Nepomuk::Query::Query& query)
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
              this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
-    //connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-    //         this, SLOT(newEntries(QList<Nepomuk::Query::Result>)) );
-    //connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
+    //FIXME: Ideally the model should be live updated, but using the QueryServiceClient for such
+    //       things is quite expensive, as it runs the query every time the repository changes
+    connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
 
     client->query( query );
 }
@@ -98,12 +98,4 @@ void NotesModel::emitDataUpdated(const Nepomuk::Resource& res)
 {
     QModelIndex index = indexForResource( res );
     emit dataChanged( index, index );
-}
-
-void NotesModel::newEntries(const QList< Nepomuk::Query::Result > & results)
-{
-    kDebug() << "----------";
-    foreach( const Nepomuk::Query::Result & res, results ) {
-        kDebug() << res.resource();
-    }
 }
