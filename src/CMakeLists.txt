@@ -38,6 +38,7 @@ set( SRCS
   person/persondelegate.cpp
   person/persontooltip.cpp
   person/persongrid.cpp
+  person/personcompleter.cpp
 
   porterstemmer.cpp
 )

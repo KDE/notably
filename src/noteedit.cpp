@@ -20,8 +20,8 @@
 */
 
 #include "noteedit.h"
+#include "person/personcompleter.h"
 #include "person/personmodel.h"
-#include "person/persondelegate.h"
 
 #include <QtGui/QKeyEvent>
 #include <QtGui/QListView>
@@ -35,8 +35,6 @@
 
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/Query>
 
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Vocabulary/PIMO>
@@ -50,27 +48,10 @@ using namespace Soprano::Vocabulary;
 NoteEdit::NoteEdit(QWidget* parent)
     : KTextEdit(parent)
 {
-    reset();
-
     setCheckSpellingEnabled( true );
 
-    // TODO: Move all of this to a separate person completer
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
-
-    PersonModel* model = new PersonModel( this );
-    model->setQuery( q );
-
-    QListView* view = new QListView( this );
-    view->setItemDelegateForColumn( 0, new PersonDelegate(this) );
-    view->setResizeMode( QListView::Adjust );
-    view->setUniformItemSizes( false );
-
-    m_completer = new QCompleter( model, this );
+    m_completer = new PersonCompleter( this );
     m_completer->setWidget( this );
-    m_completer->setCompletionRole( Qt::DisplayRole );
-    m_completer->setPopup( view );
-    m_completer->setCaseSensitivity( Qt::CaseInsensitive );
 
     connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
 }

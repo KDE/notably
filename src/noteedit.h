@@ -28,6 +28,8 @@
 #include <QtCore/QSet>
 #include <Nepomuk/Resource>
 
+class PersonCompleter;
+
 class NoteEdit : public KTextEdit
 {
     Q_OBJECT
@@ -56,7 +58,7 @@ private slots:
 
 private:
     Nepomuk::Resource m_noteResource;
-    QCompleter* m_completer;
+    PersonCompleter* m_completer;
 
     QString wordUnderCursor() const;
     QSet<QUrl> links() const;
