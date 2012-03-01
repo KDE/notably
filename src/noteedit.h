@@ -29,6 +29,7 @@
 #include <Nepomuk/Resource>
 
 class PersonCompleter;
+class NoteDocument;
 
 class NoteEdit : public KTextEdit
 {
@@ -59,6 +60,8 @@ private slots:
 private:
     Nepomuk::Resource m_noteResource;
     PersonCompleter* m_completer;
+
+    NoteDocument* m_document;
 
     QString wordUnderCursor() const;
     QSet<QUrl> links() const;

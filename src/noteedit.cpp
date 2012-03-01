@@ -20,6 +20,7 @@
 */
 
 #include "noteedit.h"
+#include "notedocument.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
 
@@ -50,6 +51,9 @@ NoteEdit::NoteEdit(QWidget* parent)
 {
     setCheckSpellingEnabled( true );
 
+    m_document = new NoteDocument( this );
+    setDocument( m_document );
+
     m_completer = new PersonCompleter( this );
     m_completer->setWidget( this );
 
@@ -66,10 +70,12 @@ void NoteEdit::setResource(const Nepomuk::Resource& note)
         reset();
 
         m_noteResource = note;
-        setHtml( m_noteResource.property( NIE::htmlContent() ).toString() );
-        moveCursor( QTextCursor::End );
 
-        document()->setModified( false );
+        QString htmlContext = m_noteResource.property( NIE::htmlContent() ).toString();
+        m_document->setRDFaHtml( htmlContext );
+        m_document->setModified( false );
+
+        moveCursor( QTextCursor::End );
     }
 }
 
@@ -83,8 +89,9 @@ void NoteEdit::save()
 {
     kDebug() << "Saving : " << m_noteResource.resourceUri();
     kDebug() << toPlainText();
+    // FIXME: Do we really need to save the plain text?
     m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
-    m_noteResource.setProperty( NIE::htmlContent(), toHtml() );
+    m_noteResource.setProperty( NIE::htmlContent(), m_document->toRDFaHtml() );
 
     // Get the links in the note. In the future they could be something other than people.
     QSet<QUrl> people = links();
@@ -225,6 +232,10 @@ void NoteEdit::insertCompletion(const QString& string)
     QTextCharFormat format = currentCharFormat();
     QString str = QString::fromLatin1("<a href='%1'>%2</a>").arg( resourceUri.toString(), string );
     tc.insertFragment( QTextDocumentFragment::fromHtml( str ) );
+
+    // QTextDocument* doc = document();
+    // I think this should be done in a test environment
+    // doc->addResource( QTextDocument::UserResource, resourceUri, string );
 
     setTextCursor( tc );
     setCurrentCharFormat( format );
