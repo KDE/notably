@@ -91,7 +91,9 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
 
 void PersonModel::setQuery(Nepomuk::Query::Query& query)
 {
+    beginResetModel();
     m_people.clear();
+    endResetModel();
 
     Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient(this);
     connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
@@ -103,12 +105,19 @@ void PersonModel::setQuery(Nepomuk::Query::Query& query)
 
 void PersonModel::setList(const QList< Nepomuk::Resource >& people)
 {
+    beginResetModel();
+    m_people.clear();
+    endResetModel();
+
+    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + people.size() );
     foreach( const Nepomuk::Resource& res, people ) {
         Person person( res.resourceUri() );
         if( !person.isEmpty() ) {
             m_people << person;
+            kDebug() << m_people.size() << "Loaded " << person.nickName();
         }
     }
+    endInsertRows();
 }
 
 QList< Nepomuk::Resource > PersonModel::toList()

@@ -109,6 +109,8 @@ void NoteInformation::updateView()
     m_createdLabel->setText( createdString );
 
     m_tagWidget->setTags( m_note.tags() );
+    // FIXME: Other types of resources could also be related!
+    m_personGrid->setPeople( m_note.property( NAO::isRelated() ).toResourceList() );
 
     QString title = m_note.property(NIE::title()).toString();
     m_titleEdit->setText(title);

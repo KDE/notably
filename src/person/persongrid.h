@@ -26,6 +26,7 @@
 #include <QtCore/QTimer>
 
 #include "persontooltip.h"
+#include "personmodel.h"
 
 class PersonGrid : public QListView
 {
@@ -33,14 +34,18 @@ class PersonGrid : public QListView
 public:
     explicit PersonGrid(QWidget* parent = 0);
 
+    void setPeople(const QList<Nepomuk::Resource> &resources);
+    QList<Nepomuk::Resource> people() const;
+protected:
+    virtual void leaveEvent(QEvent* event);
+
 private slots:
     void startTimer(const QModelIndex& index);
     void showToolTip();
     void hideToolTip();
 
-protected:
-    virtual void leaveEvent(QEvent* event);
 private:
+    PersonModel* m_model;
     PersonToolTip * m_tooltip;
     QTimer m_tooltipTimer;
     QModelIndex m_toolTipIndex;

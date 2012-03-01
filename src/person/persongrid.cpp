@@ -82,7 +82,8 @@ PersonGrid::PersonGrid(QWidget* parent): QListView(parent)
 {
     setItemDelegate( new PersonGridDelegate(this) );
 
-    setModel( new PersonModel(this) );
+    m_model = new PersonModel(this);
+    setModel( m_model );
     setFlow( QListView::LeftToRight );
     setWrapping( true );
     setResizeMode( QListView::Adjust );
@@ -127,4 +128,14 @@ void PersonGrid::leaveEvent(QEvent* event)
     hideToolTip();
 
     QWidget::leaveEvent(event);
+}
+
+void PersonGrid::setPeople(const QList< Nepomuk::Resource >& resources)
+{
+    m_model->setList( resources );
+}
+
+QList< Nepomuk::Resource > PersonGrid::people() const
+{
+    return m_model->toList();
 }
