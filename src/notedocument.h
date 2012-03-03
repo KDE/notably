@@ -27,6 +27,7 @@
 
 class NoteDocument : public QTextDocument
 {
+    Q_OBJECT
 public:
     explicit NoteDocument(QObject* parent = 0);
     virtual ~NoteDocument();
@@ -40,7 +41,13 @@ public:
     void setRDFaHtml(const QString& html);
 
     QSet<QUrl> resources(const QUrl& property);
+    QUrl resourceAtCursor(const QTextCursor& tc);
+
+private slots:
+    void slotContentsChanged();
+
 private:
+    QString m_htmlContent;
 };
 
 #endif // NOTEDOCUMENT_H

@@ -37,7 +37,7 @@ using namespace Nepomuk::Vocabulary;
 
 NoteDocument::NoteDocument(QObject* parent): QTextDocument(parent)
 {
-
+    connect( this, SIGNAL(contentsChanged()), this, SLOT(slotContentsChanged()) );
 }
 
 NoteDocument::~NoteDocument()
@@ -45,8 +45,16 @@ NoteDocument::~NoteDocument()
 
 }
 
+void NoteDocument::slotContentsChanged()
+{
+    m_htmlContent.clear();
+}
+
 QString NoteDocument::toRDFaHtml() const
 {
+    if( !m_htmlContent.isEmpty() )
+        return m_htmlContent;
+
     QString html = QString::fromLatin1("<html><body>");
 
     QTextBlock textBlock = begin();
@@ -81,6 +89,10 @@ QString NoteDocument::toRDFaHtml() const
     }
 
     html.append("</body></html>");
+
+    NoteDocument* doc = const_cast<NoteDocument*>(this);
+    doc->m_htmlContent = html;
+
     return html;
 }
 
