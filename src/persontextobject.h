@@ -34,7 +34,6 @@ public:
     enum PersonProperties {
         PersonName = 1,
         PersonUri = 2,
-        Font = 3
     };
 
     void drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,

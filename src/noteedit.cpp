@@ -223,7 +223,6 @@ void NoteEdit::insertCompletion(const QString& string)
 
     personFormat.setProperty( PersonTextObject::PersonName, string );
     personFormat.setProperty( PersonTextObject::PersonUri, resourceUri );
-    personFormat.setProperty( PersonTextObject::Font, QVariant::fromValue<QFont>(font()) );
 
     tc.insertText( QString(QChar::ObjectReplacementCharacter), personFormat );
     setTextCursor( tc );

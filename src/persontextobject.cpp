@@ -22,29 +22,39 @@
 
 #include <QtGui/QFontMetrics>
 #include <QtGui/QPainter>
+#include <QTextBlock>
 
 #include <KDebug>
 
 void PersonTextObject::drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,
                                   int posInDocument, const QTextFormat& format)
 {
-    QFont font = format.property( Font ).value<QFont>();
+    QFont font = doc->findBlock( posInDocument ).charFormat().font();
     QString name = format.property( PersonName ).toString();
 
-    painter->save();
+    QRectF rec( rect );
+    //vHanda: Just looks better this
+    rec.moveTop( rec.top() + 2 );
 
+    painter->save();
     painter->setFont( font );
-    painter->drawText( rect, name );
+    //FIXME: Depend on the color scheme
+    QColor color = Qt::blue;
+    color.setAlphaF( 0.1 );
+    painter->fillRect( rec, color );
+    painter->drawText( rec, name );
     painter->restore();
 }
 
 QSizeF PersonTextObject::intrinsicSize(QTextDocument* doc, int posInDocument,
                                        const QTextFormat& format)
 {
-    QFont font = format.property( Font ).value<QFont>();
+    QFont font = doc->findBlock( posInDocument ).charFormat().font();
     QFontMetrics fm( font );
 
     QString name = format.property( PersonName ).toString();
-    return fm.size( 0, name );
+    QRect rect = fm.boundingRect( name );
+
+    return rect.size();
 }
 
