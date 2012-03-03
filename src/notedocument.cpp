@@ -65,7 +65,7 @@ QString NoteDocument::toRDFaHtml() const
             QTextFragment fragment = it.fragment();
             QTextCharFormat format = fragment.charFormat();
 
-            const QString txt = fragment.text();
+            QString txt = fragment.text();
             const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
 
             if( isObject ) {
@@ -77,6 +77,11 @@ QString NoteDocument::toRDFaHtml() const
                                      uri.toString(),
                                      name );
                 paragraph.append( text );
+
+                // They could be viable text in the fragment.
+                txt.remove(QChar::ObjectReplacementCharacter);
+                if( !txt.isEmpty() )
+                    paragraph.append( txt );
             }
             else {
                 paragraph.append( fragment.text() );
