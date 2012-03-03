@@ -91,10 +91,11 @@ Nepomuk::Resource NoteEdit::resource() const
 void NoteEdit::save()
 {
     kDebug() << "Saving : " << m_noteResource.resourceUri();
-    const QString htmlContent = m_document->toRDFaHtml();
-    kDebug() << htmlContent;
+    const QString plainText = m_document->plainText();
+    kDebug() << plainText;
 
-    m_noteResource.setProperty( NIE::htmlContent(), htmlContent );
+    m_noteResource.setProperty( NIE::plainTextContent(), plainText );
+    m_noteResource.setProperty( NIE::htmlContent(), m_document->toRDFaHtml() );
 
     // Get the links in the note. In the future they could be something other than people.
     QSet<QUrl> people = m_document->resources( PIMO::isRelated() );

@@ -43,6 +43,7 @@ public:
     QSet<QUrl> resources(const QUrl& property);
     QUrl resourceAtCursor(const QTextCursor& tc);
 
+    QString plainText() const;
 private slots:
     void slotContentsChanged();
 

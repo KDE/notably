@@ -148,6 +148,16 @@ void NoteDocument::setRDFaHtml(const QString& html)
     }
 }
 
+QString NoteDocument::plainText() const
+{
+    const QString html = toRDFaHtml();
+
+    QTextDocument doc;
+    doc.setHtml( html );
+
+    return doc.toPlainText();
+}
+
 QSet< QUrl > NoteDocument::resources(const QUrl& property)
 {
     QSet<QUrl> uris;
