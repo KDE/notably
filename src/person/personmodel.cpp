@@ -75,17 +75,20 @@ QVariant PersonModel::data(const QModelIndex& index, int role) const
 
 void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
 {
-    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + results.size() );
+    QList<Person> personList;
     foreach( const Nepomuk::Query::Result &res, results ) {
         if( m_people.size() >= 10 )
             break;
 
         Person person( res.resource().resourceUri() );
         if( !person.isEmpty() ) {
-            m_people << person;
-            kDebug() << m_people.size() << "Loaded " << person.nickName();
+            personList << person;
+            kDebug() << personList.size() << "Loaded " << person.nickName();
         }
     }
+
+    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + personList.size() );
+    m_people << personList;
     endInsertRows();
 }
 
@@ -109,14 +112,17 @@ void PersonModel::setList(const QList< Nepomuk::Resource >& people)
     m_people.clear();
     endResetModel();
 
-    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + people.size() );
+    QList<Person> personList;
     foreach( const Nepomuk::Resource& res, people ) {
         Person person( res.resourceUri() );
         if( !person.isEmpty() ) {
-            m_people << person;
-            kDebug() << m_people.size() << "Loaded " << person.nickName();
+            personList << person;
+            kDebug() << personList.size() << "Loaded " << person.nickName();
         }
     }
+
+    beginInsertRows( QModelIndex(), 0, personList.size() );
+    m_people = personList;
     endInsertRows();
 }
 
