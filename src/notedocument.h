@@ -22,6 +22,8 @@
 #define NOTEDOCUMENT_H
 
 #include <QtGui/QTextDocument>
+#include <QtCore/QSet>
+#include <QtCore/QUrl>
 
 class NoteDocument : public QTextDocument
 {
@@ -37,6 +39,7 @@ public:
 
     void setRDFaHtml(const QString& html);
 
+    QSet<QUrl> resources(const QUrl& property);
 private:
 };
 

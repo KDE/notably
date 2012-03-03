@@ -32,9 +32,6 @@
 #include <QtGui/QTextDocumentFragment>
 #include <QtGui/QAbstractProxyModel>
 
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomNodeList>
-
 #include <Nepomuk/Variant>
 #include <Nepomuk/ResourceManager>
 
@@ -94,29 +91,14 @@ Nepomuk::Resource NoteEdit::resource() const
 void NoteEdit::save()
 {
     kDebug() << "Saving : " << m_noteResource.resourceUri();
-    kDebug() << toPlainText();
-    // FIXME: Do we really need to save the plain text?
-    m_noteResource.setProperty( NIE::plainTextContent(), toPlainText() );
-    m_noteResource.setProperty( NIE::htmlContent(), m_document->toRDFaHtml() );
+    const QString htmlContent = m_document->toRDFaHtml();
+    kDebug() << htmlContent;
+
+    m_noteResource.setProperty( NIE::htmlContent(), htmlContent );
 
     // Get the links in the note. In the future they could be something other than people.
-    QSet<QUrl> people = links();
+    QSet<QUrl> people = m_document->resources( PIMO::isRelated() );
     m_noteResource.setProperty( PIMO::isRelated(), Nepomuk::Variant(people.toList()) );
-}
-
-QSet< QUrl > NoteEdit::links() const
-{
-    QDomDocument document;
-    document.setContent( toHtml() );
-
-    QDomNodeList nodeList = document.elementsByTagName( QLatin1String("a") );
-    QSet<QUrl> linksSet;
-    for( int i=0; i<nodeList.size(); i++ ) {
-        QDomNode node = nodeList.at( i );
-        linksSet << node.attributes().namedItem("href").nodeValue();
-    }
-
-    return linksSet;
 }
 
 void NoteEdit::reset()

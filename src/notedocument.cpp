@@ -19,9 +19,21 @@
 
 
 #include "notedocument.h"
+#include "persontextobject.h"
 
 #include <QtGui/QTextBlock>
 #include <QtGui/QTextFragment>
+#include <QtGui/QTextDocumentFragment>
+
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomNodeList>
+
+#include <QtCore/QUrl>
+
+#include <Nepomuk/Vocabulary/PIMO>
+#include <KDebug>
+
+using namespace Nepomuk::Vocabulary;
 
 NoteDocument::NoteDocument(QObject* parent): QTextDocument(parent)
 {
@@ -43,9 +55,24 @@ QString NoteDocument::toRDFaHtml() const
         QTextBlock::iterator it = textBlock.begin();
         for( ; !it.atEnd(); it++ ) {
             QTextFragment fragment = it.fragment();
+            QTextCharFormat format = fragment.charFormat();
 
-            //TODO: Check if special kind of fragment
-            paragraph.append( fragment.text() );
+            const QString txt = fragment.text();
+            const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
+
+            if( isObject ) {
+                const QString name = format.property( PersonTextObject::PersonName ).toString();
+                const QUrl uri = format.property( PersonTextObject::PersonUri ).toUrl();
+
+                QString text = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
+                               .arg( PIMO::isRelated().toString(),
+                                     uri.toString(),
+                                     name );
+                paragraph.append( text );
+            }
+            else {
+                paragraph.append( fragment.text() );
+            }
         }
         paragraph.append("</p>");
 
@@ -57,8 +84,82 @@ QString NoteDocument::toRDFaHtml() const
     return html;
 }
 
+namespace {
+    QTextCharFormat personFormat(const QUrl& resourceUri, const QString& name) {
+        QTextCharFormat format;
+        format.setObjectType( PersonTextObject::PersonTextFormat );
+
+        format.setProperty( PersonTextObject::PersonName, name );
+        format.setProperty( PersonTextObject::PersonUri, resourceUri );
+
+        return format;
+    }
+}
 void NoteDocument::setRDFaHtml(const QString& html)
 {
-    //FIXME: Implement me!
-    setHtml( html );
+    QDomDocument document;
+    document.setContent( html );
+
+    QDomNodeList nodeList = document.elementsByTagName(QLatin1String("body"));
+    if( nodeList.isEmpty() ) {
+        kWarning() << "Could not find the html body. Exiting";
+        return;
+    }
+    QDomElement bodyElement = nodeList.at(0).toElement();
+
+    clear();
+    QTextCursor cursor( this );
+
+    QDomNodeList paragraphs = bodyElement.elementsByTagName(QLatin1String("p"));
+    for( int i=0; i<paragraphs.size(); i++ ) {
+        QDomNode para = paragraphs.item(i);
+
+        QDomNode node = para.firstChild();
+        while( !node.isNull() ) {
+            if( node.isText() ) {
+                cursor.insertFragment( QTextDocumentFragment::fromPlainText( node.toText().data() ) );
+            }
+            else if( node.isElement() ) {
+                QDomElement span = node.toElement();
+                QString rel = span.attribute(QLatin1String("rel"));
+                QString resource = span.attribute(QLatin1String("resource"));
+                QString name = span.text();
+
+                QTextCharFormat pf = personFormat( resource, name );
+                cursor.insertText( QString(QChar::ObjectReplacementCharacter), pf );
+            }
+
+            node = node.nextSibling();
+        }
+
+        cursor.insertBlock();
+    }
+}
+
+QSet< QUrl > NoteDocument::resources(const QUrl& property)
+{
+    QSet<QUrl> uris;
+
+    QTextBlock textBlock = begin();
+    while( textBlock.isValid() ) {
+        QTextBlock::iterator it = textBlock.begin();
+        for( ; !it.atEnd(); it++ ) {
+            QTextFragment fragment = it.fragment();
+
+            const QString txt = fragment.text();
+            const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
+
+            if( isObject ) {
+                //FIXME: Check for properties
+                QTextCharFormat format = fragment.charFormat();
+                const QUrl uri = format.property( PersonTextObject::PersonUri ).toUrl();
+
+                uris << uri;
+            }
+        }
+
+        textBlock = textBlock.next();
+    }
+
+    return uris;
 }

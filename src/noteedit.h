@@ -64,7 +64,6 @@ private:
     NoteDocument* m_document;
 
     QString wordUnderCursor() const;
-    QSet<QUrl> links() const;
 };
 
 #endif // NOTEEDIT_H
