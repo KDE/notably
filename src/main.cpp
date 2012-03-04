@@ -28,6 +28,7 @@
 
 #include <KUniqueApplication>
 #include <KUrl>
+#include <KIcon>
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
 
     KCmdLineArgs::init(argc, argv, &aboutData);
     KUniqueApplication app;
+    app.setWindowIcon(KIcon("nepomuk"));
 
     //vHanda: Figure out how/why this is being deleted!
     MainWindow *mainWindow = new MainWindow();
