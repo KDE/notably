@@ -201,10 +201,7 @@ namespace {
 
 void NoteEdit::insertCompletion(const QString& string)
 {
-    QAbstractProxyModel* proxyModel = qobject_cast<QAbstractProxyModel*>(m_completer->completionModel());
-    Q_ASSERT(proxyModel != 0);
-
-    QModelIndex index = proxyModel->mapToSource(m_completer->currentIndex());
+    QModelIndex index = m_completer->popup()->currentIndex();
     QUrl resourceUri = index.data( PersonModel::UriRole ).toUrl();
     QString compPrefix = m_completer->completionPrefix();
 
