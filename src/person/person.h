@@ -21,20 +21,18 @@
 #ifndef PERSON_H
 #define PERSON_H
 
-#include <QtCore/QObject>
 #include <QtCore/QUrl>
 
 #include <Nepomuk/Resource>
 
-class Person : public QObject
+class Person 
 {
-    Q_OBJECT
 public:
-    explicit Person(QObject* parent = 0);
+    Person();
     Person(const Person& p);
 
     // Takes the pimo:Person uri
-    Person(const QUrl& uri, QObject* parent = 0);
+    Person(const QUrl& uri);
 
     QString fullName() const;
     QString nickName() const;

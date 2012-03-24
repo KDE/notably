@@ -29,11 +29,11 @@
 
 using namespace Nepomuk::Vocabulary;
 
-Person::Person(QObject* parent): QObject(parent)
+Person::Person()
 {
 }
 
-Person::Person(const Person& p): QObject()
+Person::Person(const Person& p)
 {
     m_fullName = p.m_fullName;
     m_nickName = p.m_nickName;
@@ -41,7 +41,7 @@ Person::Person(const Person& p): QObject()
     m_pimoPerson = p.m_pimoPerson;
 }
 
-Person::Person(const QUrl& uri, QObject* parent): QObject(parent)
+Person::Person(const QUrl& uri)
 {
     m_pimoPerson = Nepomuk::Resource::fromResourceUri(uri);
     if( !m_pimoPerson.hasType(PIMO::Person()) ) {
