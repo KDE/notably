@@ -118,7 +118,7 @@ QList<QUrl> MainWindow::selectedPeople()
 void MainWindow::slotOnMerge()
 {
     QList<QUrl> people = selectedPeople();
-    if( people.isEmpty() )
+    if( people.size() < 2 )
         return;
 
     // Show confirmation message
@@ -127,12 +127,12 @@ void MainWindow::slotOnMerge()
         return;
 
     m_mergeList = people;
-    QUrl first = m_mergeList.first();
-    m_mergeList.pop_front();
 
-    kDebug() << "Merging " << first << m_mergeList.first();
+    const QUrl personUri = m_mergeList.at( 1 );
+    m_mergeList.removeAt( 1 );
+    kDebug() << "Merging " << personUri << m_mergeList.first();
 
-    KJob *job = Nepomuk::mergeResources( first, m_mergeList.first() );
+    KJob *job = Nepomuk::mergeResources( m_mergeList.first(), personUri );
     connect( job, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
 }
 
@@ -144,16 +144,23 @@ void MainWindow::slotOnMergeJob(KJob* job)
         return;
     }
 
-    if( m_mergeList.size() <= 1 ) {
+    if( m_mergeList.size() == 1 ) {
+        const QUrl uri = m_mergeList.first();
+        m_mergeList.clear();
+
+        Person p( uri );
+        p.compress();
+
         KMessageBox::messageBox( this, KMessageBox::Information, i18n("People sucessfully merged") );
         fillModel();
         return;
     }
 
-    QUrl first = m_mergeList.first();
-    m_mergeList.pop_front();
+    const QUrl personUri = m_mergeList.at( 1 );
+    m_mergeList.removeAt( 1 );
+    kDebug() << "Merging " << personUri << m_mergeList.first();
 
-    KJob *kjob = Nepomuk::mergeResources( first, m_mergeList.first() );
+    KJob *kjob = Nepomuk::mergeResources( m_mergeList.first(), personUri );
     connect( kjob, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
 }
 

@@ -25,7 +25,10 @@
 #include <Nepomuk/Vocabulary/PIMO>
 #include <Nepomuk/Vocabulary/NCO>
 
+#include <nepomuk/datamanagement.h>
+
 #include <KDebug>
+#include <KJob>
 
 using namespace Nepomuk::Vocabulary;
 
@@ -128,4 +131,70 @@ Nepomuk::Resource Person::resource() const
 bool Person::isEmpty() const
 {
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();
+}
+
+void Person::compress()
+{
+    QList<Nepomuk::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
+    QList<Nepomuk::Resource> contacts;
+    foreach( const Nepomuk::Resource &res, occurances ) {
+        if( res.hasType(NCO::PersonContact()) )
+            contacts << res;
+    }
+    occurances.clear();
+
+    Nepomuk::Resource lastMergedContact;
+    QListIterator<Nepomuk::Resource> iter( contacts );
+    while( iter.hasNext() ) {
+        Nepomuk::Resource pc = iter.next();
+        if( !lastMergedContact.isValid() ) {
+            lastMergedContact = pc;
+            continue;
+        }
+
+        if( canMergeContacts(lastMergedContact, pc) ) {
+            const QUrl uri1 = lastMergedContact.resourceUri();
+            const QUrl uri2 = pc.resourceUri();
+
+            KJob* job = Nepomuk::mergeResources( uri1, uri2 );
+            job->exec();
+            if( job->error() ) {
+                kWarning() << job->errorString();
+                return;
+            }
+
+            kDebug() << "Merged " << uri1 << uri2;
+        }
+    }
+
+    // The cache should now be cleared
+}
+
+bool Person::canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resource& c2)
+{
+    if( !c1.hasType(NCO::PersonContact()) || !c2.hasType(NCO::PersonContact()) )
+        return false;
+
+    const QString c1Name = c1.property( NCO::fullname() ).toString();
+    const QString c2Name = c2.property( NCO::fullname() ).toString();
+
+    if( !c1Name.isEmpty() && !c2Name.isEmpty() )
+        if( c1Name != c2Name )
+            return false;
+
+    const QString c1Nickname = c1.property( NCO::nickname() ).toString();
+    const QString c2Nickname = c2.property( NCO::nickname() ).toString();
+
+    if( !c1Nickname.isEmpty() && !c2Nickname.isEmpty() )
+        if( c1Nickname != c2Nickname )
+            return false;
+
+    const Nepomuk::Resource c1Gender = c1.property( NCO::gender() ).toResource();
+    const Nepomuk::Resource c2Gender = c2.property( NCO::gender() ).toResource();
+
+    if( !c1Gender.isValid() && !c2Gender.isValid() )
+        if( c1Gender != c2Gender )
+            return false;
+
+    return true;
 }

@@ -25,7 +25,7 @@
 
 #include <Nepomuk/Resource>
 
-class Person 
+class Person
 {
 public:
     Person();
@@ -41,6 +41,8 @@ public:
     Nepomuk::Resource resource() const;
 
     bool isEmpty() const;
+
+    void compress();
 private:
     Nepomuk::Resource m_pimoPerson;
 
@@ -49,6 +51,8 @@ private:
     QUrl m_photoUrl;
 
     void setProperties(const QList<Nepomuk::Resource> &resources);
+
+    bool canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resource& c2);
 };
 
 #endif // PERSON_H
