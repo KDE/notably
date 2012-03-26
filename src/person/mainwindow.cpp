@@ -59,8 +59,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_mergeButton = new QPushButton(i18n("Merge People"), widget);
     connect( m_mergeButton, SIGNAL(clicked(bool)), this, SLOT(slotOnMerge()) );
 
+    m_compressButton = new QPushButton(i18n("Compress"), widget);
+    connect( m_compressButton, SIGNAL(clicked(bool)), this, SLOT(slotOnCompress()) );
+
     QHBoxLayout* hLayout = new QHBoxLayout;
     hLayout->addWidget( m_mergeButton );
+    hLayout->addWidget( m_compressButton );
 
     m_model = new PersonModel( widget );
     fillModel();
@@ -166,6 +170,9 @@ void MainWindow::slotOnMergeJob(KJob* job)
 
         KMessageBox::messageBox( this, KMessageBox::Information, i18n("People sucessfully merged") );
         fillModel();
+
+        // I really wish we didn't need to do this but we still have invalid caching probelms
+        Nepomuk::ResourceManager::instance()->clearCache();
         return;
     }
 
@@ -195,4 +202,18 @@ void MainWindow::slotOnSelectionChange()
     QList<QUrl> people = selectedPeople();
     if( !people.isEmpty() )
         m_tooltip->setPerson( people.first() );
+}
+
+void MainWindow::slotOnCompress()
+{
+    QList<QUrl> people = selectedPeople();
+    if( people.size() != 1 )
+        return;
+
+    const QUrl personUri = people.first();
+    Person person( personUri );
+    person.compress();
+
+    Nepomuk::ResourceManager::instance()->clearCache();
+    m_tooltip->setPerson( personUri );
 }

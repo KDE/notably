@@ -189,6 +189,8 @@ bool Person::canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resour
         if( c1Name != c2Name )
             return false;
 
+    kDebug() << c1Name << c2Name;
+
     const QString c1Nickname = c1.property( NCO::nickname() ).toString();
     const QString c2Nickname = c2.property( NCO::nickname() ).toString();
 
@@ -196,12 +198,16 @@ bool Person::canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resour
         if( c1Nickname != c2Nickname )
             return false;
 
+    kDebug() << c1Nickname << c2Nickname;
+
     const Nepomuk::Resource c1Gender = c1.property( NCO::gender() ).toResource();
     const Nepomuk::Resource c2Gender = c2.property( NCO::gender() ).toResource();
 
     if( !c1Gender.isValid() && !c2Gender.isValid() )
         if( c1Gender != c2Gender )
             return false;
+
+    kDebug() << c1Gender.genericLabel() << c2Gender.genericLabel();
 
     return true;
 }

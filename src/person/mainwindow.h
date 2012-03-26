@@ -42,6 +42,7 @@ public:
 
 private slots:
     void slotOnMerge();
+    void slotOnCompress();
     void slotOnMergeJob(KJob* job);
 
     void slotFilter(const QString& filter);
@@ -58,6 +59,8 @@ private:
     PersonToolTip *m_tooltip;
 
     QPushButton* m_mergeButton;
+    QPushButton* m_compressButton;;
+
     QList<QUrl> m_mergeList;
 };
 
