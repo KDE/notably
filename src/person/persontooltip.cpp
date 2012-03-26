@@ -58,15 +58,16 @@ PersonToolTip::PersonToolTip(QWidget* parent, Qt::WindowFlags f)
     m_name->setForegroundRole(QPalette::ToolTipText);
     m_name->setFont( boldFont(m_name->font()) );
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addWidget( m_name, 0, Qt::AlignCenter );
-    vLayout->addWidget( new KSeparator(this) );
-    vLayout->addWidget( m_treeWidget, 0, Qt::AlignCenter );
-
-    QHBoxLayout *hLayout = new QHBoxLayout( this );
+    QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget( m_preview );
     hLayout->addSpacing( hLayout->margin() );
-    hLayout->addLayout( vLayout );
+    hLayout->addWidget( m_treeWidget, 0, Qt::AlignCenter );
+
+    QVBoxLayout *vLayout = new QVBoxLayout( this );
+    vLayout->addWidget( m_name, 0, Qt::AlignCenter );
+    vLayout->addWidget( new KSeparator(this) );
+    vLayout->addItem( hLayout );
+
 
     setLayout( hLayout );
     setPerson( Nepomuk::Resource() );
