@@ -55,18 +55,14 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
     QWidget *widget = new QWidget( this );
 
-    QPushButton* deleteButton = new QPushButton(i18n("Delete Tags"), widget);
-    m_renameMergeButton = new QPushButton(widget);
+    m_mergeButton = new QPushButton(i18n("Merge People"), widget);
+    connect( m_mergeButton, SIGNAL(clicked(bool)), this, SLOT(slotOnMerge()) );
 
     QHBoxLayout* hLayout = new QHBoxLayout;
-    hLayout->addWidget( m_renameMergeButton );
-    hLayout->addWidget( deleteButton );
+    hLayout->addWidget( m_mergeButton );
 
     m_model = new PersonModel( widget );
-
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
-    m_model->setQuery( q );
+    fillModel();
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSourceModel( m_model );
@@ -79,12 +75,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_view->setItemDelegateForColumn( 0, new PersonDelegate(this) );
     m_view->setResizeMode( QListView::Adjust );
     m_view->setUniformItemSizes( false );
-    //connect( m_view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClicked(QModelIndex)) );
-
-    QItemSelectionModel *selectionModel = m_view->selectionModel();
-    connect( selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             this, SLOT(slotOnSelectionChange()) );
-    slotOnSelectionChange();
 
     m_filterBar = new KLineEdit( this );
     connect( m_filterBar, SIGNAL(textChanged(QString)), this, SLOT(slotFilter(QString)) );
@@ -104,7 +94,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     setWindowIcon( KIcon("nepomuk") );
 }
 
-QList<QUrl> MainWindow::selectedTags()
+QList<QUrl> MainWindow::selectedPeople()
 {
     QItemSelectionModel* selectedModel = m_view->selectionModel();
     if( !selectedModel->hasSelection() )
@@ -115,58 +105,34 @@ QList<QUrl> MainWindow::selectedTags()
     for( int row=0; row<size; row++ ) {
         if( selectedModel->isRowSelected(row, QModelIndex()) ) {
             QModelIndex index = m_model->index(row);
-            QString tagLabel = index.data().toString();
-            Nepomuk::Resource res(tagLabel);
-            list << res.resourceUri();
+
+            const QUrl uri = index.data(PersonModel::UriRole).toUrl();
+            list << uri;
         }
     }
 
     return list;
 }
 
-void MainWindow::slotOnDelete()
-{
-    QList<QUrl> tags = selectedTags();
-    if( tags.isEmpty() )
-        return;
-
-    // Show confirmation message
-    int answer = KMessageBox::questionYesNo( this, i18n("Do you want to Delete these Tags?") );
-    if( answer == KMessageBox::No )
-        return;
-
-    KJob* job = Nepomuk::removeResources( tags );
-    connect( job, SIGNAL(finished(KJob*)), this, SLOT(slotOnDeleteJob(KJob*)) );
-}
-
-void MainWindow::slotOnDeleteJob(KJob* job)
-{
-    if( job->error() ) {
-        kWarning() << job->errorString();
-        KMessageBox::sorry(this, i18n("The tags could not be deleted"));
-    }
-    else {
-        KMessageBox::messageBox( this, KMessageBox::Information, i18n("Tags sucessfully deleted") );
-        //m_model->repopulate();
-    }
-}
 
 void MainWindow::slotOnMerge()
 {
-    QList<QUrl> tags = selectedTags();
-    if( tags.isEmpty() )
+    QList<QUrl> people = selectedPeople();
+    if( people.isEmpty() )
         return;
 
     // Show confirmation message
-    int answer = KMessageBox::questionYesNo( this, i18n("Do you want to merge these tags?") );
+    int answer = KMessageBox::questionYesNo( this, i18n("Do you want to merge these people?") );
     if( answer == KMessageBox::No )
         return;
 
-    m_mergeTagsList = tags;
-    QUrl first = m_mergeTagsList.first();
-    m_mergeTagsList.pop_front();
+    m_mergeList = people;
+    QUrl first = m_mergeList.first();
+    m_mergeList.pop_front();
 
-    KJob *job = Nepomuk::mergeResources( first, m_mergeTagsList.first() );
+    kDebug() << "Merging " << first << m_mergeList.first();
+
+    KJob *job = Nepomuk::mergeResources( first, m_mergeList.first() );
     connect( job, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
 }
 
@@ -174,58 +140,21 @@ void MainWindow::slotOnMergeJob(KJob* job)
 {
     if( job->error() ) {
         kWarning() << job->errorString();
-        KMessageBox::sorry(this, i18n("The tags could not be merged"));
+        KMessageBox::sorry(this, i18n("The people could not be merged"));
         return;
     }
 
-    if( m_mergeTagsList.size() <= 1 ) {
-        KMessageBox::messageBox( this, KMessageBox::Information, i18n("Tags sucessfully merged") );
- //       m_model->repopulate();
+    if( m_mergeList.size() <= 1 ) {
+        KMessageBox::messageBox( this, KMessageBox::Information, i18n("People sucessfully merged") );
+        fillModel();
         return;
     }
 
-    QUrl first = m_mergeTagsList.first();
-    m_mergeTagsList.pop_front();
+    QUrl first = m_mergeList.first();
+    m_mergeList.pop_front();
 
-    KJob *kjob = Nepomuk::mergeResources( first, m_mergeTagsList.first() );
+    KJob *kjob = Nepomuk::mergeResources( first, m_mergeList.first() );
     connect( kjob, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
-}
-
-void MainWindow::slotOnRename()
-{
-    QItemSelectionModel* selectedModel = m_view->selectionModel();
-    if( !selectedModel->hasSelection() )
-        return;
-
-    QModelIndexList indexList = selectedModel->selectedRows();
-    if( indexList.size() > 1 ) {
-        KMessageBox::error( this, i18n("You can only rename one tag at a time") );
-        return;
-    }
-
-    QModelIndex index = indexList.first();
-    QString oldLabel = index.data().toString();
-
-    KDialog *dialog = new KDialog( this );
-    dialog->enableButtonApply( true );
-    dialog->enableButtonCancel( true );
-    QWidget* widget = new QWidget( dialog );
-    QHBoxLayout* hLayout = new QHBoxLayout( widget );
-
-    QLabel* label = new QLabel( i18n("New Label: "), widget );
-    KLineEdit *lineEdit = new KLineEdit( oldLabel, widget );
-
-    hLayout->addWidget( label );
-    hLayout->addWidget( lineEdit );
-
-    dialog->setMainWidget( widget );
-
-    int returnCode = dialog->exec();
-    if( returnCode == QDialog::Rejected )
-        return;
-
-    QString newLabel = lineEdit->text();
-//    m_model->rename( index, newLabel );
 }
 
 void MainWindow::slotFilter(const QString& filter)
@@ -233,23 +162,11 @@ void MainWindow::slotFilter(const QString& filter)
     m_filterModel->setFilterRegExp( filter );
 }
 
-void MainWindow::slotDoubleClicked(const QModelIndex& index)
+void MainWindow::fillModel()
 {
-    if( !index.isValid() )
-        return;
+    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk::Query::Query q(term);
 
+    m_model->setQuery( q );
 }
 
-void MainWindow::slotOnSelectionChange()
-{
-    int num = m_view->selectionModel()->selectedRows().size();
-    m_renameMergeButton->disconnect();
-    if( num <= 1 ) {
-        m_renameMergeButton->setText(i18n("Rename Tag"));
-        connect( m_renameMergeButton, SIGNAL(clicked(bool)), this, SLOT(slotOnRename()) );
-    }
-    else {
-        m_renameMergeButton->setText(i18n("Merge Tags"));
-        connect( m_renameMergeButton, SIGNAL(clicked(bool)), this, SLOT(slotOnMerge()) );
-    }
-}

@@ -40,26 +40,21 @@ public:
     explicit MainWindow(QWidget* parent = 0);
 
 private slots:
-    void slotOnDelete();
     void slotOnMerge();
-    void slotOnRename();
-
-    void slotOnDeleteJob(KJob* job);
     void slotOnMergeJob(KJob* job);
 
     void slotFilter(const QString& filter);
-    void slotDoubleClicked(const QModelIndex& index);
-    void slotOnSelectionChange();
 private:
-    QList<QUrl> selectedTags();
+    QList<QUrl> selectedPeople();
+    void fillModel();
 
     PersonModel* m_model;
     QSortFilterProxyModel* m_filterModel;
     QListView *m_view;
     KLineEdit *m_filterBar;
 
-    QPushButton* m_renameMergeButton;
-    QList<QUrl> m_mergeTagsList;
+    QPushButton* m_mergeButton;
+    QList<QUrl> m_mergeList;
 };
 
 #endif // MAINWINDOW_H
