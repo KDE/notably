@@ -144,8 +144,10 @@ void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
             const QString nickname = acc.property( NCO::imNickname() ).toString();
 
             QTreeWidgetItem* accountItem = new QTreeWidgetItem( 0 );
-            accountItem->setText( 0, QString("%1 (%2)").arg( nickname, id ) );
+            QString text = QString::fromLatin1("%1 (%2)").arg( nickname, id );
             accountItem->setIcon( 0, iconForType(type) );
+            accountItem->setText( 0, text);
+            accountItem->setToolTip( 0, text);
 
             item->addChild( accountItem );
         }
