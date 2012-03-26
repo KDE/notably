@@ -93,7 +93,10 @@ namespace {
         pixmap.load( person.photo().toLocalFile() );
 
         if( pixmap.isNull() ) {
-            pixmap = KIcon("im-user").pixmap( QSize(32, 32) );
+            pixmap = KIcon("im-user").pixmap( QSize(96, 96) );
+        }
+        else {
+            pixmap = pixmap.scaled( 96, 96, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation );
         }
 
         return pixmap;
