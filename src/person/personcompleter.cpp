@@ -35,6 +35,9 @@ PersonCompleter::PersonCompleter(QObject* parent): QCompleter(parent)
 {
     Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
     Nepomuk::Query::Query q(term);
+    // The limit is there cause loading more than 20 causes the app to block for a long time
+    // FIXME: Move this to another thread.
+    q.setLimit( 20 );
 
     PersonModel* model = new PersonModel( this );
     model->setQuery( q );

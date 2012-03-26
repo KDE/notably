@@ -77,13 +77,11 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
 {
     QList<Person> personList;
     foreach( const Nepomuk::Query::Result &res, results ) {
-        if( m_people.size() >= 10 )
-            break;
 
         Person person( res.resource().resourceUri() );
         if( !person.isEmpty() ) {
             personList << person;
-            kDebug() << personList.size() << "Loaded " << person.nickName();
+            kDebug() << personList.size() + m_people.size() << "Loaded " << person.nickName();
         }
     }
 
