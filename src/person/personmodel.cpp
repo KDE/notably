@@ -85,7 +85,8 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
         }
     }
 
-    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + personList.size() );
+    // the -1 is cause beginInsertRows takes the first and last row number
+    beginInsertRows( QModelIndex(), m_people.size(), m_people.size() + personList.size()-1 );
     m_people << personList;
     endInsertRows();
 }
