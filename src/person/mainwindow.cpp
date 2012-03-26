@@ -116,14 +116,10 @@ QList<QUrl> MainWindow::selectedPeople()
         return QList<QUrl>();
 
     QList<QUrl> list;
-    int size = m_model->rowCount();
-    for( int row=0; row<size; row++ ) {
-        if( selectedModel->isRowSelected(row, QModelIndex()) ) {
-            QModelIndex index = m_model->index(row);
-
-            const QUrl uri = index.data(PersonModel::UriRole).toUrl();
-            list << uri;
-        }
+    QModelIndexList indexList = selectedModel->selectedIndexes();
+    foreach(const QModelIndex& index, indexList) {
+        const QUrl uri = index.data(PersonModel::UriRole).toUrl();
+        list << uri;
     }
 
     return list;
