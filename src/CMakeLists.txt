@@ -76,4 +76,6 @@ install(TARGETS notably
 
 install(FILES notably.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
-add_subdirectory(annotation)
+add_subdirectory( annotation )
+add_subdirectory( person )
+
