@@ -23,6 +23,7 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
+#include <QtGui/QTreeWidget>
 
 #include <Nepomuk/Resource>
 
@@ -41,6 +42,8 @@ protected:
 private:
     QLabel *m_name;
     QLabel *m_preview;
+    QTreeWidget *m_treeWidget;
+
     Nepomuk::Resource m_person;
 };
 

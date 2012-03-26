@@ -36,6 +36,7 @@ public:
 
     QString fullName() const;
     QString nickName() const;
+    QString displayName() const;
     QUrl photo() const;
     QUrl uri() const;
     Nepomuk::Resource resource() const;
@@ -43,6 +44,8 @@ public:
     bool isEmpty() const;
 
     void compress();
+
+    QList<Nepomuk::Resource> personContacts() const;
 private:
     Nepomuk::Resource m_pimoPerson;
 

@@ -30,6 +30,21 @@
 #include <KSeparator>
 #include <KIcon>
 
+#include <Nepomuk/Vocabulary/NCO>
+#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk/Variant>
+#include <KDebug>
+
+using namespace Nepomuk::Vocabulary;
+
+namespace {
+    QFont boldFont(const QFont& f) {
+        QFont font(f);
+        font.setBold( true );
+        return font;
+    }
+}
+
 PersonToolTip::PersonToolTip(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
@@ -38,17 +53,15 @@ PersonToolTip::PersonToolTip(QWidget* parent, Qt::WindowFlags f)
 
     m_preview = new QLabel( this );
     m_name = new QLabel( this );
-    m_name->setForegroundRole(QPalette::ToolTipText);
+    m_treeWidget = new QTreeWidget( this );
 
-    // Make the font bold
-    QFont font = m_name->font();
-    font.setBold( true );
-    m_name->setFont( font );
+    m_name->setForegroundRole(QPalette::ToolTipText);
+    m_name->setFont( boldFont(m_name->font()) );
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget( m_name, 0, Qt::AlignCenter );
     vLayout->addWidget( new KSeparator(this) );
-    //TODO: Add some kind of designation
+    vLayout->addWidget( m_treeWidget, 0, Qt::AlignCenter );
 
     QHBoxLayout *hLayout = new QHBoxLayout( this );
     hLayout->addWidget( m_preview );
@@ -74,23 +87,80 @@ void PersonToolTip::paintEvent(QPaintEvent* event)
     QWidget::paintEvent(event);
 }
 
+namespace {
+    QPixmap personPixmap(const Person& person) {
+        QPixmap pixmap;
+        pixmap.load( person.photo().toLocalFile() );
+
+        if( pixmap.isNull() ) {
+            pixmap = KIcon("im-user").pixmap( QSize(32, 32) );
+        }
+
+        return pixmap;
+    }
+
+    QIcon iconForType(const QString& type) {
+        KIcon icon( "im-" + type );
+        kWarning() << icon.isNull() << type;
+        return icon;
+    }
+}
+
 void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
 {
     m_person = resource;
 
     Person person( m_person.resourceUri() );
-    QPixmap pixmap;
-    pixmap.load( person.photo().toLocalFile() );
+    m_preview->setPixmap( personPixmap(person) );
+    m_name->setText( person.displayName() );
 
-    if( pixmap.isNull() ) {
-        pixmap = KIcon("im-user").pixmap( QSize(32, 32) );
+    // Populate the QTreeWidget
+    m_treeWidget->clear();
+    m_treeWidget->setColumnCount( 1 );
+
+    QList<QTreeWidgetItem*> contactItems;
+    QList<Nepomuk::Resource> contactResources = person.personContacts();
+    foreach( const Nepomuk::Resource& contact, contactResources ) {
+        QTreeWidgetItem* item = new QTreeWidgetItem( 0 );
+
+        QString displayName = contact.property( NCO::fullname() ).toString();
+        if( displayName.isEmpty() )
+            displayName = contact.property( NCO::nickname() ).toString();
+        if( displayName.isEmpty() )
+            displayName = i18n("Unnamed Contact");
+
+        // Set the item's properties
+        item->setIcon( 0, KIcon("im-user") );
+        item->setText( 0, displayName );
+
+        // Add all the IMAccounts
+        QList<Nepomuk::Resource> accounts = contact.property( NCO::hasIMAccount() ).toResourceList();
+        foreach( const Nepomuk::Resource& acc, accounts ) {
+            const QString type = acc.property( NCO::imAccountType() ).toString();
+            const QString id = acc.property( NCO::imID() ).toString();
+            const QString nickname = acc.property( NCO::imNickname() ).toString();
+
+            QTreeWidgetItem* accountItem = new QTreeWidgetItem( 0 );
+            accountItem->setText( 0, QString("%1 (%2)").arg( nickname, id ) );
+            accountItem->setIcon( 0, iconForType(type) );
+
+            item->addChild( accountItem );
+        }
+
+        contactItems << item;
     }
-    m_preview->setPixmap( pixmap );
 
-    QString name = person.fullName();
-    if( name.isEmpty() )
-        name = person.nickName();
-    m_name->setText( name );
+    m_treeWidget->insertTopLevelItems( 0, contactItems );
+    m_treeWidget->setHeaderHidden( true );
+    m_treeWidget->setSelectionMode( QAbstractItemView::NoSelection );
+    m_treeWidget->expandAll();
+
+    m_treeWidget->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    m_treeWidget->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    m_treeWidget->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+
+    m_treeWidget->setAutoFillBackground( false );
+    m_treeWidget->setAttribute( Qt::WA_TranslucentBackground, true );
 }
 
 Nepomuk::Resource PersonToolTip::person() const

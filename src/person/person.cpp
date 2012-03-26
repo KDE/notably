@@ -54,14 +54,7 @@ Person::Person(const QUrl& uri)
 
     //FIXME: Check if the pimo:Person has been given a name, and photo
 
-    QList<Nepomuk::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
-    QList<Nepomuk::Resource> contacts;
-    foreach( const Nepomuk::Resource &res, occurances ) {
-        if( res.hasType(NCO::PersonContact()) )
-            contacts << res;
-    }
-    occurances.clear();
-
+    QList<Nepomuk::Resource> contacts = personContacts();
     setProperties(contacts);
 
     QList<Nepomuk::Resource> imAccounts;
@@ -108,6 +101,14 @@ QString Person::fullName() const
     return m_fullName;
 }
 
+QString Person::displayName() const
+{
+    if( m_fullName.isEmpty() )
+        return m_nickName;
+    else
+        return m_fullName;
+}
+
 QString Person::nickName() const
 {
     return m_nickName;
@@ -133,7 +134,7 @@ bool Person::isEmpty() const
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();
 }
 
-void Person::compress()
+QList< Nepomuk::Resource > Person::personContacts() const
 {
     QList<Nepomuk::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
     QList<Nepomuk::Resource> contacts;
@@ -141,7 +142,13 @@ void Person::compress()
         if( res.hasType(NCO::PersonContact()) )
             contacts << res;
     }
-    occurances.clear();
+
+    return contacts;
+}
+
+void Person::compress()
+{
+    QList<Nepomuk::Resource> contacts = personContacts();
 
     Nepomuk::Resource lastMergedContact;
     QListIterator<Nepomuk::Resource> iter( contacts );
