@@ -69,6 +69,7 @@ PersonToolTip::PersonToolTip(QWidget* parent, Qt::WindowFlags f)
     hLayout->addLayout( vLayout );
 
     setLayout( hLayout );
+    setPerson( Nepomuk::Resource() );
 }
 
 PersonToolTip::~PersonToolTip()
@@ -103,9 +104,7 @@ namespace {
     }
 
     QIcon iconForType(const QString& type) {
-        KIcon icon( "im-" + type );
-        kWarning() << icon.isNull() << type;
-        return icon;
+        return KIcon( "im-" + type );
     }
 }
 
