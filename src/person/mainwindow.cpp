@@ -22,6 +22,7 @@
 #include "personmodel.h"
 #include "person.h"
 #include "persondelegate.h"
+#include "persontooltip.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -75,6 +76,14 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_view->setItemDelegateForColumn( 0, new PersonDelegate(this) );
     m_view->setResizeMode( QListView::Adjust );
     m_view->setUniformItemSizes( false );
+    m_view->setWordWrap( true );
+    m_view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    m_view->setAlternatingRowColors( true );
+
+    QItemSelectionModel *selectionModel = m_view->selectionModel();
+    connect( selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+             this, SLOT(slotOnSelectionChange()) );
+    slotOnSelectionChange();
 
     m_filterBar = new KLineEdit( this );
     connect( m_filterBar, SIGNAL(textChanged(QString)), this, SLOT(slotFilter(QString)) );
@@ -84,10 +93,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     filterLayout->addWidget( filterLabel );
     filterLayout->addWidget( m_filterBar );
 
-    QVBoxLayout* layout = new QVBoxLayout(widget);
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addItem( filterLayout );
     layout->addWidget( m_view );
     layout->addItem( hLayout );
+
+    m_tooltip = new PersonToolTip( this );
+
+    QHBoxLayout* vLayout = new QHBoxLayout( widget );
+    vLayout->addItem( layout );
+    vLayout->addWidget( m_tooltip );
 
     setCentralWidget( widget );
     setWindowTitle( i18n("Nepomuk Person Manager") );
@@ -177,3 +192,9 @@ void MainWindow::fillModel()
     m_model->setQuery( q );
 }
 
+void MainWindow::slotOnSelectionChange()
+{
+    QList<QUrl> people = selectedPeople();
+    if( !people.isEmpty() )
+        m_tooltip->setPerson( people.first() );
+}

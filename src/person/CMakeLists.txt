@@ -20,6 +20,7 @@ set( SRCS
   person.cpp
   personmodel.cpp
   persondelegate.cpp
+  persontooltip.cpp
 )
 
 kde4_add_executable(nepomukpersonmanager ${SRCS})

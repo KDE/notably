@@ -32,6 +32,7 @@
 #include <KJob>
 
 class PersonModel;
+class PersonToolTip;
 
 class MainWindow : public QMainWindow
 {
@@ -44,6 +45,8 @@ private slots:
     void slotOnMergeJob(KJob* job);
 
     void slotFilter(const QString& filter);
+    void slotOnSelectionChange();
+
 private:
     QList<QUrl> selectedPeople();
     void fillModel();
@@ -52,6 +55,7 @@ private:
     QSortFilterProxyModel* m_filterModel;
     QListView *m_view;
     KLineEdit *m_filterBar;
+    PersonToolTip *m_tooltip;
 
     QPushButton* m_mergeButton;
     QList<QUrl> m_mergeList;
