@@ -68,6 +68,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSourceModel( m_model );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setDynamicSortFilter( true );
+    m_filterModel->sort( 0 );
 
     m_view = new QListView(widget);
     m_view->setModel( m_filterModel );
