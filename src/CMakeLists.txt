@@ -63,6 +63,7 @@ target_link_libraries( notably
   ${NEPOMUK_QUERY_LIBRARIES}
   ${SOPRANO_LIBRARIES}
   nepomukdatamanagement
+  nepomukannotation
   )
 
 install(TARGETS notably
@@ -70,3 +71,4 @@ install(TARGETS notably
 
 install(FILES notably.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
+add_subdirectory(annotation)

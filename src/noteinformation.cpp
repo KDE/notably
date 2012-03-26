@@ -31,8 +31,16 @@
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Vocabulary/PIMO>
 
+#include <nepomuk/annotation.h>
+#include <nepomuk/annotationrequest.h>
+#include <nepomuk/annotationplugin.h>
+#include <nepomuk/annotationpluginwrapper.h>
+#include <nepomuk/annotationpluginfactory.h>
+
 #include <Nepomuk/Variant>
 #include <KDebug>
+#include <KPushButton>
+#include <KService>
 
 using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
@@ -86,6 +94,11 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     mainLayout->addWidget( widget, 0, Qt::AlignTop );
     mainLayout->addWidget( personBox, 0, Qt::AlignBottom );
     mainLayout->addWidget( tagBox, 0, Qt::AlignBottom );
+
+    KPushButton* annotateButton = new KPushButton( i18n("Annotate") );
+    mainLayout->addWidget( annotateButton );
+
+    connect( annotateButton, SIGNAL(clicked(bool)), this, SLOT(slotAnnotateClicked()) );
 }
 
 void NoteInformation::setNote(const Nepomuk::Resource& note)
@@ -146,3 +159,30 @@ void NoteInformation::newNote()
     m_note = Nepomuk::Resource();
     updateView();
 }
+
+void NoteInformation::slotAnnotateClicked()
+{
+    //FIXME: Get custom plugins for Notably
+//    Nepomuk::AnnotationPluginFactory *factory = Nepomuk::AnnotationPluginFactory::instance();
+    QList<Nepomuk::AnnotationPlugin*> plugins;// = factory->getPluginsSupportingAnnotationOfType( PIMO::Note() );
+
+    KService::Ptr ptr = KService::serviceByDesktopName("personannotationplugin");
+    static Nepomuk::AnnotationPlugin* personPlugin = ptr->createInstance<Nepomuk::AnnotationPlugin>();
+    plugins << personPlugin;
+
+    Nepomuk::AnnotationPluginWrapper *wrapper = new Nepomuk::AnnotationPluginWrapper( this );
+    wrapper->setPlugins( plugins );
+
+    connect( wrapper, SIGNAL(newAnnotation(Nepomuk::Annotation*)),
+             this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
+    connect( wrapper, SIGNAL(finished()), wrapper, SLOT(deleteLater()) );
+
+    Nepomuk::AnnotationRequest request( m_note );
+    wrapper->getPossibleAnnotations( request );
+}
+
+void NoteInformation::slotNewAnnotation(Nepomuk::Annotation* annotation)
+{
+    kDebug() << "Got - " << annotation->label();
+}
+

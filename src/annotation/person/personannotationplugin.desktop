@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Notably Person annotation plugin
+Comment=Notably Plugin
+X-KDE-ServiceTypes=Nepomuk/AnnotationPlugin
+Type=Service
+X-KDE-Library=notably_personannotationplugin
+
+# FIXME
+X-Nepomuk-ResourceTypes=http://www.semanticdesktop.org/ontologies/2007/11/01/pimo#Note

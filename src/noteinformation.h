@@ -32,6 +32,10 @@
 class TagWidget;
 class PersonGrid;
 
+namespace Nepomuk {
+    class Annotation;
+}
+
 class NoteInformation : public QWidget
 {
     Q_OBJECT
@@ -50,6 +54,8 @@ signals:
 
 private slots:
     void updateView();
+    void slotAnnotateClicked();
+    void slotNewAnnotation(Nepomuk::Annotation* annotation);
 
 private:
     Nepomuk::Resource m_note;
