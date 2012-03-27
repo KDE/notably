@@ -27,6 +27,7 @@ TextAnnotation::TextAnnotation(int start, int end, const QUrl& prop,
     , m_endPosition( end )
     , m_property( prop )
     , m_object( obj )
+    , m_group( -1 )
 {
 
 }
@@ -58,5 +59,15 @@ Nepomuk::Resource TextAnnotation::object() const
 QUrl TextAnnotation::property() const
 {
     return m_property;
+}
+
+int TextAnnotation::group() const
+{
+    return m_group;
+}
+
+void TextAnnotation::setGroup(int g)
+{
+    m_group = g;
 }
 

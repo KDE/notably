@@ -86,6 +86,7 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
 
     int start = -1;
     int end = 0;
+    int group = 0;
     for( int i=0; i<text.length(); i++ ) {
         if( start == -1 ) {
             if( text[i].isLetter() ) {
@@ -101,13 +102,13 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
 
             QString word = text.mid( start, end-start+1 );
 
-            createTextAnnotations( word, start, end );
+            createTextAnnotations( group++, word, start, end );
             start = -1;
         }
     }
 }
 
-void PersonAnnotationPlugin::createTextAnnotations(const QString& word, int start, int end)
+void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int end)
 {
     const QUrl prop = PIMO::isRelated();
 
@@ -130,6 +131,8 @@ void PersonAnnotationPlugin::createTextAnnotations(const QString& word, int star
             continue;
 
         TextAnnotation* ann = new TextAnnotation( start, end, prop, uri );
+        ann->setGroup( group );
+
         addNewAnnotation( ann );
     }
 

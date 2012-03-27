@@ -36,6 +36,8 @@ public:
 
     bool exists(Nepomuk::Resource res) const;
 
+    int group() const;
+    void setGroup(int g);
 protected:
     virtual void doCreate(Nepomuk::Resource res);
 
@@ -45,6 +47,8 @@ private:
 
     const QUrl m_property;
     const Nepomuk::Resource m_object;
+
+    int m_group;
 };
 
 #endif // TEXTANNOTATION_H

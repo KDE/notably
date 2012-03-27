@@ -43,7 +43,7 @@ private Q_SLOTS:
 private:
     QModelIndexList matchingIndexes( const QString& text );
     QList<Person> matchingPeople( const QString& text );
-    void createTextAnnotations(const QString& word, int start, int end);
+    void createTextAnnotations(int group, const QString& word, int start, int end);
 
     PersonModel* m_personModel;
     QSortFilterProxyModel* m_filterModel;
