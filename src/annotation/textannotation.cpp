@@ -71,3 +71,24 @@ void TextAnnotation::setGroup(int g)
     m_group = g;
 }
 
+int TextAnnotation::length() const
+{
+    return m_endPosition - m_startPos + 1;
+}
+
+void TextAnnotation::setEndPosition(int pos)
+{
+    m_endPosition = pos;
+}
+
+void TextAnnotation::setLength(int len)
+{
+    m_endPosition = m_startPos + len - 1;
+}
+
+void TextAnnotation::setStartPosition(int pos)
+{
+    m_startPos = pos;
+}
+
+

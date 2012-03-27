@@ -22,6 +22,7 @@
 #define NOTEDOCUMENT_H
 
 #include <QtGui/QTextDocument>
+#include <QtGui/QTextFormat>
 #include <QtCore/QSet>
 #include <QtCore/QUrl>
 
@@ -44,6 +45,14 @@ public:
     QUrl resourceAtCursor(const QTextCursor& tc);
 
     QString plainText() const;
+
+    struct Annotation {
+        int startPos;
+        QString text;
+        QTextFormat format;
+    };
+
+    QList<Annotation> annotations();
 private slots:
     void slotContentsChanged();
 

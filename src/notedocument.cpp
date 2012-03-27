@@ -181,7 +181,6 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
             const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
 
             if( isObject ) {
-                //FIXME: Check for properties
                 QTextCharFormat format = fragment.charFormat();
                 const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
                 const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
@@ -196,3 +195,35 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
 
     return uris;
 }
+
+QList< NoteDocument::Annotation > NoteDocument::annotations()
+{
+    QList<Annotation> annotations;
+
+    QTextBlock textBlock = begin();
+    while( textBlock.isValid() ) {
+        QTextBlock::iterator it = textBlock.begin();
+        for( ; !it.atEnd(); it++ ) {
+            QTextFragment fragment = it.fragment();
+
+            const QString txt = fragment.text();
+            const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
+
+            if( isObject ) {
+                QTextCharFormat format = fragment.charFormat();
+
+                Annotation ann;
+                ann.startPos = fragment.position();
+                ann.format = format;
+                ann.text = format.property( AnnotationTextObject::AnnotationText ).toString();
+
+                annotations << ann;
+            }
+        }
+
+        textBlock = textBlock.next();
+    }
+
+    return annotations;
+}
+

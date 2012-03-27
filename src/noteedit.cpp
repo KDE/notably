@@ -60,13 +60,15 @@ NoteEdit::NoteEdit(QWidget* parent)
     connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
 
     // So that we can render the people differently
-    QObject *personTextInterfaceObject = new AnnotationTextObject;
+    QObject *annotationTextInterfaceObject = new AnnotationTextObject;
     m_document->documentLayout()->registerHandler( AnnotationTextObject::AnnotationTextFormat,
-                                                   personTextInterfaceObject );
+                                                   annotationTextInterfaceObject );
 
     // Annotations
     connect( Annotator::instance(), SIGNAL(newAnnotation(Nepomuk::Annotation*)),
              this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
+    connect( Annotator::instance(), SIGNAL(finished()),
+             this, SLOT(slotAnnotationsFinished()) );
 }
 
 NoteEdit::~NoteEdit()
@@ -235,15 +237,89 @@ void NoteEdit::insertCompletion(const QString& string)
 
 void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
 {
-    TextAnnotation* ann = dynamic_cast<TextAnnotation*>( annotation );
-    if( !ann ) {
-        kDebug() << "Could not convert to text annotation";
+    kDebug();
+    TextAnnotation* textAnnotation = dynamic_cast<TextAnnotation*>( annotation );
+    if( !textAnnotation ) {
         return;
     }
 
-    QString text = m_noteResource.property( NIE::plainTextContent() ).toString();
+    QString plainText = m_noteResource.property(NIE::plainTextContent()).toString();
+    kDebug() << "plugin: " << plainText.mid( textAnnotation->startPosition(), textAnnotation->length() );
+
+    //TODO: make sure these objects are sorted based on startPos
+    QList< NoteDocument::Annotation > objectList = m_document->annotations();
+
+    bool valid = true;
+    foreach( const NoteDocument::Annotation& ann, objectList ) {
+        if( textAnnotation->startPosition() == ann.startPos && textAnnotation->length() <= ann.text.length() ) {
+            kDebug() << "Already exists";
+            valid = false;
+            break;
+        }
+
+        if( textAnnotation->startPosition() > ann.startPos ) {
+            int pos = textAnnotation->startPosition();
+            int len = textAnnotation->length();
+
+            // The +1 is cause each object takes 1 char - QChar::ObjectReplacementCharacter
+            pos -= ann.text.length();
+            pos += 1;
+
+            textAnnotation->setStartPosition( pos );
+            textAnnotation->setLength( len );
+        }
+    }
+
+    if( valid ) {
+        m_annotations.insert( textAnnotation->group(), textAnnotation );
+    }
+}
+
+void NoteEdit::insertAnnotation(TextAnnotation* ann)
+{
+    //FIXME: This will make the positions change
 
     int s = ann->startPosition();
-    int len = ann->endPosition() - s + 1;
-    kDebug() << "Matched: " << text.mid( s, len ) << ann->object().resourceUri();
+    int len = ann->length();
+
+    QTextCursor tc = textCursor();
+    tc.beginEditBlock();
+    tc.movePosition( QTextCursor::Start );
+    tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, s );
+    tc.movePosition( QTextCursor::Right, QTextCursor::KeepAnchor, len );
+
+    QString text = tc.selectedText();
+
+    QTextCharFormat annotationFormat;
+    annotationFormat.setObjectType( AnnotationTextObject::AnnotationTextFormat );
+
+    annotationFormat.setProperty( AnnotationTextObject::AnnotationText, text );
+    annotationFormat.setProperty( AnnotationTextObject::AnnotationUri, ann->object().resourceUri() );
+    annotationFormat.setProperty( AnnotationTextObject::AnnotationProperty, ann->property() );
+
+    tc.removeSelectedText();
+    tc.insertText( QString(QChar::ObjectReplacementCharacter), annotationFormat );
+    tc.endEditBlock();
+    setTextCursor( tc );
+}
+
+void NoteEdit::slotAnnotationsFinished()
+{
+    kDebug() << "Finished";
+
+    QList<int> keys = m_annotations.keys();
+    foreach( int k, keys ) {
+        QList<TextAnnotation*> annotations = m_annotations.values( k );
+
+        if( annotations.length() == 1 ) {
+            TextAnnotation* textAnnotation = annotations.first();
+            insertAnnotation( textAnnotation );
+        }
+        else {
+            //FIXME: Now what?
+            // We need to sort by relevance and have some kind of cut off, and show options to the
+            // user
+        }
+    }
+    m_annotations.clear();
 }

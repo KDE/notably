@@ -32,6 +32,7 @@
 
 class PersonCompleter;
 class NoteDocument;
+class TextAnnotation;
 
 class NoteEdit : public KTextEdit
 {
@@ -58,15 +59,20 @@ public slots:
 
 private slots:
     void insertCompletion(const QString& string);
+
     void slotNewAnnotation(Nepomuk::Annotation* annotation);
+    void slotAnnotationsFinished();
 
 private:
+    QString wordUnderCursor() const;
+    void insertAnnotation(TextAnnotation* annotation);
+
     Nepomuk::Resource m_noteResource;
     PersonCompleter* m_completer;
 
     NoteDocument* m_document;
 
-    QString wordUnderCursor() const;
+    QMultiHash<int, TextAnnotation*> m_annotations;
 };
 
 #endif // NOTEEDIT_H
