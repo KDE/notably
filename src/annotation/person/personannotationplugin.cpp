@@ -107,12 +107,15 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
             start = -1;
         }
     }
+
+    int len = text.length() - start + 1;
+    QString word = text.mid( start, len );
+
+    createTextAnnotations( group++, word, start, len );
 }
 
 void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int len)
 {
-    const QUrl prop = PIMO::isRelated();
-
     QModelIndexList indexList = matchingIndexes( word );
     foreach( const QModelIndex& index, indexList ) {
         const QUrl uri = index.data( PersonModel::UriRole ).toUrl();
@@ -131,7 +134,7 @@ void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& wor
         if( !meetsCritera )
             continue;
 
-        TextAnnotation* ann = new TextAnnotation( start, len, prop, uri );
+        TextAnnotation* ann = new TextAnnotation( start, len, PIMO::isRelated(), uri );
         ann->setGroup( group );
         ann->setText( word );
 
