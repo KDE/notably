@@ -160,7 +160,11 @@ QString NoteDocument::plainText() const
     QTextDocument doc;
     doc.setHtml( html );
 
-    return doc.toPlainText();
+    QString text = doc.toPlainText();
+    //vHanda: toPlainText() strips all the empty paragrphs. We need them.
+    text.replace("\n", "\n\n");
+
+    return text;
 }
 
 QSet< QUrl > NoteDocument::resources(const QUrl& property)
