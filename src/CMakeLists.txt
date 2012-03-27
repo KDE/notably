@@ -43,6 +43,7 @@ set( SRCS
   person/personcompleter.cpp
 
   annotation/textannotation.cpp
+  annotation/annotator.cpp
 
   porterstemmer.cpp
 )

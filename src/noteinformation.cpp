@@ -22,6 +22,7 @@
 #include "tags/tagwidget.h"
 #include "person/persongrid.h"
 #include "annotation/textannotation.h"
+#include "annotation/annotator.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -41,7 +42,6 @@
 #include <Nepomuk/Variant>
 #include <KDebug>
 #include <KPushButton>
-#include <KService>
 
 using namespace Soprano::Vocabulary;
 using namespace Nepomuk::Vocabulary;
@@ -163,23 +163,13 @@ void NoteInformation::newNote()
 
 void NoteInformation::slotAnnotateClicked()
 {
-    //FIXME: Get custom plugins for Notably
-//    Nepomuk::AnnotationPluginFactory *factory = Nepomuk::AnnotationPluginFactory::instance();
-    QList<Nepomuk::AnnotationPlugin*> plugins;// = factory->getPluginsSupportingAnnotationOfType( PIMO::Note() );
+    Annotator* annotator = Annotator::instance();
 
-    KService::Ptr ptr = KService::serviceByDesktopName("personannotationplugin");
-    static Nepomuk::AnnotationPlugin* personPlugin = ptr->createInstance<Nepomuk::AnnotationPlugin>();
-    plugins << personPlugin;
-
-    Nepomuk::AnnotationPluginWrapper *wrapper = new Nepomuk::AnnotationPluginWrapper( this );
-    wrapper->setPlugins( plugins );
-
-    connect( wrapper, SIGNAL(newAnnotation(Nepomuk::Annotation*)),
+    connect( annotator, SIGNAL(newAnnotation(Nepomuk::Annotation*)),
              this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
-    connect( wrapper, SIGNAL(finished()), wrapper, SLOT(deleteLater()) );
 
     Nepomuk::AnnotationRequest request( m_note );
-    wrapper->getPossibleAnnotations( request );
+    annotator->getPossibleAnnotations( request );
 }
 
 void NoteInformation::slotNewAnnotation(Nepomuk::Annotation* annotation)
