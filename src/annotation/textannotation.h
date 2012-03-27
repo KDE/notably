@@ -35,6 +35,9 @@ public:
     int length() const;
     int position() const;
 
+    QString text() const;
+    void setText(const QString& string);
+
     QUrl property() const;
     Nepomuk::Resource object() const;
 
@@ -53,6 +56,7 @@ private:
     const Nepomuk::Resource m_object;
 
     int m_group;
+    QString m_text;
 };
 
 #endif // TEXTANNOTATION_H

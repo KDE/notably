@@ -133,6 +133,7 @@ void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& wor
 
         TextAnnotation* ann = new TextAnnotation( start, len, prop, uri );
         ann->setGroup( group );
+        ann->setText( word );
 
         addNewAnnotation( ann );
     }

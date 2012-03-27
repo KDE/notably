@@ -287,6 +287,10 @@ void NoteEdit::insertAnnotation(TextAnnotation* ann)
     tc.movePosition( QTextCursor::Right, QTextCursor::KeepAnchor, len );
 
     QString text = tc.selectedText();
+    if( text != ann->text() ) {
+        kWarning() << "Warning. Buggy code. Annotations positions are not in sync.";
+        return;
+    }
 
     QTextCharFormat annotationFormat;
     annotationFormat.setObjectType( AnnotationTextObject::AnnotationTextFormat );

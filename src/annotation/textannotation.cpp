@@ -81,4 +81,12 @@ void TextAnnotation::setPosition(int pos)
     m_position = pos;
 }
 
+void TextAnnotation::setText(const QString& string)
+{
+    m_text = string;
+}
 
+QString TextAnnotation::text() const
+{
+    return m_text;
+}
