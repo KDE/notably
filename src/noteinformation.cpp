@@ -178,6 +178,7 @@ void NoteInformation::slotAnnotateClicked()
     connect( wrapper, SIGNAL(finished()), wrapper, SLOT(deleteLater()) );
 
     Nepomuk::AnnotationRequest request( m_note );
+    request.setFilter("Gurkirat");
     wrapper->getPossibleAnnotations( request );
 }
 

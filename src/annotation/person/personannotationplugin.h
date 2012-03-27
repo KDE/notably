@@ -20,12 +20,12 @@
 #ifndef _PERSON_ANNOTATION_PLUGIN_H_
 #define _PERSON_ANNOTATION_PLUGIN_H_
 
-#include <nepomuk/annotationplugin.h>
-
-#include <QtCore/QUrl>
+#include "../../person/personmodel.h"
 
 #include <Nepomuk/Resource>
+#include <nepomuk/annotationplugin.h>
 
+#include <QtGui/QSortFilterProxyModel>
 
 class PersonAnnotationPlugin : public Nepomuk::AnnotationPlugin
 {
@@ -41,6 +41,9 @@ protected:
 private Q_SLOTS:
 
 private:
+    PersonModel* m_personModel;
+    QSortFilterProxyModel* m_filterModel;
+
 };
 
 #endif

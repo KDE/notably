@@ -20,25 +20,36 @@
 #include "personannotationplugin.h"
 
 #include <nepomuk/annotationrequest.h>
-#include <nepomuk/resource.h>
+#include <nepomuk/simpleannotation.h>
 
-#include <Soprano/Node>
-#include <Soprano/QueryResultIterator>
-#include <Soprano/BindingSet>
-#include <Soprano/Client/SparqlModel>
-#include <Soprano/Util/AsyncResult>
-#include <Soprano/Vocabulary/RDFS>
+#include <Nepomuk/Resource>
+#include <Nepomuk/Variant>
+
+#include <Nepomuk/Query/Query>
+#include <Nepomuk/Query/ResourceTypeTerm>
 
 #include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk/Vocabulary/NIE>
 
 #include <KDebug>
+#include <QTimer>
 
+using namespace Nepomuk::Vocabulary;
 
 PersonAnnotationPlugin::PersonAnnotationPlugin( QObject* parent, const QVariantList& )
     : Nepomuk::AnnotationPlugin( parent )
 {
-    kDebug();
-    kWarning() << "CCCCCCCCCCOOOOOOOOOOOOOOMMMMMMMMMMMMMEEEEEEEEEEEE";
+    m_personModel = new PersonModel( this );
+
+    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk::Query::Query q(term);
+    q.setLimit( 5 );
+    m_personModel->setQuery( q );
+
+    m_filterModel = new QSortFilterProxyModel( this );
+    m_filterModel->setSourceModel( m_personModel );
+    m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_filterModel->setDynamicSortFilter( true );
 }
 
 
@@ -48,7 +59,29 @@ PersonAnnotationPlugin::~PersonAnnotationPlugin()
 
 void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::AnnotationRequest& request )
 {
-    kWarning();
+    QString text = request.filter();
+    if( text.isEmpty() ) {
+        return;
+        //text = request.resource().property( NIE::plainTextContent() ).toString();
+    }
+
+    m_filterModel->setFilterFixedString( text );
+
+    for( int i=0; i<m_filterModel->rowCount(); i++ ) {
+        QModelIndex index = m_filterModel->mapToSource( m_filterModel->index( i, 0 ) );
+        if( !index.isValid() ) {
+            break;
+        }
+
+        const QUrl personUri = index.data( PersonModel::UriRole ).toUrl();
+        Person person(personUri);
+
+        // FIXME: You typically want to give the exact string
+        kDebug() << person.nickName();
+        Nepomuk::SimpleAnnotation *ann = new Nepomuk::SimpleAnnotation( PIMO::isRelated(), person.uri() );
+        addNewAnnotation( ann );
+    }
+
 }
 
 NEPOMUK_EXPORT_ANNOTATION_PLUGIN( PersonAnnotationPlugin, "notably_personannotationplugin" )
