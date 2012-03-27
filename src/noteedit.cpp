@@ -21,7 +21,7 @@
 
 #include "noteedit.h"
 #include "notedocument.h"
-#include "persontextobject.h"
+#include "annotationtextobject.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
 #include "annotation/textannotation.h"
@@ -60,8 +60,8 @@ NoteEdit::NoteEdit(QWidget* parent)
     connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
 
     // So that we can render the people differently
-    QObject *personTextInterfaceObject = new PersonTextObject;
-    m_document->documentLayout()->registerHandler( PersonTextObject::PersonTextFormat,
+    QObject *personTextInterfaceObject = new AnnotationTextObject;
+    m_document->documentLayout()->registerHandler( AnnotationTextObject::AnnotationTextFormat,
                                                    personTextInterfaceObject );
 
     // Annotations
@@ -223,10 +223,11 @@ void NoteEdit::insertCompletion(const QString& string)
     tc.removeSelectedText();
 
     QTextCharFormat personFormat;
-    personFormat.setObjectType( PersonTextObject::PersonTextFormat );
+    personFormat.setObjectType( AnnotationTextObject::AnnotationTextFormat );
 
-    personFormat.setProperty( PersonTextObject::PersonName, string );
-    personFormat.setProperty( PersonTextObject::PersonUri, resourceUri );
+    personFormat.setProperty( AnnotationTextObject::AnnotationText, string );
+    personFormat.setProperty( AnnotationTextObject::AnnotationUri, resourceUri );
+    personFormat.setProperty( AnnotationTextObject::AnnotationProperty, PIMO::isRelated() );
 
     tc.insertText( QString(QChar::ObjectReplacementCharacter), personFormat );
     setTextCursor( tc );

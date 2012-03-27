@@ -18,7 +18,7 @@
 */
 
 
-#include "persontextobject.h"
+#include "annotationtextobject.h"
 
 #include <QtGui/QFontMetrics>
 #include <QtGui/QPainter>
@@ -26,11 +26,11 @@
 
 #include <KDebug>
 
-void PersonTextObject::drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,
+void AnnotationTextObject::drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,
                                   int posInDocument, const QTextFormat& format)
 {
     QFont font = doc->findBlock( posInDocument ).charFormat().font();
-    QString name = format.property( PersonName ).toString();
+    QString name = format.property( AnnotationText ).toString();
 
     QRectF rec( rect );
     //vHanda: Just looks better this
@@ -46,13 +46,13 @@ void PersonTextObject::drawObject(QPainter* painter, const QRectF& rect, QTextDo
     painter->restore();
 }
 
-QSizeF PersonTextObject::intrinsicSize(QTextDocument* doc, int posInDocument,
+QSizeF AnnotationTextObject::intrinsicSize(QTextDocument* doc, int posInDocument,
                                        const QTextFormat& format)
 {
     QFont font = doc->findBlock( posInDocument ).charFormat().font();
     QFontMetrics fm( font );
 
-    QString name = format.property( PersonName ).toString();
+    QString name = format.property( AnnotationText ).toString();
     QRect rect = fm.boundingRect( name );
 
     return rect.size();

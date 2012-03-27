@@ -24,16 +24,17 @@
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QtGui/QTextFormat>
 
-class PersonTextObject : public QObject, public QTextObjectInterface
+class AnnotationTextObject : public QObject, public QTextObjectInterface
 {
     Q_OBJECT
     Q_INTERFACES(QTextObjectInterface)
 
 public:
-    enum { PersonTextFormat = QTextFormat::UserObject +1 };
-    enum PersonProperties {
-        PersonName = 1,
-        PersonUri = 2,
+    enum { AnnotationTextFormat = QTextFormat::UserObject +1 };
+    enum AnnotationProperties {
+        AnnotationText = 1,
+        AnnotationUri,
+        AnnotationProperty
     };
 
     void drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,

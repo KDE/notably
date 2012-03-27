@@ -19,7 +19,7 @@
 
 
 #include "notedocument.h"
-#include "persontextobject.h"
+#include "annotationtextobject.h"
 
 #include <QtGui/QTextBlock>
 #include <QtGui/QTextFragment>
@@ -69,14 +69,13 @@ QString NoteDocument::toRDFaHtml() const
             const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
 
             if( isObject ) {
-                const QString name = format.property( PersonTextObject::PersonName ).toString();
-                const QUrl uri = format.property( PersonTextObject::PersonUri ).toUrl();
+                const QString text = format.property( AnnotationTextObject::AnnotationText ).toString();
+                const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
+                const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
 
-                QString text = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
-                               .arg( PIMO::isRelated().toString(),
-                                     uri.toString(),
-                                     name );
-                paragraph.append( text );
+                QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
+                               .arg( prop.toString(), uri.toString(), text );
+                paragraph.append( string );
 
                 // They could be viable text in the fragment.
                 txt.remove(QChar::ObjectReplacementCharacter);
@@ -104,10 +103,11 @@ QString NoteDocument::toRDFaHtml() const
 namespace {
     QTextCharFormat personFormat(const QUrl& resourceUri, const QString& name) {
         QTextCharFormat format;
-        format.setObjectType( PersonTextObject::PersonTextFormat );
+        format.setObjectType( AnnotationTextObject::AnnotationTextFormat );
 
-        format.setProperty( PersonTextObject::PersonName, name );
-        format.setProperty( PersonTextObject::PersonUri, resourceUri );
+        format.setProperty( AnnotationTextObject::AnnotationText, name );
+        format.setProperty( AnnotationTextObject::AnnotationUri, resourceUri );
+        format.setProperty( AnnotationTextObject::AnnotationProperty, PIMO::isRelated() );
 
         return format;
     }
@@ -179,9 +179,11 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
             if( isObject ) {
                 //FIXME: Check for properties
                 QTextCharFormat format = fragment.charFormat();
-                const QUrl uri = format.property( PersonTextObject::PersonUri ).toUrl();
+                const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
+                const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
 
-                uris << uri;
+                if( prop == property )
+                    uris << uri;
             }
         }
 
