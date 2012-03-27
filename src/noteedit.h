@@ -28,6 +28,8 @@
 #include <QtCore/QSet>
 #include <Nepomuk/Resource>
 
+#include <nepomuk/annotation.h>
+
 class PersonCompleter;
 class NoteDocument;
 
@@ -56,6 +58,7 @@ public slots:
 
 private slots:
     void insertCompletion(const QString& string);
+    void slotNewAnnotation(Nepomuk::Annotation* annotation);
 
 private:
     Nepomuk::Resource m_noteResource;

@@ -21,7 +21,6 @@
 #include "noteinformation.h"
 #include "tags/tagwidget.h"
 #include "person/persongrid.h"
-#include "annotation/textannotation.h"
 #include "annotation/annotator.h"
 
 #include <QtGui/QVBoxLayout>
@@ -174,16 +173,4 @@ void NoteInformation::slotAnnotateClicked()
 
 void NoteInformation::slotNewAnnotation(Nepomuk::Annotation* annotation)
 {
-    TextAnnotation* ann = dynamic_cast<TextAnnotation*>( annotation );
-    if( !ann ) {
-        kDebug() << "Could not convert to text annotation";
-        return;
-    }
-
-    QString text = m_note.property( NIE::plainTextContent() ).toString();
-
-    int s = ann->startPosition();
-    int len = ann->endPosition() - s + 1;
-    kDebug() << "Matched: " << text.mid( s, len ) << ann->object().resourceUri();
 }
-

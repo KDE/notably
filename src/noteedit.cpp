@@ -24,6 +24,8 @@
 #include "persontextobject.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
+#include "annotation/textannotation.h"
+#include "annotation/annotator.h"
 
 #include <QtGui/QKeyEvent>
 #include <QtGui/QListView>
@@ -61,6 +63,10 @@ NoteEdit::NoteEdit(QWidget* parent)
     QObject *personTextInterfaceObject = new PersonTextObject;
     m_document->documentLayout()->registerHandler( PersonTextObject::PersonTextFormat,
                                                    personTextInterfaceObject );
+
+    // Annotations
+    connect( Annotator::instance(), SIGNAL(newAnnotation(Nepomuk::Annotation*)),
+             this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
 }
 
 NoteEdit::~NoteEdit()
@@ -224,4 +230,19 @@ void NoteEdit::insertCompletion(const QString& string)
 
     tc.insertText( QString(QChar::ObjectReplacementCharacter), personFormat );
     setTextCursor( tc );
+}
+
+void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
+{
+    TextAnnotation* ann = dynamic_cast<TextAnnotation*>( annotation );
+    if( !ann ) {
+        kDebug() << "Could not convert to text annotation";
+        return;
+    }
+
+    QString text = m_noteResource.property( NIE::plainTextContent() ).toString();
+
+    int s = ann->startPosition();
+    int len = ann->endPosition() - s + 1;
+    kDebug() << "Matched: " << text.mid( s, len ) << ann->object().resourceUri();
 }
