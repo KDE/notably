@@ -270,6 +270,11 @@ void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
 
     if( valid ) {
         m_annotations.insert( textAnnotation->group(), textAnnotation );
+
+        //HACK: Calling slotAnnotationsFinished() after each annotation, that way the cursor
+        // coordinates aren't screwed up by the last annotation insertion. Ideally one should
+        // use QTextCursors or adjust the coordinates after each insertion.
+        slotAnnotationsFinished();
     }
 }
 
@@ -307,8 +312,6 @@ void NoteEdit::insertAnnotation(TextAnnotation* ann)
 
 void NoteEdit::slotAnnotationsFinished()
 {
-    kDebug() << "Finished";
-
     QList<int> keys = m_annotations.keys();
     foreach( int k, keys ) {
         QList<TextAnnotation*> annotations = m_annotations.values( k );

@@ -27,6 +27,8 @@
 
 #include <QtGui/QSortFilterProxyModel>
 
+class TextAnnotation;
+
 class PersonAnnotationPlugin : public Nepomuk::AnnotationPlugin
 {
     Q_OBJECT
@@ -43,7 +45,8 @@ private Q_SLOTS:
 private:
     QModelIndexList matchingIndexes( const QString& text );
     QList<Person> matchingPeople( const QString& text );
-    void createTextAnnotations(int group, const QString& word, int start, int len);
+    QSet<TextAnnotation*> createTextAnnotations(int group, const QString& word, int start, int len);
+    void addAnnotations(const QSet<TextAnnotation*> annotations);
 
     PersonModel* m_personModel;
     QSortFilterProxyModel* m_filterModel;

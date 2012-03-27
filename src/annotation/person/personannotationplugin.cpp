@@ -58,6 +58,22 @@ PersonAnnotationPlugin::~PersonAnnotationPlugin()
 {
 }
 
+namespace {
+    QSet<TextAnnotation*> textAnnotationIntersection(const QSet<TextAnnotation*> &set1,
+                                                     const QSet<TextAnnotation*> &set2) {
+
+        QSet<TextAnnotation*> finalSet;
+        foreach( TextAnnotation* t1, set1 ) {
+            foreach( const TextAnnotation* t2, set2 ) {
+                if( t1->property() == t2->property() && t1->object() == t2->object() )
+                    finalSet.insert( t1 );
+            }
+        }
+
+        return finalSet;
+    }
+}
+
 void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::AnnotationRequest& request )
 {
     QString text = request.filter();
@@ -75,7 +91,8 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
     }
 
     // Go through the contents
-    text = request.resource().property( NIE::plainTextContent() ).toString();
+    const QString origText = request.resource().property( NIE::plainTextContent() ).toString();
+    text = origText;
     if( text.isEmpty() )
         return;
 
@@ -83,6 +100,9 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
     QRegExp regex("[^\\w]");
     text.replace( regex, QString::fromLatin1(" ") );
     text.replace( '\n', ' ' );
+
+    QSet<TextAnnotation*> lastAnnotations;
+    int lastStart = -1;
 
     int start = -1;
     int end = 0;
@@ -103,19 +123,49 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
             int len = end - start + 1;
             QString word = text.mid( start, len );
 
-            createTextAnnotations( group++, word, start, len );
-            start = -1;
+            QSet<TextAnnotation*> textAnnotations = createTextAnnotations( group++, word, start, len );
+
+            // Check if last and current can be grouped
+            QSet<TextAnnotation*> intersection = textAnnotationIntersection( lastAnnotations, textAnnotations );
+            if( intersection.isEmpty() ) {
+                addAnnotations( lastAnnotations );
+
+                lastStart = start;
+                start = -1;
+                lastAnnotations = textAnnotations;
+                continue;
+            }
+            else {
+                int len = end - lastStart + 1;
+                QString text = origText.mid( lastStart, len );
+
+                QMutableSetIterator<TextAnnotation*> iter( intersection );
+                while( iter.hasNext() ) {
+                    TextAnnotation* ann = iter.next();
+                    ann->setPosition( lastStart );
+                    ann->setLength( end - lastStart + 1 );
+                    ann->setText( text );
+                }
+
+                start = -1;
+                lastAnnotations = intersection;
+            }
         }
     }
 
     int len = text.length() - start + 1;
     QString word = text.mid( start, len );
 
-    createTextAnnotations( group++, word, start, len );
+    addAnnotations( lastAnnotations );
+    addAnnotations( createTextAnnotations( group++, word, start, len ) );
+
+    emitFinished();
 }
 
-void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int len)
+QSet<TextAnnotation*> PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int len)
 {
+    QSet<TextAnnotation*> set;
+
     QModelIndexList indexList = matchingIndexes( word );
     foreach( const QModelIndex& index, indexList ) {
         const QUrl uri = index.data( PersonModel::UriRole ).toUrl();
@@ -138,10 +188,10 @@ void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& wor
         ann->setGroup( group );
         ann->setText( word );
 
-        addNewAnnotation( ann );
+        set.insert( ann );
     }
 
-    emitFinished();
+    return set;
 }
 
 QList< Person > PersonAnnotationPlugin::matchingPeople(const QString& text)
@@ -176,6 +226,13 @@ QModelIndexList PersonAnnotationPlugin::matchingIndexes(const QString& text)
 
     return indexList;
 }
+
+void PersonAnnotationPlugin::addAnnotations(const QSet< TextAnnotation* > annotations)
+{
+    foreach( TextAnnotation* annotation, annotations )
+        addNewAnnotation( annotation );
+}
+
 
 
 NEPOMUK_EXPORT_ANNOTATION_PLUGIN( PersonAnnotationPlugin, "notably_personannotationplugin" )
