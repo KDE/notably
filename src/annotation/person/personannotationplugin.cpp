@@ -100,15 +100,16 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
         if( text[i].isSpace() ) {
             end = i-1;
 
-            QString word = text.mid( start, end-start+1 );
+            int len = end - start + 1;
+            QString word = text.mid( start, len );
 
-            createTextAnnotations( group++, word, start, end );
+            createTextAnnotations( group++, word, start, len );
             start = -1;
         }
     }
 }
 
-void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int end)
+void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& word, int start, int len)
 {
     const QUrl prop = PIMO::isRelated();
 
@@ -130,7 +131,7 @@ void PersonAnnotationPlugin::createTextAnnotations(int group, const QString& wor
         if( !meetsCritera )
             continue;
 
-        TextAnnotation* ann = new TextAnnotation( start, end, prop, uri );
+        TextAnnotation* ann = new TextAnnotation( start, len, prop, uri );
         ann->setGroup( group );
 
         addNewAnnotation( ann );

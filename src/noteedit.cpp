@@ -244,29 +244,27 @@ void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
     }
 
     QString plainText = m_noteResource.property(NIE::plainTextContent()).toString();
-    kDebug() << "plugin: " << plainText.mid( textAnnotation->startPosition(), textAnnotation->length() );
+    kDebug() << "plugin: " << plainText.mid( textAnnotation->position(), textAnnotation->length() );
 
     //TODO: make sure these objects are sorted based on startPos
     QList< NoteDocument::Annotation > objectList = m_document->annotations();
 
     bool valid = true;
     foreach( const NoteDocument::Annotation& ann, objectList ) {
-        if( textAnnotation->startPosition() == ann.startPos && textAnnotation->length() <= ann.text.length() ) {
+        if( textAnnotation->position() == ann.startPos && textAnnotation->length() <= ann.text.length() ) {
             kDebug() << "Already exists";
             valid = false;
             break;
         }
 
-        if( textAnnotation->startPosition() > ann.startPos ) {
-            int pos = textAnnotation->startPosition();
-            int len = textAnnotation->length();
+        if( textAnnotation->position() > ann.startPos ) {
+            int pos = textAnnotation->position();
 
             // The +1 is cause each object takes 1 char - QChar::ObjectReplacementCharacter
             pos -= ann.text.length();
             pos += 1;
 
-            textAnnotation->setStartPosition( pos );
-            textAnnotation->setLength( len );
+            textAnnotation->setPosition( pos );
         }
     }
 
@@ -279,7 +277,7 @@ void NoteEdit::insertAnnotation(TextAnnotation* ann)
 {
     //FIXME: This will make the positions change
 
-    int s = ann->startPosition();
+    int s = ann->position();
     int len = ann->length();
 
     QTextCursor tc = textCursor();

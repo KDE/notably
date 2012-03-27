@@ -20,11 +20,11 @@
 
 #include "textannotation.h"
 
-TextAnnotation::TextAnnotation(int start, int end, const QUrl& prop,
+TextAnnotation::TextAnnotation(int pos, int len, const QUrl& prop,
                                const Nepomuk::Resource& obj, QObject* parent)
     : Annotation(parent)
-    , m_startPos( start )
-    , m_endPosition( end )
+    , m_position( pos )
+    , m_length( len )
     , m_property( prop )
     , m_object( obj )
     , m_group( -1 )
@@ -32,23 +32,18 @@ TextAnnotation::TextAnnotation(int start, int end, const QUrl& prop,
 
 }
 
-void TextAnnotation::doCreate(Nepomuk::Resource res)
+void TextAnnotation::doCreate(Nepomuk::Resource)
 {
 }
 
-bool TextAnnotation::exists(Nepomuk::Resource res) const
+bool TextAnnotation::exists(Nepomuk::Resource) const
 {
     return false;
 }
 
-int TextAnnotation::endPosition() const
+int TextAnnotation::position() const
 {
-    return m_endPosition;
-}
-
-int TextAnnotation::startPosition() const
-{
-    return m_startPos;
+    return m_position;
 }
 
 Nepomuk::Resource TextAnnotation::object() const
@@ -73,22 +68,17 @@ void TextAnnotation::setGroup(int g)
 
 int TextAnnotation::length() const
 {
-    return m_endPosition - m_startPos + 1;
-}
-
-void TextAnnotation::setEndPosition(int pos)
-{
-    m_endPosition = pos;
+    return m_length;
 }
 
 void TextAnnotation::setLength(int len)
 {
-    m_endPosition = m_startPos + len - 1;
+    m_length = len;
 }
 
-void TextAnnotation::setStartPosition(int pos)
+void TextAnnotation::setPosition(int pos)
 {
-    m_startPos = pos;
+    m_position = pos;
 }
 
 

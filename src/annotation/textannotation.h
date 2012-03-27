@@ -27,15 +27,13 @@ class TextAnnotation : public Nepomuk::Annotation
 {
     Q_OBJECT
 public:
-    TextAnnotation(int start, int end, const QUrl& prop, const Nepomuk::Resource& obj, QObject* parent=0);
+    TextAnnotation(int pos, int len, const QUrl& prop, const Nepomuk::Resource& obj, QObject* parent=0);
 
-    void setStartPosition(int pos);
-    void setEndPosition(int pos);
+    void setPosition(int pos);
     void setLength(int len);
 
     int length() const;
-    int startPosition() const;
-    int endPosition() const;
+    int position() const;
 
     QUrl property() const;
     Nepomuk::Resource object() const;
@@ -48,8 +46,8 @@ protected:
     virtual void doCreate(Nepomuk::Resource res);
 
 private:
-    int m_startPos;
-    int m_endPosition;
+    int m_position;
+    int m_length;
 
     const QUrl m_property;
     const Nepomuk::Resource m_object;
