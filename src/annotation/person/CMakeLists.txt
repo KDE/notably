@@ -1,5 +1,6 @@
 kde4_add_plugin(notably_personannotationplugin
   personannotationplugin.cpp
+  ../textannotation.cpp
 
   ${CMAKE_SOURCE_DIR}/src/person/personmodel.cpp
   ${CMAKE_SOURCE_DIR}/src/person/person.cpp

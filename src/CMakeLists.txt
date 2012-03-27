@@ -42,6 +42,8 @@ set( SRCS
   person/persongrid.cpp
   person/personcompleter.cpp
 
+  annotation/textannotation.cpp
+
   porterstemmer.cpp
 )
 

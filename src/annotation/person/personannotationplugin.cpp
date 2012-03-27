@@ -18,6 +18,7 @@
 */
 
 #include "personannotationplugin.h"
+#include "../textannotation.h"
 
 #include <nepomuk/annotationrequest.h>
 #include <nepomuk/simpleannotation.h>
@@ -60,29 +61,114 @@ PersonAnnotationPlugin::~PersonAnnotationPlugin()
 void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::AnnotationRequest& request )
 {
     QString text = request.filter();
-    if( text.isEmpty() ) {
+    if( !text.isEmpty() ) {
+
+        QList< Person > people = matchingPeople( text );
+        foreach( const Person& person, people ) {
+            // FIXME: You typically want to give the exact string
+            kDebug() << person.nickName();
+            Nepomuk::SimpleAnnotation *ann = new Nepomuk::SimpleAnnotation( PIMO::isRelated(), person.uri() );
+            addNewAnnotation( ann );
+        }
+
         return;
-        //text = request.resource().property( NIE::plainTextContent() ).toString();
     }
 
+    // Go through the contents
+    text = request.resource().property( NIE::plainTextContent() ).toString();
+    if( text.isEmpty() )
+        return;
+
+    //TODO: Implement a better tokenizer
+    QRegExp regex("[^\\w]");
+    text.replace( regex, QString::fromLatin1(" ") );
+    text.replace( '\n', ' ' );
+
+    int start = -1;
+    int end = 0;
+    for( int i=0; i<text.length(); i++ ) {
+        if( start == -1 ) {
+            if( text[i].isLetter() ) {
+                start = i;
+            }
+            else {
+                continue;
+            }
+        }
+
+        if( text[i].isSpace() ) {
+            end = i-1;
+
+            QString word = text.mid( start, end-start+1 );
+
+            createTextAnnotations( word, start, end );
+            start = -1;
+        }
+    }
+}
+
+void PersonAnnotationPlugin::createTextAnnotations(const QString& word, int start, int end)
+{
+    const QUrl prop = PIMO::isRelated();
+
+    QModelIndexList indexList = matchingIndexes( word );
+    foreach( const QModelIndex& index, indexList ) {
+        const QUrl uri = index.data( PersonModel::UriRole ).toUrl();
+        const QString display = index.data( Qt::DisplayRole ).toString();
+
+        //FIXME: We need something better than this
+        bool meetsCritera = false;
+        QStringList names = display.split( QChar::fromAscii(' '), QString::SkipEmptyParts );
+        foreach( const QString& name, names ) {
+            if( name.length() == word.length() ) {
+                meetsCritera = true;
+                break;
+            }
+        }
+
+        if( !meetsCritera )
+            continue;
+
+        TextAnnotation* ann = new TextAnnotation( start, end, prop, uri );
+        addNewAnnotation( ann );
+    }
+
+    emitFinished();
+}
+
+QList< Person > PersonAnnotationPlugin::matchingPeople(const QString& text)
+{
+    QList<Person> people;
     m_filterModel->setFilterFixedString( text );
 
     for( int i=0; i<m_filterModel->rowCount(); i++ ) {
         QModelIndex index = m_filterModel->mapToSource( m_filterModel->index( i, 0 ) );
-        if( !index.isValid() ) {
+        if( !index.isValid() )
             break;
-        }
 
         const QUrl personUri = index.data( PersonModel::UriRole ).toUrl();
-        Person person(personUri);
-
-        // FIXME: You typically want to give the exact string
-        kDebug() << person.nickName();
-        Nepomuk::SimpleAnnotation *ann = new Nepomuk::SimpleAnnotation( PIMO::isRelated(), person.uri() );
-        addNewAnnotation( ann );
+        people << Person(personUri);
     }
 
+    return people;
 }
+
+QModelIndexList PersonAnnotationPlugin::matchingIndexes(const QString& text)
+{
+    QModelIndexList indexList;
+    m_filterModel->setFilterFixedString( text );
+
+    for( int i=0; i<m_filterModel->rowCount(); i++ ) {
+        QModelIndex index = m_filterModel->mapToSource( m_filterModel->index( i, 0 ) );
+        if( !index.isValid() )
+            break;
+
+        indexList << index;
+    }
+
+    return indexList;
+}
+
 
 NEPOMUK_EXPORT_ANNOTATION_PLUGIN( PersonAnnotationPlugin, "notably_personannotationplugin" )
 

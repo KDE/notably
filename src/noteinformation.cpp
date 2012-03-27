@@ -21,6 +21,7 @@
 #include "noteinformation.h"
 #include "tags/tagwidget.h"
 #include "person/persongrid.h"
+#include "annotation/textannotation.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -178,12 +179,21 @@ void NoteInformation::slotAnnotateClicked()
     connect( wrapper, SIGNAL(finished()), wrapper, SLOT(deleteLater()) );
 
     Nepomuk::AnnotationRequest request( m_note );
-    request.setFilter("Gurkirat");
     wrapper->getPossibleAnnotations( request );
 }
 
 void NoteInformation::slotNewAnnotation(Nepomuk::Annotation* annotation)
 {
-    kDebug() << "Got - " << annotation->label();
+    TextAnnotation* ann = dynamic_cast<TextAnnotation*>( annotation );
+    if( !ann ) {
+        kDebug() << "Could not convert to text annotation";
+        return;
+    }
+
+    QString text = m_note.property( NIE::plainTextContent() ).toString();
+
+    int s = ann->startPosition();
+    int len = ann->endPosition() - s + 1;
+    kDebug() << "Matched: " << text.mid( s, len ) << ann->object().resourceUri();
 }
 
