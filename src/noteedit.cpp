@@ -270,30 +270,24 @@ void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
 
     if( valid ) {
         m_annotations.insert( textAnnotation->group(), textAnnotation );
-
-        //HACK: Calling slotAnnotationsFinished() after each annotation, that way the cursor
-        // coordinates aren't screwed up by the last annotation insertion. Ideally one should
-        // use QTextCursors or adjust the coordinates after each insertion.
-        slotAnnotationsFinished();
     }
 }
 
 void NoteEdit::insertAnnotation(TextAnnotation* ann)
 {
-    //FIXME: This will make the positions change
-
-    int s = ann->position();
+    int pos = ann->position();
     int len = ann->length();
 
     QTextCursor tc = textCursor();
     tc.beginEditBlock();
     tc.movePosition( QTextCursor::Start );
-    tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, s );
+    tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, pos );
     tc.movePosition( QTextCursor::Right, QTextCursor::KeepAnchor, len );
 
     QString text = tc.selectedText();
     if( text != ann->text() ) {
         kWarning() << "Warning. Buggy code. Annotations positions are not in sync.";
+        kWarning() << "Existing " << text << " vs " << ann->text();
         return;
     }
 
@@ -308,6 +302,19 @@ void NoteEdit::insertAnnotation(TextAnnotation* ann)
     tc.insertText( QString(QChar::ObjectReplacementCharacter), annotationFormat );
     tc.endEditBlock();
     setTextCursor( tc );
+
+    // Update the positions of all the pending TextAnnotations
+    QHashIterator<int, TextAnnotation*> iter( m_annotations );
+    while( iter.hasNext() ) {
+        TextAnnotation* annotation = iter.next().value();
+
+        int pos = annotation->position();
+        if( pos > ann->position() ) {
+            pos -= ann->length() - 1;
+            annotation->setPosition( pos );
+        }
+    }
+
 }
 
 void NoteEdit::slotAnnotationsFinished()
@@ -315,6 +322,7 @@ void NoteEdit::slotAnnotationsFinished()
     QList<int> keys = m_annotations.keys();
     foreach( int k, keys ) {
         QList<TextAnnotation*> annotations = m_annotations.values( k );
+        m_annotations.remove( k );
 
         if( annotations.length() == 1 ) {
             TextAnnotation* textAnnotation = annotations.first();
