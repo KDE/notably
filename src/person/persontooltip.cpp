@@ -166,6 +166,8 @@ void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
 
     m_treeWidget->setAutoFillBackground( false );
     m_treeWidget->setAttribute( Qt::WA_TranslucentBackground, true );
+    m_treeWidget->setRootIsDecorated( false );
+
 }
 
 Nepomuk::Resource PersonToolTip::person() const
