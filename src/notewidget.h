@@ -26,6 +26,7 @@
 #include <Nepomuk/Resource>
 
 class NoteEdit;
+class TextAnnotationGroup;
 
 class NoteWidget : public QWidget
 {
@@ -53,6 +54,7 @@ public slots:
     Nepomuk::Resource note() const;
 signals:
     void infoRequired( const Nepomuk::Resource &note );
+    void annotationGroupSelected(TextAnnotationGroup *tag);
 
 private slots:
     void slotCursorPositionChanged();

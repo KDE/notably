@@ -20,6 +20,7 @@
 
 #include "notewidget.h"
 #include "noteedit.h"
+#include "annotation/textannotationgroup.h"
 
 #include <QtGui/QVBoxLayout>
 
@@ -49,6 +50,8 @@ NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     setNote( lastUsedNote() );
 
     connect( m_noteEditor, SIGNAL(cursorPositionChanged()), this, SLOT(slotCursorPositionChanged()) );
+    connect( m_noteEditor, SIGNAL(annotationGroupSelected(TextAnnotationGroup*)),
+             this, SIGNAL(annotationGroupSelected(TextAnnotationGroup*)) );
 }
 
 NoteWidget::~NoteWidget()

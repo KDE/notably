@@ -377,6 +377,9 @@ void NoteEdit::slotAnnotationsFinished()
         QList<TextAnnotation*> annotations = m_annotations.values( k );
         m_annotations.remove( k );
 
+        if( annotations.isEmpty() )
+            continue;
+
         if( annotations.length() == 1 ) {
             TextAnnotation* textAnnotation = annotations.first();
             insertAnnotation( textAnnotation );
@@ -385,11 +388,38 @@ void NoteEdit::slotAnnotationsFinished()
             kDebug() << "GOT MULTIPLE";
             TextAnnotationGroup* tag = new TextAnnotationGroup( annotations );
             insertGroupAnnotation( tag );
-
-            //FIXME: Now what?
-            // We need to sort by relevance and have some kind of cut off, and show options to the
-            // user
         }
     }
     m_annotations.clear();
+}
+
+void NoteEdit::acceptAnnotation(TextAnnotation* ta)
+{
+    // Remove the old annotation are put this one
+}
+
+void NoteEdit::rejectAnnotationGroup(TextAnnotationGroup* tag)
+{
+    // How the hell do I implement this?
+}
+
+
+void NoteEdit::mousePressEvent(QMouseEvent* e)
+{
+    QPoint point = e->pos();
+    int pos = m_document->documentLayout()->hitTest( point, Qt::FuzzyHit );
+    if( pos ) {
+        QTextCursor tc( m_document );
+        tc.movePosition( QTextCursor::Start );
+        tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, pos );
+
+        QTextCharFormat format = tc.charFormat();
+        if( format.hasProperty( AnnotationGroupTextObject::AnnotationData ) ) {
+            TextAnnotationGroup* tag = format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
+
+            emit annotationGroupSelected( tag );
+        }
+    }
+
+    QTextEdit::mousePressEvent(e);
 }

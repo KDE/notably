@@ -18,27 +18,32 @@
 */
 
 
-#ifndef ANNOTATIONGROUPTEXTOBJECT_H
-#define ANNOTATIONGROUPTEXTOBJECT_H
+#ifndef ANNOTATIONGROUPWIDGET_H
+#define ANNOTATIONGROUPWIDGET_H
 
-#include <QtGui/QAbstractTextDocumentLayout>
-#include <QtGui/QTextFormat>
+#include <QtGui/QWidget>
+#include <QtGui/QRadioButton>
 
-class AnnotationGroupTextObject : public QObject, public QTextObjectInterface
+#include "annotation/textannotationgroup.h"
+
+class AnnotationGroupWidget : public QWidget
 {
     Q_OBJECT
-    Q_INTERFACES(QTextObjectInterface)
-
 public:
-    enum { AnnotationGroupTextFormat = QTextFormat::UserObject + 2 };
-    enum AnnotationProperties {
-        AnnotationText = 10,
-        AnnotationData,
-    };
+    AnnotationGroupWidget(TextAnnotationGroup* tag, QWidget* parent);
+    virtual ~AnnotationGroupWidget();
 
-    void drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc,
-                    int posInDocument, const QTextFormat& format);
-    QSizeF intrinsicSize(QTextDocument* doc, int posInDocument, const QTextFormat& format);
+signals:
+    void acceptAnnotation(TextAnnotation* textAnnotation);
+    void rejectAnnotations(TextAnnotationGroup* group);
+
+private slots:
+    void slotOnAccept();
+    void slotOnReject();
+
+private:
+    QList<QRadioButton*> m_buttons;
+    TextAnnotationGroup* m_group;
 };
 
-#endif // ANNOTATIONGROUPTEXTOBJECT_H
+#endif // ANNOTATIONGROUPWIDGET_H

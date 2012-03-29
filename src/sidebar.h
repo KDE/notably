@@ -31,8 +31,10 @@
 #include <Nepomuk/Resource>
 #include <Nepomuk/Tag>
 
+class TextAnnotation;
 class MainMenu;
 class NoteInformation;
+class TextAnnotationGroup;
 
 class Sidebar : public QWidget
 {
@@ -45,6 +47,7 @@ public slots:
     void setTitle(const QString& title);
     void push(const QString& title, QWidget* widget);
     void showInfo(const Nepomuk::Resource &note);
+    void showAnnotationGroup(TextAnnotationGroup* tag);
 
     bool saveNote(const Nepomuk::Resource& note);
     void newNote();
@@ -52,6 +55,9 @@ public slots:
 signals:
     void noteSelected(const Nepomuk::Resource &note);
     void newNoteSelected();
+
+    void annotationAccepted(TextAnnotation* annotation);
+    void annotationRejected(TextAnnotationGroup* group);
 
 private slots:
     void slotBrowseNotes();

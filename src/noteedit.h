@@ -46,9 +46,8 @@ public:
 
     void setResource( const Nepomuk::Resource &note );
     Nepomuk::Resource resource() const;
-
-protected:
-    virtual void keyPressEvent(QKeyEvent* event);
+signals:
+    void annotationGroupSelected(TextAnnotationGroup *tag);
 
 public slots:
     /**
@@ -57,6 +56,13 @@ public slots:
      * made any modifications, as that will unnecessarily update the modification time.
      */
     void save();
+
+    void acceptAnnotation(TextAnnotation* ta);
+    void rejectAnnotationGroup(TextAnnotationGroup *tag);
+
+protected:
+    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void mousePressEvent(QMouseEvent* e);
 
 private slots:
     void insertCompletion(const QString& string);

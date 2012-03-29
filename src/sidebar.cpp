@@ -23,6 +23,7 @@
 #include "mainmenu.h"
 #include "browsemenu.h"
 #include "noteinformation.h"
+#include "annotationgroupwidget.h"
 #include "tags/tagcloud.h"
 
 #include <QtCore/QCoreApplication>
@@ -246,5 +247,17 @@ void Sidebar::slotBrowseByTags()
     connect( cloud, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
 
     push(i18n("Choose a tag"), cloud);
+    slotMoveForward();
+}
+
+void Sidebar::showAnnotationGroup(TextAnnotationGroup* tag)
+{
+    AnnotationGroupWidget* widget = new AnnotationGroupWidget( tag, this );
+    connect( widget, SIGNAL(acceptAnnotation(TextAnnotation*)),
+             SIGNAL(annotationAccepted(TextAnnotation*)) );
+    connect( widget, SIGNAL(rejectAnnotations(TextAnnotationGroup*)),
+             SIGNAL(annotationRejected(TextAnnotationGroup*)) );
+
+    push(i18n("Choose an Annotation"), widget);
     slotMoveForward();
 }

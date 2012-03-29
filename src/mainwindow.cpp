@@ -87,6 +87,8 @@ void MainWindow::setupGUI()
     connect( m_sidebar, SIGNAL(noteSelected(Nepomuk::Resource)), m_noteWidget, SLOT(setNote(Nepomuk::Resource)) );
     connect( m_sidebar, SIGNAL(newNoteSelected()), this, SLOT(slotNewNote()) );
     connect( m_noteWidget, SIGNAL(infoRequired(Nepomuk::Resource)), m_sidebar, SLOT(showInfo(Nepomuk::Resource)) );
+    connect( m_noteWidget, SIGNAL(annotationGroupSelected(TextAnnotationGroup*)),
+             m_sidebar, SLOT(showAnnotationGroup(TextAnnotationGroup*)) );
 }
 
 void MainWindow::toggleWindowState()
