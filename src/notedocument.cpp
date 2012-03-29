@@ -20,6 +20,7 @@
 
 #include "notedocument.h"
 #include "annotationtextobject.h"
+#include "annotationgrouptextobject.h"
 
 #include <QtGui/QTextBlock>
 #include <QtGui/QTextFragment>
@@ -67,14 +68,24 @@ QString NoteDocument::toRDFaHtml() const
 
             QString txt = fragment.text();
             const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
+            const bool isGroupObject = format.hasProperty( AnnotationGroupTextObject::AnnotationData );
 
-            if( isObject ) {
+            if( isObject && !isGroupObject ) {
                 const QString text = format.property( AnnotationTextObject::AnnotationText ).toString();
                 const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
                 const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
 
                 QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
                                .arg( prop.toString(), uri.toString(), text );
+                paragraph.append( string );
+
+                // They could be viable text in the fragment.
+                txt.remove(QChar::ObjectReplacementCharacter);
+                if( !txt.isEmpty() )
+                    paragraph.append( txt );
+            }
+            else if( isObject && isGroupObject ) {
+                const QString string = format.property( AnnotationGroupTextObject::AnnotationText ).toString();
                 paragraph.append( string );
 
                 // They could be viable text in the fragment.

@@ -16,6 +16,7 @@ set( SRCS
   noteedit.cpp
   notedocument.cpp
   annotationtextobject.cpp
+  annotationgrouptextobject.cpp
   sidebar.cpp
   notesview.cpp
   notesmodel.cpp
@@ -43,6 +44,7 @@ set( SRCS
   person/personcompleter.cpp
 
   annotation/textannotation.cpp
+  annotation/textannotationgroup.cpp
   annotation/annotator.cpp
 
   porterstemmer.cpp

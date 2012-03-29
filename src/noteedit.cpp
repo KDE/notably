@@ -22,9 +22,11 @@
 #include "noteedit.h"
 #include "notedocument.h"
 #include "annotationtextobject.h"
+#include "annotationgrouptextobject.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
 #include "annotation/textannotation.h"
+#include "annotation/textannotationgroup.h"
 #include "annotation/annotator.h"
 
 #include <QtGui/QKeyEvent>
@@ -63,6 +65,9 @@ NoteEdit::NoteEdit(QWidget* parent)
     QObject *annotationTextInterfaceObject = new AnnotationTextObject;
     m_document->documentLayout()->registerHandler( AnnotationTextObject::AnnotationTextFormat,
                                                    annotationTextInterfaceObject );
+    QObject *annotationGroupTextInterfaceObject = new AnnotationGroupTextObject;
+    m_document->documentLayout()->registerHandler( AnnotationGroupTextObject::AnnotationGroupTextFormat,
+                                                   annotationGroupTextInterfaceObject );
 
     // Annotations
     connect( Annotator::instance(), SIGNAL(newAnnotation(Nepomuk::Annotation*)),
@@ -317,6 +322,54 @@ void NoteEdit::insertAnnotation(TextAnnotation* ann)
 
 }
 
+void NoteEdit::insertGroupAnnotation(TextAnnotationGroup* tag)
+{
+    if( tag->annotations().isEmpty() )
+        return;
+
+    TextAnnotation* ann = tag->annotations().first();
+
+    int pos = ann->position();
+    int len = ann->length();
+
+    QTextCursor tc = textCursor();
+    tc.beginEditBlock();
+    tc.movePosition( QTextCursor::Start );
+    tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, pos );
+    tc.movePosition( QTextCursor::Right, QTextCursor::KeepAnchor, len );
+
+    QString text = tc.selectedText();
+    if( text != ann->text() ) {
+        kWarning() << "Warning. Buggy code. Annotations positions are not in sync.";
+        kWarning() << "Existing " << text << " vs " << ann->text();
+        return;
+    }
+
+    QTextCharFormat annotationFormat;
+    annotationFormat.setObjectType( AnnotationGroupTextObject::AnnotationGroupTextFormat );
+
+    annotationFormat.setProperty( AnnotationGroupTextObject::AnnotationText, text );
+    annotationFormat.setProperty( AnnotationGroupTextObject::AnnotationData, qVariantFromValue(tag) );
+
+    tc.removeSelectedText();
+    tc.insertText( QString(QChar::ObjectReplacementCharacter), annotationFormat );
+    tc.endEditBlock();
+    setTextCursor( tc );
+
+    // Update the positions of all the pending TextAnnotations
+    QHashIterator<int, TextAnnotation*> iter( m_annotations );
+    while( iter.hasNext() ) {
+        TextAnnotation* annotation = iter.next().value();
+
+        int pos = annotation->position();
+        if( pos > ann->position() ) {
+            pos -= ann->length() - 1;
+            annotation->setPosition( pos );
+        }
+    }
+
+}
+
 void NoteEdit::slotAnnotationsFinished()
 {
     QList<int> keys = m_annotations.keys();
@@ -329,6 +382,10 @@ void NoteEdit::slotAnnotationsFinished()
             insertAnnotation( textAnnotation );
         }
         else {
+            kDebug() << "GOT MULTIPLE";
+            TextAnnotationGroup* tag = new TextAnnotationGroup( annotations );
+            insertGroupAnnotation( tag );
+
             //FIXME: Now what?
             // We need to sort by relevance and have some kind of cut off, and show options to the
             // user
