@@ -14,6 +14,7 @@ target_link_libraries(notably_personannotationplugin
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
   nepomukannotation
+  nepomukdatamanagement
 )
 
 install(TARGETS notably_personannotationplugin DESTINATION ${PLUGIN_INSTALL_DIR})
