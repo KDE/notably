@@ -21,7 +21,6 @@
 
 #include "noteedit.h"
 #include "notedocument.h"
-#include "annotationtextobject.h"
 #include "annotationgrouptextobject.h"
 #include "person/personcompleter.h"
 #include "person/personmodel.h"
@@ -62,9 +61,6 @@ NoteEdit::NoteEdit(QWidget* parent)
     connect( m_completer, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)) );
 
     // So that we can render the people differently
-    QObject *annotationTextInterfaceObject = new AnnotationTextObject;
-    m_document->documentLayout()->registerHandler( AnnotationTextObject::AnnotationTextFormat,
-                                                   annotationTextInterfaceObject );
     QObject *annotationGroupTextInterfaceObject = new AnnotationGroupTextObject;
     m_document->documentLayout()->registerHandler( AnnotationGroupTextObject::AnnotationGroupTextFormat,
                                                    annotationGroupTextInterfaceObject );
@@ -229,14 +225,17 @@ void NoteEdit::insertCompletion(const QString& string)
 
     tc.removeSelectedText();
 
-    QTextCharFormat personFormat;
-    personFormat.setObjectType( AnnotationTextObject::AnnotationTextFormat );
+    //FIXME: Enter the correct coordinates
+    TextAnnotation* annotation = new TextAnnotation( 0, 0, PIMO::isRelated(), resourceUri, this );
+    TextAnnotationGroup* tag = new TextAnnotationGroup( QList<TextAnnotation*>() << annotation );
 
-    personFormat.setProperty( AnnotationTextObject::AnnotationText, string );
-    personFormat.setProperty( AnnotationTextObject::AnnotationUri, resourceUri );
-    personFormat.setProperty( AnnotationTextObject::AnnotationProperty, PIMO::isRelated() );
+    QTextCharFormat annotationFormat;
+    annotationFormat.setObjectType( AnnotationGroupTextObject::AnnotationGroupTextFormat );
 
-    tc.insertText( QString(QChar::ObjectReplacementCharacter), personFormat );
+    annotationFormat.setProperty( AnnotationGroupTextObject::AnnotationText, string );
+    annotationFormat.setProperty( AnnotationGroupTextObject::AnnotationData, qVariantFromValue(tag) );
+
+    tc.insertText( QString(QChar::ObjectReplacementCharacter), annotationFormat );
     setTextCursor( tc );
 }
 
@@ -278,49 +277,6 @@ void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
     }
 }
 
-void NoteEdit::insertAnnotation(TextAnnotation* ann)
-{
-    int pos = ann->position();
-    int len = ann->length();
-
-    QTextCursor tc = textCursor();
-    tc.beginEditBlock();
-    tc.movePosition( QTextCursor::Start );
-    tc.movePosition( QTextCursor::Right, QTextCursor::MoveAnchor, pos );
-    tc.movePosition( QTextCursor::Right, QTextCursor::KeepAnchor, len );
-
-    QString text = tc.selectedText();
-    if( text != ann->text() ) {
-        kWarning() << "Warning. Buggy code. Annotations positions are not in sync.";
-        kWarning() << "Existing " << text << " vs " << ann->text();
-        return;
-    }
-
-    QTextCharFormat annotationFormat;
-    annotationFormat.setObjectType( AnnotationTextObject::AnnotationTextFormat );
-
-    annotationFormat.setProperty( AnnotationTextObject::AnnotationText, text );
-    annotationFormat.setProperty( AnnotationTextObject::AnnotationUri, ann->object().resourceUri() );
-    annotationFormat.setProperty( AnnotationTextObject::AnnotationProperty, ann->property() );
-
-    tc.removeSelectedText();
-    tc.insertText( QString(QChar::ObjectReplacementCharacter), annotationFormat );
-    tc.endEditBlock();
-    setTextCursor( tc );
-
-    // Update the positions of all the pending TextAnnotations
-    QHashIterator<int, TextAnnotation*> iter( m_annotations );
-    while( iter.hasNext() ) {
-        TextAnnotation* annotation = iter.next().value();
-
-        int pos = annotation->position();
-        if( pos > ann->position() ) {
-            pos -= ann->length() - 1;
-            annotation->setPosition( pos );
-        }
-    }
-
-}
 
 void NoteEdit::insertGroupAnnotation(TextAnnotationGroup* tag)
 {
@@ -380,15 +336,8 @@ void NoteEdit::slotAnnotationsFinished()
         if( annotations.isEmpty() )
             continue;
 
-        if( annotations.length() == 1 ) {
-            TextAnnotation* textAnnotation = annotations.first();
-            insertAnnotation( textAnnotation );
-        }
-        else {
-            kDebug() << "GOT MULTIPLE";
-            TextAnnotationGroup* tag = new TextAnnotationGroup( annotations );
-            insertGroupAnnotation( tag );
-        }
+        TextAnnotationGroup* tag = new TextAnnotationGroup( annotations );
+        insertGroupAnnotation( tag );
     }
     m_annotations.clear();
 }
@@ -415,8 +364,8 @@ void NoteEdit::mousePressEvent(QMouseEvent* e)
 
         QTextCharFormat format = tc.charFormat();
         if( format.hasProperty( AnnotationGroupTextObject::AnnotationData ) ) {
-            TextAnnotationGroup* tag = format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
 
+            TextAnnotationGroup* tag = format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
             emit annotationGroupSelected( tag );
         }
     }

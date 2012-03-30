@@ -19,6 +19,7 @@
 
 
 #include "annotationgrouptextobject.h"
+#include "annotation/textannotationgroup.h"
 
 #include <QtGui/QFontMetrics>
 #include <QtGui/QPainter>
@@ -31,6 +32,7 @@ void AnnotationGroupTextObject::drawObject(QPainter* painter, const QRectF& rect
 {
     QFont font = doc->findBlock( posInDocument ).charFormat().font();
     QString name = format.property( AnnotationText ).toString();
+    TextAnnotationGroup* tag = format.property( AnnotationData ).value<TextAnnotationGroup*>();
 
     QRectF rec( rect );
     //vHanda: Just looks better this
@@ -39,8 +41,22 @@ void AnnotationGroupTextObject::drawObject(QPainter* painter, const QRectF& rect
     painter->save();
     painter->setFont( font );
     //FIXME: Depend on the color scheme
-    QColor color = Qt::red;
+    QColor color;
+    switch( tag->state() ) {
+        case TextAnnotationGroup::Accepted:
+            color = Qt::green;
+            break;
+
+        case TextAnnotationGroup::Listed:
+            color = Qt::red;
+            break;
+
+        case TextAnnotationGroup::Rejected:
+            color = Qt::blue;
+            break;
+    }
     color.setAlphaF( 0.2 );
+
     painter->fillRect( rec, color );
     painter->drawText( rec, name );
     painter->restore();

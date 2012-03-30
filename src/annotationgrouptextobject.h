@@ -32,7 +32,7 @@ class AnnotationGroupTextObject : public QObject, public QTextObjectInterface
 public:
     enum { AnnotationGroupTextFormat = QTextFormat::UserObject + 2 };
     enum AnnotationProperties {
-        AnnotationText = 10,
+        AnnotationText = 1,
         AnnotationData,
     };
 

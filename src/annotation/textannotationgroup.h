@@ -22,18 +22,33 @@
 #define TEXTANNOTATIONGROUP_H
 
 #include "textannotation.h"
+#include <QtCore/QObject>
 
-class TextAnnotationGroup
+class TextAnnotationGroup: public QObject
 {
+    Q_OBJECT
 public:
-    TextAnnotationGroup();
     TextAnnotationGroup(const QList<TextAnnotation*>& annotations);
+    explicit TextAnnotationGroup(TextAnnotation* ta);
 
     QList<TextAnnotation*> annotations();
     void setAnnotations(const QList<TextAnnotation*>& annotations);
 
+    enum State {
+        Accepted = 0,
+        Rejected = 1,
+        Listed
+    };
+
+    State state() const;
+    void setState( const State& st );
+
+signals:
+    void stateChanged(const State& state);
+
 private:
     QList<TextAnnotation*> m_annotations;
+    State m_state;
 };
 
 Q_DECLARE_METATYPE(TextAnnotationGroup*);

@@ -20,15 +20,21 @@
 
 #include "textannotationgroup.h"
 
-TextAnnotationGroup::TextAnnotationGroup()
+TextAnnotationGroup::TextAnnotationGroup( TextAnnotation* ta )
+    : m_state( Accepted )
 {
-
+    m_annotations << ta;
 }
 
 TextAnnotationGroup::TextAnnotationGroup(const QList< TextAnnotation* >& annotations)
     : m_annotations( annotations )
 {
-
+    if( m_annotations.size() == 1 ) {
+        m_state = Accepted;
+    }
+    else {
+        m_state = Listed;
+    }
 }
 
 QList< TextAnnotation* > TextAnnotationGroup::annotations()
@@ -40,3 +46,18 @@ void TextAnnotationGroup::setAnnotations(const QList< TextAnnotation* >& annotat
 {
     m_annotations = annotations;
 }
+
+TextAnnotationGroup::State TextAnnotationGroup::state() const
+{
+    return m_state;
+}
+
+void TextAnnotationGroup::setState(const TextAnnotationGroup::State& st)
+{
+    if( m_state != st ) {
+        m_state = st;
+        emit stateChanged( st );
+    }
+}
+
+

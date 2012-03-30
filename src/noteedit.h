@@ -72,7 +72,6 @@ private slots:
 
 private:
     QString wordUnderCursor() const;
-    void insertAnnotation(TextAnnotation* annotation);
     void insertGroupAnnotation(TextAnnotationGroup* tag);
 
     Nepomuk::Resource m_noteResource;

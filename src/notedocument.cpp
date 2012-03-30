@@ -19,8 +19,9 @@
 
 
 #include "notedocument.h"
-#include "annotationtextobject.h"
 #include "annotationgrouptextobject.h"
+#include "annotation/textannotationgroup.h"
+#include "annotation/textannotation.h"
 
 #include <QtGui/QTextBlock>
 #include <QtGui/QTextFragment>
@@ -68,34 +69,30 @@ QString NoteDocument::toRDFaHtml() const
 
             QString txt = fragment.text();
             const bool isObject = txt.contains(QChar::ObjectReplacementCharacter);
-            const bool isGroupObject = format.hasProperty( AnnotationGroupTextObject::AnnotationData );
 
-            if( isObject && !isGroupObject ) {
-                const QString text = format.property( AnnotationTextObject::AnnotationText ).toString();
-                const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
-                const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
+            if( isObject ) {
+                const QString text = format.property( AnnotationGroupTextObject::AnnotationText ).toString();
+                TextAnnotationGroup* tag = format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
+                TextAnnotation* ann = tag->annotations().first();
 
-                QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
-                               .arg( prop.toString(), uri.toString(), text );
-                paragraph.append( string );
+                const QUrl uri = ann->object().resourceUri();
+                const QUrl prop = ann->property();
 
-                // They could be viable text in the fragment.
-                txt.remove(QChar::ObjectReplacementCharacter);
-                if( !txt.isEmpty() )
-                    paragraph.append( txt );
-            }
-            else if( isObject && isGroupObject ) {
-                const QString string = format.property( AnnotationGroupTextObject::AnnotationText ).toString();
-                paragraph.append( string );
+                if( tag->state() == TextAnnotationGroup::Accepted ) {
+                    QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
+                                .arg( prop.toString(), uri.toString(), text );
+                    paragraph.append( string );
+                }
+                else if( tag->state() == TextAnnotationGroup::Listed || tag->state() == TextAnnotationGroup::Rejected ) {
+                    paragraph.append( text );
+                }
 
                 // They could be viable text in the fragment.
                 txt.remove(QChar::ObjectReplacementCharacter);
-                if( !txt.isEmpty() )
-                    paragraph.append( txt );
             }
-            else {
+
+            if( !txt.isEmpty() )
                 paragraph.append( fragment.text() );
-            }
         }
         paragraph.append("</p>");
 
@@ -111,18 +108,6 @@ QString NoteDocument::toRDFaHtml() const
     return html;
 }
 
-namespace {
-    QTextCharFormat personFormat(const QUrl& resourceUri, const QString& name) {
-        QTextCharFormat format;
-        format.setObjectType( AnnotationTextObject::AnnotationTextFormat );
-
-        format.setProperty( AnnotationTextObject::AnnotationText, name );
-        format.setProperty( AnnotationTextObject::AnnotationUri, resourceUri );
-        format.setProperty( AnnotationTextObject::AnnotationProperty, PIMO::isRelated() );
-
-        return format;
-    }
-}
 void NoteDocument::setRDFaHtml(const QString& html)
 {
     QDomDocument document;
@@ -153,8 +138,16 @@ void NoteDocument::setRDFaHtml(const QString& html)
                 QString resource = span.attribute(QLatin1String("resource"));
                 QString name = span.text();
 
-                QTextCharFormat pf = personFormat( resource, name );
-                cursor.insertText( QString(QChar::ObjectReplacementCharacter), pf );
+                TextAnnotation* ta = new TextAnnotation( -1, name.length(), rel, resource, this );
+                TextAnnotationGroup* tag = new TextAnnotationGroup( ta );
+
+                QTextCharFormat format;
+                format.setObjectType( AnnotationGroupTextObject::AnnotationGroupTextFormat );
+
+                format.setProperty( AnnotationGroupTextObject::AnnotationText, name );
+                format.setProperty( AnnotationGroupTextObject::AnnotationData, qVariantFromValue(tag) );
+
+                cursor.insertText( QString(QChar::ObjectReplacementCharacter), format );
             }
 
             node = node.nextSibling();
@@ -193,11 +186,15 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
 
             if( isObject ) {
                 QTextCharFormat format = fragment.charFormat();
-                const QUrl uri = format.property( AnnotationTextObject::AnnotationUri ).toUrl();
-                const QUrl prop = format.property( AnnotationTextObject::AnnotationProperty ).toUrl();
+                TextAnnotationGroup* tag= format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
 
-                if( prop == property )
-                    uris << uri;
+                if( tag->state() == TextAnnotationGroup::Accepted ) {
+                    const QUrl uri = tag->annotations().first()->object().resourceUri();
+                    const QUrl prop= tag->annotations().first()->property();
+
+                    if( prop == property )
+                        uris << uri;
+                }
             }
         }
 
@@ -226,7 +223,7 @@ QList< NoteDocument::Annotation > NoteDocument::annotations()
                 Annotation ann;
                 ann.startPos = fragment.position();
                 ann.format = format;
-                ann.text = format.property( AnnotationTextObject::AnnotationText ).toString();
+                ann.text = format.property( AnnotationGroupTextObject::AnnotationText ).toString();
 
                 annotations << ann;
             }
