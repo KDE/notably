@@ -253,10 +253,6 @@ void Sidebar::slotBrowseByTags()
 void Sidebar::showAnnotationGroup(TextAnnotationGroup* tag)
 {
     AnnotationGroupWidget* widget = new AnnotationGroupWidget( tag, this );
-    connect( widget, SIGNAL(acceptAnnotation(TextAnnotation*)),
-             SIGNAL(annotationAccepted(TextAnnotation*)) );
-    connect( widget, SIGNAL(rejectAnnotations(TextAnnotationGroup*)),
-             SIGNAL(annotationRejected(TextAnnotationGroup*)) );
 
     push(i18n("Choose an Annotation"), widget);
     slotMoveForward();

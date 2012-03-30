@@ -73,12 +73,12 @@ QString NoteDocument::toRDFaHtml() const
             if( isObject ) {
                 const QString text = format.property( AnnotationGroupTextObject::AnnotationText ).toString();
                 TextAnnotationGroup* tag = format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
-                TextAnnotation* ann = tag->annotations().first();
-
-                const QUrl uri = ann->object().resourceUri();
-                const QUrl prop = ann->property();
 
                 if( tag->state() == TextAnnotationGroup::Accepted ) {
+                    TextAnnotation* ann = tag->acceptedAnnotation();
+                    const QUrl uri = ann->object().resourceUri();
+                    const QUrl prop = ann->property();
+
                     QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
                                 .arg( prop.toString(), uri.toString(), text );
                     paragraph.append( string );
@@ -189,8 +189,9 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
                 TextAnnotationGroup* tag= format.property( AnnotationGroupTextObject::AnnotationData ).value<TextAnnotationGroup*>();
 
                 if( tag->state() == TextAnnotationGroup::Accepted ) {
-                    const QUrl uri = tag->annotations().first()->object().resourceUri();
-                    const QUrl prop= tag->annotations().first()->property();
+                    TextAnnotation* ta = tag->acceptedAnnotation();
+                    const QUrl uri = ta->object().resourceUri();
+                    const QUrl prop= ta->property();
 
                     if( prop == property )
                         uris << uri;

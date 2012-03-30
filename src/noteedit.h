@@ -57,9 +57,6 @@ public slots:
      */
     void save();
 
-    void acceptAnnotation(TextAnnotation* ta);
-    void rejectAnnotationGroup(TextAnnotationGroup *tag);
-
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void mousePressEvent(QMouseEvent* e);
@@ -73,6 +70,7 @@ private slots:
 private:
     QString wordUnderCursor() const;
     void insertGroupAnnotation(TextAnnotationGroup* tag);
+    void slotAnnotationStateChanged(TextAnnotationGroup* tag);
 
     Nepomuk::Resource m_noteResource;
     PersonCompleter* m_completer;

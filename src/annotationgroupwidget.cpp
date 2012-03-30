@@ -112,11 +112,11 @@ void AnnotationGroupWidget::slotOnAccept()
         }
     }
 
-    emit acceptAnnotation( ta );
+    m_group->setAcceptedAnnotation( ta );
 }
 
 void AnnotationGroupWidget::slotOnReject()
 {
-    emit rejectAnnotations( m_group );
+    m_group->reject();
 }
 

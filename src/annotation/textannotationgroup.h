@@ -43,11 +43,16 @@ public:
     State state() const;
     void setState( const State& st );
 
+    void setAcceptedAnnotation(TextAnnotation* annotation);
+    TextAnnotation* acceptedAnnotation() const;
+
+    void reject();
 signals:
-    void stateChanged(const State& state);
+    void stateChanged(TextAnnotationGroup* tag);
 
 private:
     QList<TextAnnotation*> m_annotations;
+    TextAnnotation* m_acceptedAnnotation;
     State m_state;
 };
 

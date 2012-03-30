@@ -22,15 +22,19 @@
 
 TextAnnotationGroup::TextAnnotationGroup( TextAnnotation* ta )
     : m_state( Accepted )
+    , m_acceptedAnnotation( 0 )
 {
     m_annotations << ta;
+    m_acceptedAnnotation = ta;
 }
 
 TextAnnotationGroup::TextAnnotationGroup(const QList< TextAnnotation* >& annotations)
     : m_annotations( annotations )
+    , m_acceptedAnnotation( 0 )
 {
     if( m_annotations.size() == 1 ) {
         m_state = Accepted;
+        m_acceptedAnnotation = m_annotations.first();
     }
     else {
         m_state = Listed;
@@ -56,8 +60,31 @@ void TextAnnotationGroup::setState(const TextAnnotationGroup::State& st)
 {
     if( m_state != st ) {
         m_state = st;
-        emit stateChanged( st );
+        emit stateChanged( this );
     }
 }
 
+TextAnnotation* TextAnnotationGroup::acceptedAnnotation() const
+{
+    return m_acceptedAnnotation;
+}
 
+void TextAnnotationGroup::setAcceptedAnnotation(TextAnnotation* annotation)
+{
+    if( annotation != m_acceptedAnnotation ) {
+        m_acceptedAnnotation = annotation;
+        m_state = Accepted;
+
+        emit stateChanged( this );
+    }
+}
+
+void TextAnnotationGroup::reject()
+{
+    if( m_state != Rejected ) {
+        m_state = Rejected;
+        m_acceptedAnnotation = 0;
+
+        emit stateChanged( this );
+    }
+}

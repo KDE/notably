@@ -283,6 +283,7 @@ void NoteEdit::insertGroupAnnotation(TextAnnotationGroup* tag)
     if( tag->annotations().isEmpty() )
         return;
 
+    connect( tag, SIGNAL(stateChanged(TextAnnotationGroup*)), this, SLOT(slotAnnotationStateChanged(TextAnnotationGroup*)) );
     TextAnnotation* ann = tag->annotations().first();
 
     int pos = ann->position();
@@ -342,17 +343,6 @@ void NoteEdit::slotAnnotationsFinished()
     m_annotations.clear();
 }
 
-void NoteEdit::acceptAnnotation(TextAnnotation* ta)
-{
-    // Remove the old annotation are put this one
-}
-
-void NoteEdit::rejectAnnotationGroup(TextAnnotationGroup* tag)
-{
-    // How the hell do I implement this?
-}
-
-
 void NoteEdit::mousePressEvent(QMouseEvent* e)
 {
     QPoint point = e->pos();
@@ -371,4 +361,9 @@ void NoteEdit::mousePressEvent(QMouseEvent* e)
     }
 
     QTextEdit::mousePressEvent(e);
+}
+
+void NoteEdit::slotAnnotationStateChanged(TextAnnotationGroup* tag)
+{
+    repaint();
 }

@@ -33,10 +33,6 @@ public:
     AnnotationGroupWidget(TextAnnotationGroup* tag, QWidget* parent);
     virtual ~AnnotationGroupWidget();
 
-signals:
-    void acceptAnnotation(TextAnnotation* textAnnotation);
-    void rejectAnnotations(TextAnnotationGroup* group);
-
 private slots:
     void slotOnAccept();
     void slotOnReject();
