@@ -25,17 +25,17 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QSortFilterProxyModel>
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/ResourceTerm>
-#include <Nepomuk/Query/ComparisonTerm>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/ResourceTerm>
+#include <Nepomuk2/Query/ComparisonTerm>
 
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/PIMO>
 #include <Soprano/Vocabulary/NAO>
 
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 using namespace Soprano::Vocabulary;
 
 NoteBrowser::NoteBrowser(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
@@ -54,8 +54,8 @@ NoteBrowser::NoteBrowser(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     connect( m_view, SIGNAL(doubleClicked(QModelIndex)),
              this, SLOT(slotNoteSelected(QModelIndex)) );
 
-    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( PIMO::Note() ) );
-    Nepomuk::Query::ComparisonTerm compTerm( NAO::created(), Nepomuk::Query::Term() );
+    Nepomuk2::Query::ResourceTypeTerm typeTerm( Nepomuk2::Types::Class( PIMO::Note() ) );
+    Nepomuk2::Query::ComparisonTerm compTerm( NAO::created(), Nepomuk2::Query::Term() );
     compTerm.setSortWeight( 1, Qt::DescendingOrder );
 
     m_query = typeTerm && compTerm;
@@ -74,20 +74,20 @@ NoteBrowser::~NoteBrowser()
 
 void NoteBrowser::slotNoteSelected(const QModelIndex& index)
 {
-    Nepomuk::Resource res = m_model->resourceForIndex(index);
+    Nepomuk2::Resource res = m_model->resourceForIndex(index);
     emit noteSelected( res );
 }
 
-void NoteBrowser::setTag(const Nepomuk::Tag& tag)
+void NoteBrowser::setTag(const Nepomuk2::Tag& tag)
 {
-    m_query = m_query && Nepomuk::Query::ComparisonTerm(NAO::hasTag(),
-                                                        Nepomuk::Query::ResourceTerm(tag));
+    m_query = m_query && Nepomuk2::Query::ComparisonTerm(NAO::hasTag(),
+                                                        Nepomuk2::Query::ResourceTerm(tag));
 }
 
-void NoteBrowser::setPerson(const Nepomuk::Resource& person)
+void NoteBrowser::setPerson(const Nepomuk2::Resource& person)
 {
-    m_query = m_query && Nepomuk::Query::ComparisonTerm(PIMO::isRelated(),
-                                                        Nepomuk::Query::ResourceTerm(person));
+    m_query = m_query && Nepomuk2::Query::ComparisonTerm(PIMO::isRelated(),
+                                                        Nepomuk2::Query::ResourceTerm(person));
 }
 
 void NoteBrowser::get()
@@ -95,12 +95,12 @@ void NoteBrowser::get()
     m_model->setQuery( m_query );
 }
 
-Nepomuk::Query::Query NoteBrowser::query() const
+Nepomuk2::Query::Query NoteBrowser::query() const
 {
     return m_query;
 }
 
-void NoteBrowser::setQuery(const Nepomuk::Query::Query& query)
+void NoteBrowser::setQuery(const Nepomuk2::Query::Query& query)
 {
     m_query = query;
 }

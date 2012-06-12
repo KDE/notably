@@ -26,9 +26,9 @@
 #include <KTextEdit>
 #include <QtGui/QCompleter>
 #include <QtCore/QSet>
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
-#include "nepomuk/annotation.h"
+#include "annotation/annotation.h"
 
 class PersonCompleter;
 class NoteDocument;
@@ -44,8 +44,8 @@ public:
 
     void reset();
 
-    void setResource( const Nepomuk::Resource &note );
-    Nepomuk::Resource resource() const;
+    void setResource( const Nepomuk2::Resource &note );
+    Nepomuk2::Resource resource() const;
 signals:
     void annotationGroupSelected(TextAnnotationGroup *tag);
 
@@ -64,7 +64,7 @@ protected:
 private slots:
     void insertCompletion(const QString& string);
 
-    void slotNewAnnotation(Nepomuk::Annotation* annotation);
+    void slotNewAnnotation(Nepomuk2::Annotation* annotation);
     void slotAnnotationsFinished();
 
 private:
@@ -72,7 +72,7 @@ private:
     void insertGroupAnnotation(TextAnnotationGroup* tag);
     void slotAnnotationStateChanged(TextAnnotationGroup* tag);
 
-    Nepomuk::Resource m_noteResource;
+    Nepomuk2::Resource m_noteResource;
     PersonCompleter* m_completer;
 
     NoteDocument* m_document;

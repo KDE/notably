@@ -25,7 +25,7 @@
 #include "tag.h"
 #include <QtGui/QListView>
 
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 class Tag;
 
@@ -35,16 +35,16 @@ class TagView : public QWidget
 public:
     explicit TagView(QWidget* parent = 0);
 
-    void addTags( const QList<Nepomuk::Tag> &tags );
-    void setTags( const QList<Nepomuk::Tag> &tags );
+    void addTags( const QList<Nepomuk2::Tag> &tags );
+    void setTags( const QList<Nepomuk2::Tag> &tags );
     void clearTags();
-    QList<Nepomuk::Tag> tags();
+    QList<Nepomuk2::Tag> tags();
 
 signals:
-    void tagClicked(const Nepomuk::Tag& tag);
+    void tagClicked(const Nepomuk2::Tag& tag);
 
 private slots:
-    void slotTagDeleted(const Nepomuk::Tag& tag);
+    void slotTagDeleted(const Nepomuk2::Tag& tag);
 
 private:
     FlowLayout* m_layout;

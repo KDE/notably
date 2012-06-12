@@ -22,7 +22,7 @@
 #include "annotationplugin.h"
 #include "annotationrequest.h"
 
-class Nepomuk::AnnotationPlugin::Private
+class Nepomuk2::AnnotationPlugin::Private
 {
 public:
     Private( AnnotationPlugin* parent )
@@ -37,39 +37,39 @@ private:
 
 
 
-Nepomuk::AnnotationPlugin::AnnotationPlugin(QObject* parent)
+Nepomuk2::AnnotationPlugin::AnnotationPlugin(QObject* parent)
     : QObject(parent),
       d( new Private(this) )
 {
 }
 
-Nepomuk::AnnotationPlugin::~AnnotationPlugin()
+Nepomuk2::AnnotationPlugin::~AnnotationPlugin()
 {
     delete d;
 }
 
 
-void Nepomuk::AnnotationPlugin::getPossibleAnnotations( const AnnotationRequest& request )
+void Nepomuk2::AnnotationPlugin::getPossibleAnnotations( const AnnotationRequest& request )
 {
     d->currentRequest = request;
     doGetPossibleAnnotations( request );
 }
 
 
-void Nepomuk::AnnotationPlugin::emitFinished()
+void Nepomuk2::AnnotationPlugin::emitFinished()
 {
     emit finished();
     emit finished( this );
 }
 
 
-void Nepomuk::AnnotationPlugin::addNewAnnotation( Nepomuk::Annotation* anno )
+void Nepomuk2::AnnotationPlugin::addNewAnnotation( Nepomuk2::Annotation* anno )
 {
     emit newAnnotation( anno );
 }
 
 
-Nepomuk::AnnotationRequest Nepomuk::AnnotationPlugin::currentRequest() const
+Nepomuk2::AnnotationRequest Nepomuk2::AnnotationPlugin::currentRequest() const
 {
     return d->currentRequest;
 }

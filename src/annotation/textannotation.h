@@ -21,13 +21,13 @@
 #ifndef TEXTANNOTATION_H
 #define TEXTANNOTATION_H
 
-#include "nepomuk/annotation.h"
+#include "annotation.h"
 
-class TextAnnotation : public Nepomuk::Annotation
+class TextAnnotation : public Nepomuk2::Annotation
 {
     Q_OBJECT
 public:
-    TextAnnotation(int pos, int len, const QUrl& prop, const Nepomuk::Resource& obj, QObject* parent=0);
+    TextAnnotation(int pos, int len, const QUrl& prop, const Nepomuk2::Resource& obj, QObject* parent=0);
 
     void setPosition(int pos);
     void setLength(int len);
@@ -39,21 +39,21 @@ public:
     void setText(const QString& string);
 
     QUrl property() const;
-    Nepomuk::Resource object() const;
+    Nepomuk2::Resource object() const;
 
-    bool exists(Nepomuk::Resource res) const;
+    bool exists(Nepomuk2::Resource res) const;
 
     int group() const;
     void setGroup(int g);
 protected:
-    virtual void doCreate(Nepomuk::Resource res);
+    virtual void doCreate(Nepomuk2::Resource res);
 
 private:
     int m_position;
     int m_length;
 
     const QUrl m_property;
-    const Nepomuk::Resource m_object;
+    const Nepomuk2::Resource m_object;
 
     int m_group;
     QString m_text;

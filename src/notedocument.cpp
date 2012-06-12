@@ -32,10 +32,10 @@
 
 #include <QtCore/QUrl>
 
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/PIMO>
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 NoteDocument::NoteDocument(QObject* parent): QTextDocument(parent)
 {

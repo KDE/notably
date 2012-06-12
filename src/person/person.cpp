@@ -20,17 +20,17 @@
 
 #include "person.h"
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/File>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Vocabulary/NCO>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/File>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NCO>
 
-#include <nepomuk/datamanagement.h>
+#include <Nepomuk2/DataManagement>
 
 #include <KDebug>
 #include <KJob>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 Person::Person()
 {
@@ -46,7 +46,7 @@ Person::Person(const Person& p)
 
 Person::Person(const QUrl& uri)
 {
-    m_pimoPerson = Nepomuk::Resource::fromResourceUri(uri);
+    m_pimoPerson = Nepomuk2::Resource::fromResourceUri(uri);
     if( !m_pimoPerson.hasType(PIMO::Person()) ) {
         kWarning() << uri << "is not of type pimo::Person";
         return;
@@ -54,22 +54,22 @@ Person::Person(const QUrl& uri)
 
     //FIXME: Check if the pimo:Person has been given a name, and photo
 
-    QList<Nepomuk::Resource> contacts = personContacts();
+    QList<Nepomuk2::Resource> contacts = personContacts();
     setProperties(contacts);
 
-    QList<Nepomuk::Resource> imAccounts;
+    QList<Nepomuk2::Resource> imAccounts;
     if( m_fullName.isEmpty() || m_nickName.isEmpty() || m_photoUrl.isEmpty() ) {
-        foreach( const Nepomuk::Resource &con, contacts ) {
+        foreach( const Nepomuk2::Resource &con, contacts ) {
             imAccounts << con.property(NCO::hasIMAccount()).toResourceList();
         }
         setProperties(imAccounts);
     }
 }
 
-void Person::setProperties(const QList< Nepomuk::Resource >& resources)
+void Person::setProperties(const QList< Nepomuk2::Resource >& resources)
 {
     //kDebug() << resources.size();
-    foreach( const Nepomuk::Resource &res, resources ) {
+    foreach( const Nepomuk2::Resource &res, resources ) {
         if( m_fullName.isEmpty() ) {
             QString name = res.property(NCO::fullname()).toString();
             if( !name.isEmpty() )
@@ -124,7 +124,7 @@ QUrl Person::uri() const
     return m_pimoPerson.resourceUri();
 }
 
-Nepomuk::Resource Person::resource() const
+Nepomuk2::Resource Person::resource() const
 {
     return m_pimoPerson;
 }
@@ -134,11 +134,11 @@ bool Person::isEmpty() const
     return m_fullName.isEmpty() && m_nickName.isEmpty() && m_photoUrl.isEmpty();
 }
 
-QList< Nepomuk::Resource > Person::personContacts() const
+QList< Nepomuk2::Resource > Person::personContacts() const
 {
-    QList<Nepomuk::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
-    QList<Nepomuk::Resource> contacts;
-    foreach( const Nepomuk::Resource &res, occurances ) {
+    QList<Nepomuk2::Resource> occurances = m_pimoPerson.property(PIMO::groundingOccurrence()).toResourceList();
+    QList<Nepomuk2::Resource> contacts;
+    foreach( const Nepomuk2::Resource &res, occurances ) {
         if( res.hasType(NCO::PersonContact()) )
             contacts << res;
     }
@@ -148,12 +148,12 @@ QList< Nepomuk::Resource > Person::personContacts() const
 
 void Person::compress()
 {
-    QList<Nepomuk::Resource> contacts = personContacts();
+    QList<Nepomuk2::Resource> contacts = personContacts();
 
-    Nepomuk::Resource lastMergedContact;
-    QListIterator<Nepomuk::Resource> iter( contacts );
+    Nepomuk2::Resource lastMergedContact;
+    QListIterator<Nepomuk2::Resource> iter( contacts );
     while( iter.hasNext() ) {
-        Nepomuk::Resource pc = iter.next();
+        Nepomuk2::Resource pc = iter.next();
         if( !lastMergedContact.isValid() ) {
             lastMergedContact = pc;
             continue;
@@ -163,7 +163,7 @@ void Person::compress()
             const QUrl uri1 = lastMergedContact.resourceUri();
             const QUrl uri2 = pc.resourceUri();
 
-            KJob* job = Nepomuk::mergeResources( uri1, uri2 );
+            KJob* job = Nepomuk2::mergeResources( uri1, uri2 );
             job->exec();
             if( job->error() ) {
                 kWarning() << job->errorString();
@@ -177,7 +177,7 @@ void Person::compress()
     // The cache should now be cleared
 }
 
-bool Person::canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resource& c2)
+bool Person::canMergeContacts(const Nepomuk2::Resource& c1, const Nepomuk2::Resource& c2)
 {
     if( !c1.hasType(NCO::PersonContact()) || !c2.hasType(NCO::PersonContact()) )
         return false;
@@ -200,8 +200,8 @@ bool Person::canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resour
 
     kDebug() << c1Nickname << c2Nickname;
 
-    const Nepomuk::Resource c1Gender = c1.property( NCO::gender() ).toResource();
-    const Nepomuk::Resource c2Gender = c2.property( NCO::gender() ).toResource();
+    const Nepomuk2::Resource c1Gender = c1.property( NCO::gender() ).toResource();
+    const Nepomuk2::Resource c2Gender = c2.property( NCO::gender() ).toResource();
 
     if( !c1Gender.isValid() && !c2Gender.isValid() )
         if( c1Gender != c2Gender )

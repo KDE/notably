@@ -20,13 +20,13 @@
 
 #include "tagcloud.h"
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/QueryServiceClient>
 
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/Types/Class>
+#include "../simpleresourcemodel.h"
+#include <Nepomuk2/ResourceManager>
 #include <KDebug>
 
 #include <Soprano/Model>
@@ -46,13 +46,13 @@ TagCloud::TagCloud(QWidget* parent): QTextBrowser(parent)
     const QString query = QString::fromLatin1("select ?r (select count(*) where { ?t nao:hasTag ?r }) as ?count"
                                               " where { ?r a nao:Tag . } order by desc(?count)");
 
-    Soprano::Model* model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
     Soprano::QueryResultIterator it = model->executeQuery( query, Soprano::Query::QueryLanguageSparql );
     QHash<QString, int> tagHash;
     int total = 0;
     while( it.next() ) {
         QUrl uri = it["r"].uri();
-        QString tagLabel = Nepomuk::Resource(uri).identifiers().first();
+        QString tagLabel = Nepomuk2::Resource(uri).identifiers().first();
         int freq = it["count"].literal().toInt();
 
         tagHash.insert( tagLabel, freq );
@@ -88,7 +88,7 @@ void TagCloud::createBrowser()
 
 void TagCloud::slotAnchorClicked(const QUrl& url)
 {
-    emit tagSelected( Nepomuk::Tag(url.toString()) );
+    emit tagSelected( Nepomuk2::Tag(url.toString()) );
 
     // FIXME: Find a better way
     createBrowser();

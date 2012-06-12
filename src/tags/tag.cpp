@@ -35,12 +35,12 @@ Tag::Tag(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 
 }
 
-void Tag::setTag(const Nepomuk::Tag& tag)
+void Tag::setTag(const Nepomuk2::Tag& tag)
 {
     m_tagResource = tag;
 }
 
-Nepomuk::Tag Tag::tag() const
+Nepomuk2::Tag Tag::tag() const
 {
     return m_tagResource;
 }

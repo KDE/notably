@@ -24,11 +24,11 @@
 #include <QtCore/QSharedData>
 #include <QtCore/QList>
 
-#include <nepomuk/resource.h>
+#include <Nepomuk2/Resource>
 
 #include "annotationrequest.h"
 
-namespace Nepomuk {
+namespace Nepomuk2 {
     class AnnotationRequestPrivate : public QSharedData
     {
     public:

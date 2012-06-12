@@ -21,57 +21,57 @@
 #include "annotationrequest.h"
 #include "annotationrequest_p.h"
 
-Nepomuk::AnnotationRequest::AnnotationRequest( const Resource& resource )
+Nepomuk2::AnnotationRequest::AnnotationRequest( const Resource& resource )
     : d( new AnnotationRequestPrivate() )
 {
     d->resource = resource;
 }
 
 
-Nepomuk::AnnotationRequest::AnnotationRequest( const AnnotationRequest& other )
+Nepomuk2::AnnotationRequest::AnnotationRequest( const AnnotationRequest& other )
 {
     d = other.d;
 }
 
 
-Nepomuk::AnnotationRequest::~AnnotationRequest()
+Nepomuk2::AnnotationRequest::~AnnotationRequest()
 {
 }
 
 
-Nepomuk::AnnotationRequest& Nepomuk::AnnotationRequest::operator=( const AnnotationRequest& other )
+Nepomuk2::AnnotationRequest& Nepomuk2::AnnotationRequest::operator=( const AnnotationRequest& other )
 {
     d = other.d;
     return *this;
 }
 
 
-Nepomuk::Resource Nepomuk::AnnotationRequest::resource() const
+Nepomuk2::Resource Nepomuk2::AnnotationRequest::resource() const
 {
     return d->resource;
 }
 
 
-QString Nepomuk::AnnotationRequest::filter() const
+QString Nepomuk2::AnnotationRequest::filter() const
 {
     return d->filter;
 }
 
 
-void Nepomuk::AnnotationRequest::setResource( const Resource& res )
+void Nepomuk2::AnnotationRequest::setResource( const Resource& res )
 {
     d->resource = res;
 }
 
 
-void Nepomuk::AnnotationRequest::setFilter( const QString& filter )
+void Nepomuk2::AnnotationRequest::setFilter( const QString& filter )
 {
     d->filter = filter;
 }
 
 
 // static
-Nepomuk::AnnotationRequest Nepomuk::AnnotationRequest::createSimpleFilterRequest( const Nepomuk::Resource& resource, const QString& filter )
+Nepomuk2::AnnotationRequest Nepomuk2::AnnotationRequest::createSimpleFilterRequest( const Nepomuk2::Resource& resource, const QString& filter )
 {
     AnnotationRequest request( resource );
     request.setFilter( filter );

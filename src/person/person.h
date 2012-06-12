@@ -23,7 +23,7 @@
 
 #include <QtCore/QUrl>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 class Person
 {
@@ -39,23 +39,23 @@ public:
     QString displayName() const;
     QUrl photo() const;
     QUrl uri() const;
-    Nepomuk::Resource resource() const;
+    Nepomuk2::Resource resource() const;
 
     bool isEmpty() const;
 
     void compress();
 
-    QList<Nepomuk::Resource> personContacts() const;
+    QList<Nepomuk2::Resource> personContacts() const;
 private:
-    Nepomuk::Resource m_pimoPerson;
+    Nepomuk2::Resource m_pimoPerson;
 
     QString m_fullName;
     QString m_nickName;
     QUrl m_photoUrl;
 
-    void setProperties(const QList<Nepomuk::Resource> &resources);
+    void setProperties(const QList<Nepomuk2::Resource> &resources);
 
-    bool canMergeContacts(const Nepomuk::Resource& c1, const Nepomuk::Resource& c2);
+    bool canMergeContacts(const Nepomuk2::Resource& c1, const Nepomuk2::Resource& c2);
 };
 
 #endif // PERSON_H

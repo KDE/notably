@@ -22,10 +22,11 @@
 #define NOTESMODEL_H
 
 #include <QtCore/QHash>
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/Query/Query>
+#include <Nepomuk2/Query/Query>
 
-class NotesModel : public Nepomuk::Utils::SimpleResourceModel
+#include "simpleresourcemodel.h"
+
+class NotesModel : public Nepomuk2::Utils::SimpleResourceModel
 {
     Q_OBJECT
 public:
@@ -37,9 +38,9 @@ public:
     QUrl propertyForRole( int role ) const;
     int roleForProperty( const QUrl& property );
 
-    void emitDataUpdated( const Nepomuk::Resource& res );
+    void emitDataUpdated( const Nepomuk2::Resource& res );
 
-    void setQuery( Nepomuk::Query::Query& query );
+    void setQuery( Nepomuk2::Query::Query& query );
 
 private:
     QHash<QUrl, int> m_propertyRoleHash;

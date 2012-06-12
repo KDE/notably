@@ -20,12 +20,12 @@
 
 #include "tagcompleter.h"
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/QueryServiceClient>
 
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Utils/SimpleResourceModel>
+#include <Nepomuk2/Types/Class>
+#include "../simpleresourcemodel.h"
 
 #include <Soprano/Vocabulary/NAO>
 
@@ -33,18 +33,18 @@ using namespace Soprano::Vocabulary;
 
 TagCompleter::TagCompleter(QObject* parent): QCompleter(parent)
 {
-    Nepomuk::Utils::SimpleResourceModel *model = new Nepomuk::Utils::SimpleResourceModel( this );
+    Nepomuk2::Utils::SimpleResourceModel *model = new Nepomuk2::Utils::SimpleResourceModel( this );
 
     setModel( model );
     setCaseSensitivity( Qt::CaseInsensitive );
     setCompletionColumn( 0 );
 
-    Nepomuk::Query::ResourceTypeTerm typeTerm( Nepomuk::Types::Class( NAO::Tag() ) );
-    Nepomuk::Query::Query query( typeTerm );
+    Nepomuk2::Query::ResourceTypeTerm typeTerm( Nepomuk2::Types::Class( NAO::Tag() ) );
+    Nepomuk2::Query::Query query( typeTerm );
 
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             model, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    Nepomuk2::Query::QueryServiceClient *client = new Nepomuk2::Query::QueryServiceClient( this );
+    connect( client, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+             model, SLOT(addResults(QList<Nepomuk2::Query::Result>)) );
     connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
 
     client->query( query );

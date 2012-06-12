@@ -24,44 +24,44 @@
 
 #include <kdebug.h>
 
-Nepomuk::Annotation::Annotation( QObject* parent )
+Nepomuk2::Annotation::Annotation( QObject* parent )
     : QObject( parent ),
       d( new AnnotationPrivate() )
 {
 }
 
 
-Nepomuk::Annotation::~Annotation()
+Nepomuk2::Annotation::~Annotation()
 {
     delete d;
 }
 
 
-QString Nepomuk::Annotation::label() const
+QString Nepomuk2::Annotation::label() const
 {
     return d->label;
 }
 
 
-QString Nepomuk::Annotation::comment() const
+QString Nepomuk2::Annotation::comment() const
 {
     return d->comment;
 }
 
 
-QIcon Nepomuk::Annotation::icon() const
+QIcon Nepomuk2::Annotation::icon() const
 {
     return d->icon;
 }
 
 
-qreal Nepomuk::Annotation::relevance() const
+qreal Nepomuk2::Annotation::relevance() const
 {
     return d->relevance;
 }
 
 
-void Nepomuk::Annotation::create( Resource res )
+void Nepomuk2::Annotation::create( Resource res )
 {
     kDebug() << res.resourceUri();
     // call a protected method to be open for future extensions at
@@ -69,62 +69,62 @@ void Nepomuk::Annotation::create( Resource res )
     doCreate( res );
 }
 
-void Nepomuk::Annotation::setLabel( const QString& label )
+void Nepomuk2::Annotation::setLabel( const QString& label )
 {
     d->label = label;
 }
 
 
-void Nepomuk::Annotation::setComment( const QString& comment )
+void Nepomuk2::Annotation::setComment( const QString& comment )
 {
     d->comment = comment;
 }
 
 
-void Nepomuk::Annotation::setIcon( const QIcon& icon )
+void Nepomuk2::Annotation::setIcon( const QIcon& icon )
 {
     d->icon = icon;
 }
 
 
-void Nepomuk::Annotation::setRelevance( qreal r )
+void Nepomuk2::Annotation::setRelevance( qreal r )
 {
     d->relevance = qBound(qreal(0.0) , r, qreal(1.0));
 }
 
 
-void Nepomuk::Annotation::emitFinished()
+void Nepomuk2::Annotation::emitFinished()
 {
     emit finished( this );
 }
 
 
-int Nepomuk::Annotation::occurenceCount( const QDateTime&, const QDateTime& ) const
+int Nepomuk2::Annotation::occurenceCount( const QDateTime&, const QDateTime& ) const
 {
     return -1;
 }
 
 
-bool Nepomuk::Annotation::equals( Annotation* other ) const
+bool Nepomuk2::Annotation::equals( Annotation* other ) const
 {
     // the stupid default comparision.
     return this == other;
 }
 
 
-QDateTime Nepomuk::Annotation::lastUsed() const
+QDateTime Nepomuk2::Annotation::lastUsed() const
 {
     return QDateTime();
 }
 
 
-QDateTime Nepomuk::Annotation::firstUsed() const
+QDateTime Nepomuk2::Annotation::firstUsed() const
 {
     return QDateTime();
 }
 
 
-void Nepomuk::Annotation::setUserRelevance( qreal r )
+void Nepomuk2::Annotation::setUserRelevance( qreal r )
 {
     Q_UNUSED( r );
 }

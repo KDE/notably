@@ -23,7 +23,7 @@
 
 #include <QtGui/QWidget>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 class NoteEdit;
 class TextAnnotationGroup;
@@ -49,18 +49,18 @@ public slots:
 
     void reset();
 
-    void setNote(const Nepomuk::Resource& res);
+    void setNote(const Nepomuk2::Resource& res);
 
-    Nepomuk::Resource note() const;
+    Nepomuk2::Resource note() const;
 signals:
-    void infoRequired( const Nepomuk::Resource &note );
+    void infoRequired( const Nepomuk2::Resource &note );
     void annotationGroupSelected(TextAnnotationGroup *tag);
 
 private slots:
     void slotCursorPositionChanged();
 
 private:
-    Nepomuk::Resource lastUsedNote() const;
+    Nepomuk2::Resource lastUsedNote() const;
 
     NoteEdit *m_noteEditor;
 };

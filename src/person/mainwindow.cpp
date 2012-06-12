@@ -28,18 +28,18 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/ResourceManager>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/ResourceTerm>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <nepomuk/datamanagement.h>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/ResourceManager>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/ResourceTerm>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/ComparisonTerm>
+#include <Nepomuk2/DataManagement>
 
 #include <Soprano/Vocabulary/NAO>
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/PIMO>
 
 #include <KLocale>
 #include <KJob>
@@ -50,7 +50,7 @@
 #include <KDialog>
 
 using namespace Soprano::Vocabulary;
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
@@ -149,7 +149,7 @@ void MainWindow::slotOnMerge()
     m_mergeList.removeAt( 1 );
     kDebug() << "Merging " << personUri << m_mergeList.first();
 
-    KJob *job = Nepomuk::mergeResources( m_mergeList.first(), personUri );
+    KJob *job = Nepomuk2::mergeResources( m_mergeList.first(), personUri );
     connect( job, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
 }
 
@@ -172,7 +172,7 @@ void MainWindow::slotOnMergeJob(KJob* job)
         fillModel();
 
         // I really wish we didn't need to do this but we still have invalid caching probelms
-        Nepomuk::ResourceManager::instance()->clearCache();
+        Nepomuk2::ResourceManager::instance()->clearCache();
         return;
     }
 
@@ -180,7 +180,7 @@ void MainWindow::slotOnMergeJob(KJob* job)
     m_mergeList.removeAt( 1 );
     kDebug() << "Merging " << personUri << m_mergeList.first();
 
-    KJob *kjob = Nepomuk::mergeResources( m_mergeList.first(), personUri );
+    KJob *kjob = Nepomuk2::mergeResources( m_mergeList.first(), personUri );
     connect( kjob, SIGNAL(finished(KJob*)), this, SLOT(slotOnMergeJob(KJob*)) );
 }
 
@@ -191,8 +191,8 @@ void MainWindow::slotFilter(const QString& filter)
 
 void MainWindow::fillModel()
 {
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
+    Nepomuk2::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk2::Query::Query q(term);
 
     m_model->setQuery( q );
 }
@@ -214,6 +214,6 @@ void MainWindow::slotOnCompress()
     Person person( personUri );
     person.compress();
 
-    Nepomuk::ResourceManager::instance()->clearCache();
+    Nepomuk2::ResourceManager::instance()->clearCache();
     m_tooltip->setPerson( personUri );
 }

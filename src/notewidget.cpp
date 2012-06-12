@@ -27,14 +27,14 @@
 #include <Soprano/Model>
 #include <Soprano/QueryResultIterator>
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/ResourceManager>
 
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/PIMO>
 #include <Soprano/Vocabulary/NAO>
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 using namespace Soprano::Vocabulary;
 
 NoteWidget::NoteWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
@@ -84,7 +84,7 @@ void NoteWidget::slotCursorPositionChanged()
     emit infoRequired(m_noteEditor->resource());
 }
 
-Nepomuk::Resource NoteWidget::lastUsedNote() const
+Nepomuk2::Resource NoteWidget::lastUsedNote() const
 {
     // Show the last modified note
     QString query = QString::fromLatin1("select ?r where { ?r a %1. ?r %2 ?dt . } "
@@ -92,12 +92,12 @@ Nepomuk::Resource NoteWidget::lastUsedNote() const
                     .arg( Soprano::Node::resourceToN3( PIMO::Note() ),
                           Soprano::Node::resourceToN3( NAO::lastModified() ) );
 
-    Soprano::Model *model = Nepomuk::ResourceManager::instance()->mainModel();
+    Soprano::Model *model = Nepomuk2::ResourceManager::instance()->mainModel();
     Soprano::QueryResultIterator it = model->executeQuery( query, Soprano::Query::QueryLanguageSparql );
     if( it.next() )
-        return Nepomuk::Resource( it[0].uri() );
+        return Nepomuk2::Resource( it[0].uri() );
     else
-        return Nepomuk::Resource();
+        return Nepomuk2::Resource();
 }
 
 void NoteWidget::reset()
@@ -106,7 +106,7 @@ void NoteWidget::reset()
     m_noteEditor->document()->setModified( false );
 }
 
-void NoteWidget::setNote(const Nepomuk::Resource& res)
+void NoteWidget::setNote(const Nepomuk2::Resource& res)
 {
     //FIXME: This shouldn't be called over here!
     saveNote();
@@ -114,7 +114,7 @@ void NoteWidget::setNote(const Nepomuk::Resource& res)
     m_noteEditor->setResource( res );
 }
 
-Nepomuk::Resource NoteWidget::note() const
+Nepomuk2::Resource NoteWidget::note() const
 {
     return m_noteEditor->resource();
 }

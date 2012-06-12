@@ -25,7 +25,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QTreeWidget>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 class PersonToolTip : public QWidget
 {
@@ -34,8 +34,8 @@ public:
     PersonToolTip(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual ~PersonToolTip();
 
-    void setPerson(const Nepomuk::Resource& resource);
-    Nepomuk::Resource person() const;
+    void setPerson(const Nepomuk2::Resource& resource);
+    Nepomuk2::Resource person() const;
 protected:
     virtual void paintEvent(QPaintEvent* event );
 
@@ -44,7 +44,7 @@ private:
     QLabel *m_preview;
     QTreeWidget *m_treeWidget;
 
-    Nepomuk::Resource m_person;
+    Nepomuk2::Resource m_person;
 };
 
 #endif // PERSONTOOLTIP_H

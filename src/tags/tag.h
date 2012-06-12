@@ -22,7 +22,7 @@
 #define TAG_H
 
 #include <QtGui/QWidget>
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 class Tag : public QWidget
 {
@@ -31,19 +31,19 @@ public:
     explicit Tag(QWidget* parent = 0, Qt::WindowFlags f = 0);
     virtual QSize sizeHint() const;
 
-    void setTag(const Nepomuk::Tag& tag);
-    Nepomuk::Tag tag() const;
+    void setTag(const Nepomuk2::Tag& tag);
+    Nepomuk2::Tag tag() const;
 
 signals:
-    void tagSelected(const Nepomuk::Tag& tag);
-    void tagDeleted(const Nepomuk::Tag& tag);
+    void tagSelected(const Nepomuk2::Tag& tag);
+    void tagDeleted(const Nepomuk2::Tag& tag);
 
 protected:
     virtual void mousePressEvent(QMouseEvent* );
     virtual void paintEvent(QPaintEvent* event );
 
 private:
-    Nepomuk::Tag m_tagResource;
+    Nepomuk2::Tag m_tagResource;
 };
 
 #endif // TAG_H

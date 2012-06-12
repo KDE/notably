@@ -21,8 +21,9 @@
 #ifndef PERSONMODEL_H
 #define PERSONMODEL_H
 
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/Query/Query>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/Result>
+#include <QtCore/QAbstractListModel>
 
 #include "person.h"
 
@@ -43,14 +44,14 @@ public:
         UriRole
     };
 
-    void setQuery( Nepomuk::Query::Query& query );
-    void setList( const QList<Nepomuk::Resource>& people );
-    QList<Nepomuk::Resource> toList();
+    void setQuery( Nepomuk2::Query::Query& query );
+    void setList( const QList<Nepomuk2::Resource>& people );
+    QList<Nepomuk2::Resource> toList();
 private:
     QList<Person> m_people;
 
 private slots:
-    void addResults(const QList<Nepomuk::Query::Result> &results);
+    void addResults(const QList<Nepomuk2::Query::Result> &results);
 };
 
 #endif // PERSONMODEL_H

@@ -22,27 +22,27 @@
 
 #include "kdebug.h"
 
-class Nepomuk::AnnotationPluginWrapper::Private
+class Nepomuk2::AnnotationPluginWrapper::Private
 {
 public:
     QList<AnnotationPlugin*> plugins;
     QList<AnnotationPlugin*> runningPlugins;
 
-    void _k_slotNewAnnotation( Nepomuk::Annotation* );
-    void _k_slotPluginFinished( Nepomuk::AnnotationPlugin* );
+    void _k_slotNewAnnotation( Nepomuk2::Annotation* );
+    void _k_slotPluginFinished( Nepomuk2::AnnotationPlugin* );
 
     AnnotationPluginWrapper* q;
 };
 
 
-void Nepomuk::AnnotationPluginWrapper::Private::_k_slotNewAnnotation( Nepomuk::Annotation* anno )
+void Nepomuk2::AnnotationPluginWrapper::Private::_k_slotNewAnnotation( Nepomuk2::Annotation* anno )
 {
     kDebug() << anno->label() << anno->relevance();
     emit q->newAnnotation( anno );
 }
 
 
-void Nepomuk::AnnotationPluginWrapper::Private::_k_slotPluginFinished( Nepomuk::AnnotationPlugin* plugin )
+void Nepomuk2::AnnotationPluginWrapper::Private::_k_slotPluginFinished( Nepomuk2::AnnotationPlugin* plugin )
 {
     runningPlugins.removeAll( plugin );
     if ( runningPlugins.isEmpty() ) {
@@ -52,7 +52,7 @@ void Nepomuk::AnnotationPluginWrapper::Private::_k_slotPluginFinished( Nepomuk::
 
 
 
-Nepomuk::AnnotationPluginWrapper::AnnotationPluginWrapper( QObject* parent )
+Nepomuk2::AnnotationPluginWrapper::AnnotationPluginWrapper( QObject* parent )
     : QObject( parent ),
       d( new Private() )
 {
@@ -60,31 +60,31 @@ Nepomuk::AnnotationPluginWrapper::AnnotationPluginWrapper( QObject* parent )
 }
 
 
-Nepomuk::AnnotationPluginWrapper::~AnnotationPluginWrapper()
+Nepomuk2::AnnotationPluginWrapper::~AnnotationPluginWrapper()
 {
     delete d;
 }
 
 
-void Nepomuk::AnnotationPluginWrapper::setPlugins( const QList<AnnotationPlugin*>& plugins )
+void Nepomuk2::AnnotationPluginWrapper::setPlugins( const QList<AnnotationPlugin*>& plugins )
 {
     qDeleteAll( d->plugins );
 
     d->plugins = plugins;
 
-    foreach( Nepomuk::AnnotationPlugin* plugin, d->plugins ) {
-        connect( plugin, SIGNAL( newAnnotation( Nepomuk::Annotation* ) ),
-                 this, SLOT( _k_slotNewAnnotation( Nepomuk::Annotation* ) ) );
-        connect( plugin, SIGNAL( finished( Nepomuk::AnnotationPlugin* ) ),
-                 this, SLOT( _k_slotPluginFinished( Nepomuk::AnnotationPlugin* ) ) );
+    foreach( Nepomuk2::AnnotationPlugin* plugin, d->plugins ) {
+        connect( plugin, SIGNAL( newAnnotation( Nepomuk2::Annotation* ) ),
+                 this, SLOT( _k_slotNewAnnotation( Nepomuk2::Annotation* ) ) );
+        connect( plugin, SIGNAL( finished( Nepomuk2::AnnotationPlugin* ) ),
+                 this, SLOT( _k_slotPluginFinished( Nepomuk2::AnnotationPlugin* ) ) );
     }
 }
 
 
-void Nepomuk::AnnotationPluginWrapper::getPossibleAnnotations( const Nepomuk::AnnotationRequest& request )
+void Nepomuk2::AnnotationPluginWrapper::getPossibleAnnotations( const Nepomuk2::AnnotationRequest& request )
 {
     d->runningPlugins = d->plugins;
-    foreach( Nepomuk::AnnotationPlugin* plugin, d->plugins ) {
+    foreach( Nepomuk2::AnnotationPlugin* plugin, d->plugins ) {
         plugin->getPossibleAnnotations( request );
     }
 }

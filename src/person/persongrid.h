@@ -34,11 +34,11 @@ class PersonGrid : public QListView
 public:
     explicit PersonGrid(QWidget* parent = 0);
 
-    void setPeople(const QList<Nepomuk::Resource> &resources);
-    QList<Nepomuk::Resource> people() const;
+    void setPeople(const QList<Nepomuk2::Resource> &resources);
+    QList<Nepomuk2::Resource> people() const;
 
 signals:
-    void personSelected(const Nepomuk::Resource& person);
+    void personSelected(const Nepomuk2::Resource& person);
 
 protected:
     virtual void leaveEvent(QEvent* event);

@@ -25,13 +25,13 @@
 #include <QtCore/QList>
 #include <QtCore/QString>
 
-#include <nepomuk/resource.h>
+#include <Nepomuk2/Resource>
 
 
 // FIXME: annotations plugins can create annotations for specific types of resources as
 //        stated in their desktop files. In case of text this is a problem as there is no
 //        resource.
-namespace Nepomuk {
+namespace Nepomuk2 {
     class AnnotationRequestPrivate;
 
     /**
@@ -68,7 +68,7 @@ namespace Nepomuk {
         void setResource( const Resource& res );
         void setFilter( const QString& filter );
 
-        static AnnotationRequest createSimpleFilterRequest( const Nepomuk::Resource& resource, const QString& filter );
+        static AnnotationRequest createSimpleFilterRequest( const Nepomuk2::Resource& resource, const QString& filter );
 
     private:
         QSharedDataPointer<AnnotationRequestPrivate> d;

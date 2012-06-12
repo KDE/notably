@@ -27,7 +27,7 @@
 #include <QtGui/QListView>
 #include <QtGui/QSortFilterProxyModel>
 
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Query/Result>
 #include <KLineEdit>
 #include <KJob>
 

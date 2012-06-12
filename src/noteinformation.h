@@ -24,15 +24,15 @@
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Tag>
 
 #include <KLineEdit>
 
 class TagWidget;
 class PersonGrid;
 
-namespace Nepomuk {
+namespace Nepomuk2 {
     class Annotation;
 }
 
@@ -44,21 +44,21 @@ public:
 
 
 public slots:
-    void setNote( const Nepomuk::Resource& note );
-    bool saveNote( const Nepomuk::Resource& note );
+    void setNote( const Nepomuk2::Resource& note );
+    bool saveNote( const Nepomuk2::Resource& note );
     void newNote();
 
 signals:
-    void tagSelected(const Nepomuk::Tag& tag);
-    void personSelected(const Nepomuk::Resource& person);
+    void tagSelected(const Nepomuk2::Tag& tag);
+    void personSelected(const Nepomuk2::Resource& person);
 
 private slots:
     void updateView();
     void slotAnnotateClicked();
-    void slotNewAnnotation(Nepomuk::Annotation* annotation);
+    void slotNewAnnotation(Nepomuk2::Annotation* annotation);
 
 private:
-    Nepomuk::Resource m_note;
+    Nepomuk2::Resource m_note;
 
     KLineEdit* m_titleEdit;
     QLabel* m_modifiedLabel;

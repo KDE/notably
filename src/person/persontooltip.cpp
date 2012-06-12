@@ -30,12 +30,12 @@
 #include <KSeparator>
 #include <KIcon>
 
-#include <Nepomuk/Vocabulary/NCO>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Vocabulary/NCO>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Variant>
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 namespace {
     QFont boldFont(const QFont& f) {
@@ -70,7 +70,7 @@ PersonToolTip::PersonToolTip(QWidget* parent, Qt::WindowFlags f)
 
 
     setLayout( hLayout );
-    setPerson( Nepomuk::Resource() );
+    setPerson( Nepomuk2::Resource() );
 }
 
 PersonToolTip::~PersonToolTip()
@@ -109,7 +109,7 @@ namespace {
     }
 }
 
-void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
+void PersonToolTip::setPerson(const Nepomuk2::Resource& resource)
 {
     m_person = resource;
 
@@ -122,8 +122,8 @@ void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
     m_treeWidget->setColumnCount( 1 );
 
     QList<QTreeWidgetItem*> contactItems;
-    QList<Nepomuk::Resource> contactResources = person.personContacts();
-    foreach( const Nepomuk::Resource& contact, contactResources ) {
+    QList<Nepomuk2::Resource> contactResources = person.personContacts();
+    foreach( const Nepomuk2::Resource& contact, contactResources ) {
         QTreeWidgetItem* item = new QTreeWidgetItem( 0 );
 
         QString displayName = contact.property( NCO::fullname() ).toString();
@@ -137,8 +137,8 @@ void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
         item->setText( 0, displayName );
 
         // Add all the IMAccounts
-        QList<Nepomuk::Resource> accounts = contact.property( NCO::hasIMAccount() ).toResourceList();
-        foreach( const Nepomuk::Resource& acc, accounts ) {
+        QList<Nepomuk2::Resource> accounts = contact.property( NCO::hasIMAccount() ).toResourceList();
+        foreach( const Nepomuk2::Resource& acc, accounts ) {
             const QString type = acc.property( NCO::imAccountType() ).toString();
             const QString id = acc.property( NCO::imID() ).toString();
             const QString nickname = acc.property( NCO::imNickname() ).toString();
@@ -170,7 +170,7 @@ void PersonToolTip::setPerson(const Nepomuk::Resource& resource)
 
 }
 
-Nepomuk::Resource PersonToolTip::person() const
+Nepomuk2::Resource PersonToolTip::person() const
 {
     return m_person;
 }

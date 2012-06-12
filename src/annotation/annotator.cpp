@@ -26,11 +26,11 @@ Annotator::Annotator(QObject* parent)
 : AnnotationPluginWrapper(parent)
 {
 //    FIXME: Get custom plugins for Notably
-//    Nepomuk::AnnotationPluginFactory *factory = Nepomuk::AnnotationPluginFactory::instance();
-    QList<Nepomuk::AnnotationPlugin*> plugins;// = factory->getPluginsSupportingAnnotationOfType( PIMO::Note() );
+//    Nepomuk2::AnnotationPluginFactory *factory = Nepomuk2::AnnotationPluginFactory::instance();
+    QList<Nepomuk2::AnnotationPlugin*> plugins;// = factory->getPluginsSupportingAnnotationOfType( PIMO::Note() );
 
     KService::Ptr ptr = KService::serviceByDesktopName("personannotationplugin");
-    static Nepomuk::AnnotationPlugin* personPlugin = ptr->createInstance<Nepomuk::AnnotationPlugin>();
+    static Nepomuk2::AnnotationPlugin* personPlugin = ptr->createInstance<Nepomuk2::AnnotationPlugin>();
     plugins << personPlugin;
 
     setPlugins( plugins );

@@ -35,15 +35,15 @@
 #include <QtGui/QLabel>
 
 #include <Soprano/Vocabulary/NAO>
-#include <Nepomuk/Vocabulary/NCO>
+#include <Nepomuk2/Vocabulary/NCO>
 
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Variant>
 
 #include <KDebug>
 #include <KIcon>
 
 using namespace Soprano::Vocabulary;
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
@@ -72,8 +72,8 @@ Sidebar::Sidebar(QWidget* parent, Qt::WindowFlags f)
     connect( m_mainMenu, SIGNAL(browseNotes()), this, SLOT(slotBrowseNotes()) );
 
     m_noteInfo = new NoteInformation( this );
-    connect( m_noteInfo, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
-    connect( m_noteInfo, SIGNAL(personSelected(Nepomuk::Resource)), this, SLOT(showPersonInBrowser(Nepomuk::Resource)) );
+    connect( m_noteInfo, SIGNAL(tagSelected(Nepomuk2::Tag)), this, SLOT(showTagInBrowser(Nepomuk2::Tag)) );
+    connect( m_noteInfo, SIGNAL(personSelected(Nepomuk2::Resource)), this, SLOT(showPersonInBrowser(Nepomuk2::Resource)) );
 
     m_stackedLayout = new QStackedLayout();
     m_stackedLayout->setSpacing( 0 );
@@ -173,7 +173,7 @@ void Sidebar::push(const QString& title, QWidget* widget)
     m_titleList.append( title );
 }
 
-void Sidebar::showInfo(const Nepomuk::Resource& note)
+void Sidebar::showInfo(const Nepomuk2::Resource& note)
 {
     m_noteInfo->setNote( note );
 
@@ -186,7 +186,7 @@ void Sidebar::showInfo(const Nepomuk::Resource& note)
     slotMoveForward();
 }
 
-bool Sidebar::saveNote(const Nepomuk::Resource& note)
+bool Sidebar::saveNote(const Nepomuk2::Resource& note)
 {
     return m_noteInfo->saveNote( note );
 }
@@ -196,11 +196,11 @@ void Sidebar::newNote()
     m_noteInfo->newNote();
 }
 
-void Sidebar::showTagInBrowser(const Nepomuk::Tag& tag)
+void Sidebar::showTagInBrowser(const Nepomuk2::Tag& tag)
 {
     NoteBrowser* browser = new NoteBrowser( this );
-    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
-             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    connect( browser, SIGNAL(noteSelected(Nepomuk2::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk2::Resource)) );
     browser->setTag( tag );
     browser->get();
 
@@ -211,11 +211,11 @@ void Sidebar::showTagInBrowser(const Nepomuk::Tag& tag)
     slotMoveForward();
 }
 
-void Sidebar::showPersonInBrowser(const Nepomuk::Resource& person)
+void Sidebar::showPersonInBrowser(const Nepomuk2::Resource& person)
 {
     NoteBrowser* browser = new NoteBrowser( this );
-    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
-             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    connect( browser, SIGNAL(noteSelected(Nepomuk2::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk2::Resource)) );
     browser->setPerson( person );
     browser->get();
 
@@ -230,8 +230,8 @@ void Sidebar::showPersonInBrowser(const Nepomuk::Resource& person)
 void Sidebar::slotBrowseByDate()
 {
     NoteBrowser *browser = new NoteBrowser( this );
-    connect( browser, SIGNAL(noteSelected(Nepomuk::Resource)),
-             this, SIGNAL(noteSelected(Nepomuk::Resource)) );
+    connect( browser, SIGNAL(noteSelected(Nepomuk2::Resource)),
+             this, SIGNAL(noteSelected(Nepomuk2::Resource)) );
     browser->get();
 
     QString label = i18n("Browse by date");
@@ -244,7 +244,7 @@ void Sidebar::slotBrowseByDate()
 void Sidebar::slotBrowseByTags()
 {
     TagCloud* cloud = new TagCloud( this );
-    connect( cloud, SIGNAL(tagSelected(Nepomuk::Tag)), this, SLOT(showTagInBrowser(Nepomuk::Tag)) );
+    connect( cloud, SIGNAL(tagSelected(Nepomuk2::Tag)), this, SLOT(showTagInBrowser(Nepomuk2::Tag)) );
 
     push(i18n("Choose a tag"), cloud);
     slotMoveForward();

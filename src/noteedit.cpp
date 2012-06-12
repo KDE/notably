@@ -35,16 +35,16 @@
 #include <QtGui/QTextDocumentFragment>
 #include <QtGui/QAbstractProxyModel>
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/ResourceManager>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/ResourceManager>
 
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/PIMO>
 #include <Soprano//Vocabulary/NAO>
 
 #include <KDebug>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 using namespace Soprano::Vocabulary;
 
 NoteEdit::NoteEdit(QWidget* parent)
@@ -66,8 +66,8 @@ NoteEdit::NoteEdit(QWidget* parent)
                                                    annotationGroupTextInterfaceObject );
 
     // Annotations
-    connect( Annotator::instance(), SIGNAL(newAnnotation(Nepomuk::Annotation*)),
-             this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
+    connect( Annotator::instance(), SIGNAL(newAnnotation(Nepomuk2::Annotation*)),
+             this, SLOT(slotNewAnnotation(Nepomuk2::Annotation*)) );
     connect( Annotator::instance(), SIGNAL(finished()),
              this, SLOT(slotAnnotationsFinished()) );
 }
@@ -76,7 +76,7 @@ NoteEdit::~NoteEdit()
 {
 }
 
-void NoteEdit::setResource(const Nepomuk::Resource& note)
+void NoteEdit::setResource(const Nepomuk2::Resource& note)
 {
     if( note.isValid() ) {
         reset();
@@ -91,7 +91,7 @@ void NoteEdit::setResource(const Nepomuk::Resource& note)
     }
 }
 
-Nepomuk::Resource NoteEdit::resource() const
+Nepomuk2::Resource NoteEdit::resource() const
 {
     return m_noteResource;
 }
@@ -108,14 +108,14 @@ void NoteEdit::save()
 
     // Get the links in the note. In the future they could be something other than people.
     QSet<QUrl> people = m_document->resources( PIMO::isRelated() );
-    m_noteResource.setProperty( PIMO::isRelated(), Nepomuk::Variant(people.toList()) );
+    m_noteResource.setProperty( PIMO::isRelated(), Nepomuk2::Variant(people.toList()) );
 }
 
 void NoteEdit::reset()
 {
     clear();
     // Create a new note
-    m_noteResource = Nepomuk::Resource( QUrl(), PIMO::Note() );
+    m_noteResource = Nepomuk2::Resource( QUrl(), PIMO::Note() );
 }
 
 void NoteEdit::keyPressEvent(QKeyEvent* event)
@@ -239,7 +239,7 @@ void NoteEdit::insertCompletion(const QString& string)
     setTextCursor( tc );
 }
 
-void NoteEdit::slotNewAnnotation(Nepomuk::Annotation* annotation)
+void NoteEdit::slotNewAnnotation(Nepomuk2::Annotation* annotation)
 {
     kDebug();
     TextAnnotation* textAnnotation = dynamic_cast<TextAnnotation*>( annotation );

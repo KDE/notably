@@ -22,12 +22,12 @@
 #include <QtCore/QObject>
 #include <QtCore/QList>
 
-#include <nepomuk/resource.h>
+#include <Nepomuk2/Resource>
 
 #include "annotationplugin.h"
 
 
-namespace Nepomuk {
+namespace Nepomuk2 {
     /**
      * \class AnnotationPluginWrapper annotationpluginwrapper.h annotationpluginwrapper.h
      *
@@ -56,7 +56,7 @@ namespace Nepomuk {
         /**
          * \sa AnnotationPlugin::getPossibleAnnotations
          */
-        void getPossibleAnnotations( const Nepomuk::AnnotationRequest& request );
+        void getPossibleAnnotations( const Nepomuk2::AnnotationRequest& request );
 
     Q_SIGNALS:
         /**
@@ -69,14 +69,14 @@ namespace Nepomuk {
         /**
          * \sa AnnotationPlugin::newAnnotation
          */
-        void newAnnotation( Nepomuk::Annotation* annotation );
+        void newAnnotation( Nepomuk2::Annotation* annotation );
 
     private:
         class Private;
         Private* const d;
 
-        Q_PRIVATE_SLOT( d, void _k_slotNewAnnotation( Nepomuk::Annotation* ) )
-        Q_PRIVATE_SLOT( d, void _k_slotPluginFinished( Nepomuk::AnnotationPlugin* ) )
+        Q_PRIVATE_SLOT( d, void _k_slotNewAnnotation( Nepomuk2::Annotation* ) )
+        Q_PRIVATE_SLOT( d, void _k_slotPluginFinished( Nepomuk2::AnnotationPlugin* ) )
     };
 }
 

@@ -6,7 +6,7 @@ include_directories(
   ${KDE4_INCLUDES}
   ${SOPRANO_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
-  ${NEPOMUK_INCLUDE_DIR}
+  ${NEPOMUK_CORE_INCLUDE_DIR}
   )
 
 set( SRCS
@@ -26,6 +26,9 @@ set( SRCS
   browsemenu.cpp
   noteinformation.cpp
   config/windowsettings.cpp
+
+  resourcemodel.cpp
+  simpleresourcemodel.cpp
 
   tags/tagwidget.cpp
   tags/tageditor.cpp
@@ -69,11 +72,8 @@ target_link_libraries( notably
   ${KDE4_KIO_LIBS}
   ${KDE4_KNOTIFYCONFIG_LIBRARY}
   ${X11_LIBRARIES}
-  ${NEPOMUK_LIBRARIES}
-  ${NEPOMUK_UTILS_LIBRARIES}
-  ${NEPOMUK_QUERY_LIBRARIES}
+  ${NEPOMUK_CORE_LIBRARY}
   ${SOPRANO_LIBRARIES}
-  nepomukdatamanagement
   )
 
 install(TARGETS notably

@@ -26,7 +26,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include <KPushButton>
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 {
@@ -39,7 +39,7 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
     hLayout->addWidget( addButton, 0 );
 
     m_tagView = new TagView();
-    connect( m_tagView, SIGNAL(tagClicked(Nepomuk::Tag)), this, SIGNAL(tagSelected(Nepomuk::Tag)) );
+    connect( m_tagView, SIGNAL(tagClicked(Nepomuk2::Tag)), this, SIGNAL(tagSelected(Nepomuk2::Tag)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addItem( hLayout );
@@ -48,22 +48,22 @@ TagWidget::TagWidget(QWidget* parent, Qt::WindowFlags f): QWidget(parent, f)
 
 void TagWidget::slotAddTags()
 {
-    QList< Nepomuk::Tag > tags = m_tagEditor->tags();
+    QList< Nepomuk2::Tag > tags = m_tagEditor->tags();
     addTags( tags );
     m_tagEditor->reset();
 }
 
-QList< Nepomuk::Tag > TagWidget::tags()
+QList< Nepomuk2::Tag > TagWidget::tags()
 {
     return m_tagView->tags();
 }
 
-void TagWidget::setTags(const QList< Nepomuk::Tag >& tags)
+void TagWidget::setTags(const QList< Nepomuk2::Tag >& tags)
 {
     m_tagView->setTags( tags );
 }
 
-void TagWidget::addTags(const QList< Nepomuk::Tag >& tags)
+void TagWidget::addTags(const QList< Nepomuk2::Tag >& tags)
 {
     m_tagView->addTags( tags );
 }

@@ -25,7 +25,7 @@
 #include <QtGui/QPaintEvent>
 #include <QtCore/QMap>
 
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 
 class TagCloud : public QTextBrowser
@@ -35,7 +35,7 @@ public:
     explicit TagCloud(QWidget* parent = 0);
 
 signals:
-    void tagSelected(const Nepomuk::Tag& tag);
+    void tagSelected(const Nepomuk2::Tag& tag);
 
 private slots:
     void slotAnchorClicked(const QUrl& url);

@@ -24,12 +24,12 @@
 
 #include <Soprano/Error/ErrorCache>
 
-#include <nepomuk/resource.h>
+#include <Nepomuk2/Resource>
 
 class QIcon;
 class QUrl;
 
-namespace Nepomuk {
+namespace Nepomuk2 {
 
     class AnnotationPrivate;
 
@@ -111,7 +111,7 @@ namespace Nepomuk {
          *
          * \sa AnnotationRelevanceFilterModel
          */
-        virtual bool exists( Resource res ) const = 0;
+        virtual bool exists( Nepomuk2::Resource res ) const = 0;
 
         /**
          * The usage count of this annotation, i.e. how often resources
@@ -162,7 +162,7 @@ namespace Nepomuk {
          * cases this will be the same as in the AnnotationRequest passed to
          * AnnotationPlugin::getPossibleAnnotations
          */
-        void create( Resource res );
+        void create( Nepomuk2::Resource res );
 
         /**
          * Set the user label.
@@ -232,7 +232,7 @@ namespace Nepomuk {
          *
          * \param annotation The annotation emitting the signal.
          */
-        void finished( Nepomuk::Annotation* annotation );
+        void finished( Nepomuk2::Annotation* annotation );
 
     protected:
         /**

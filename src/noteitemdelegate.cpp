@@ -19,6 +19,7 @@
 
 
 #include "noteitemdelegate.h"
+#include "simpleresourcemodel.h"
 
 #include <QtCore/QDateTime>
 
@@ -32,15 +33,14 @@
 #include <KApplication>
 #include <KGlobalSettings>
 
-#include <Nepomuk/Variant>
-#include <Nepomuk/Utils/SimpleResourceModel>
+#include <Nepomuk2/Variant>
 
-#include <Nepomuk/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/NIE>
 #include <Soprano/Vocabulary/NAO>
 #include <KDebug>
 
 using namespace Soprano::Vocabulary;
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 NoteItemDelegate::NoteItemDelegate(QObject* parent)
     : QStyledItemDelegate(parent)
@@ -56,7 +56,7 @@ void NoteItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opti
     QRect rect = option.rect;
     rect.adjust( m_margin, m_margin, -m_margin, -m_margin );
 
-    Nepomuk::Resource res = index.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
+    Nepomuk2::Resource res = index.data( Nepomuk2::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk2::Resource>();
 
     QString plainTextContent = res.property( NIE::plainTextContent() ).toString();
     QDateTime creationDate = res.property( NAO::created() ).toDateTime();

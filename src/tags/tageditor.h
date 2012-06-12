@@ -26,7 +26,7 @@
 
 #include <KTextEdit>
 
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 class TagEditor : public KTextEdit
 {
@@ -35,9 +35,9 @@ public:
     explicit TagEditor(QWidget* parent = 0);
     virtual ~TagEditor();
 
-    void addTag( const Nepomuk::Tag &tag );
-    void setTags( const QList<Nepomuk::Tag> &tags );
-    QList<Nepomuk::Tag> tags() const;
+    void addTag( const Nepomuk2::Tag &tag );
+    void setTags( const QList<Nepomuk2::Tag> &tags );
+    QList<Nepomuk2::Tag> tags() const;
 
     virtual QSize sizeHint() const;
 
@@ -46,7 +46,7 @@ public:
 
     virtual void reset();
 signals:
-    void tagsChanged( const QList<Nepomuk::Tag> &tagList );
+    void tagsChanged( const QList<Nepomuk2::Tag> &tagList );
 
 protected:
 //    virtual void paintEvent(QPaintEvent* event);
@@ -59,7 +59,7 @@ private slots:
 private:
     QString tagUnderCursor() const;
 
-    QList<Nepomuk::Tag> m_tagList;
+    QList<Nepomuk2::Tag> m_tagList;
     QCompleter *m_completer;
 
     QString m_placeholderText;

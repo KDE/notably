@@ -22,12 +22,12 @@
 
 #include <KDebug>
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Vocabulary/PIMO>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 PersonModel::PersonModel(QObject* parent): QAbstractListModel(parent)
 {
@@ -73,10 +73,10 @@ QVariant PersonModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
+void PersonModel::addResults(const QList< Nepomuk2::Query::Result >& results)
 {
     QList<Person> personList;
-    foreach( const Nepomuk::Query::Result &res, results ) {
+    foreach( const Nepomuk2::Query::Result &res, results ) {
 
         Person person( res.resource().resourceUri() );
         if( !person.isEmpty() ) {
@@ -91,28 +91,28 @@ void PersonModel::addResults(const QList< Nepomuk::Query::Result >& results)
     endInsertRows();
 }
 
-void PersonModel::setQuery(Nepomuk::Query::Query& query)
+void PersonModel::setQuery(Nepomuk2::Query::Query& query)
 {
     beginResetModel();
     m_people.clear();
     endResetModel();
 
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient(this);
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    Nepomuk2::Query::QueryServiceClient *client = new Nepomuk2::Query::QueryServiceClient(this);
+    connect( client, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+             this, SLOT(addResults(QList<Nepomuk2::Query::Result>)) );
     connect( client, SIGNAL(finishedListing()), client, SLOT(close()) );
 
     client->query( query );
 }
 
-void PersonModel::setList(const QList< Nepomuk::Resource >& people)
+void PersonModel::setList(const QList< Nepomuk2::Resource >& people)
 {
     beginResetModel();
     m_people.clear();
     endResetModel();
 
     QList<Person> personList;
-    foreach( const Nepomuk::Resource& res, people ) {
+    foreach( const Nepomuk2::Resource& res, people ) {
         Person person( res.resourceUri() );
         if( !person.isEmpty() ) {
             personList << person;
@@ -125,9 +125,9 @@ void PersonModel::setList(const QList< Nepomuk::Resource >& people)
     endInsertRows();
 }
 
-QList< Nepomuk::Resource > PersonModel::toList()
+QList< Nepomuk2::Resource > PersonModel::toList()
 {
-    QList<Nepomuk::Resource> resList;
+    QList<Nepomuk2::Resource> resList;
     foreach( const Person& person, m_people ) {
         resList << person.resource();
     }

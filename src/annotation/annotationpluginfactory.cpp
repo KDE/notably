@@ -21,9 +21,9 @@
 
 #include <QtCore/QVariant>
 
-#include <Nepomuk/Types/Property>
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Types/Property>
+#include <Nepomuk2/Types/Class>
+#include <Nepomuk2/Resource>
 
 #include <kservicetypetrader.h>
 #include <kservice.h>
@@ -33,35 +33,35 @@
 #include "annotationplugin.h"
 
 
-class Nepomuk::AnnotationPluginFactory::Private
+class Nepomuk2::AnnotationPluginFactory::Private
 {
 public:
 };
 
 
 
-Nepomuk::AnnotationPluginFactory::AnnotationPluginFactory(QObject* parent)
+Nepomuk2::AnnotationPluginFactory::AnnotationPluginFactory(QObject* parent)
     : QObject(parent),
       d( new Private )
 {
 }
 
 
-Nepomuk::AnnotationPluginFactory::~AnnotationPluginFactory()
+Nepomuk2::AnnotationPluginFactory::~AnnotationPluginFactory()
 {
     delete d;
 }
 
 
-K_GLOBAL_STATIC( Nepomuk::AnnotationPluginFactory, s_globalFactory )
+K_GLOBAL_STATIC( Nepomuk2::AnnotationPluginFactory, s_globalFactory )
 
-Nepomuk::AnnotationPluginFactory* Nepomuk::AnnotationPluginFactory::instance()
+Nepomuk2::AnnotationPluginFactory* Nepomuk2::AnnotationPluginFactory::instance()
 {
     return s_globalFactory;
 }
 
 
-QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getPluginsSupportingAnnotationOfTypes( const QList<Types::Class>& rdfTypes )
+QList<Nepomuk2::AnnotationPlugin*> Nepomuk2::AnnotationPluginFactory::getPluginsSupportingAnnotationOfTypes( const QList<Types::Class>& rdfTypes )
 {
 	QList<AnnotationPlugin*> plugins;
 
@@ -84,15 +84,15 @@ QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getPluginsSu
 }
 
 
-QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getPluginsSupportingAnnotationOfType( const Types::Class& rdfType )
+QList<Nepomuk2::AnnotationPlugin*> Nepomuk2::AnnotationPluginFactory::getPluginsSupportingAnnotationOfType( const Types::Class& rdfType )
 {
     return getPluginsSupportingAnnotationOfTypes( QList<Types::Class>() << rdfType );
 }
 
 
-QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getPluginsSupportingAnnotationForResource( const QUrl& resource )
+QList<Nepomuk2::AnnotationPlugin*> Nepomuk2::AnnotationPluginFactory::getPluginsSupportingAnnotationForResource( const QUrl& resource )
 {
-    Nepomuk::Resource res( resource );
+    Nepomuk2::Resource res( resource );
     QList<Types::Class> types;
     foreach( const QUrl& type, res.types() ) {
         Types::Class typeClass( type );
@@ -103,7 +103,7 @@ QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getPluginsSu
 }
 
 
-QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getAllPlugins()
+QList<Nepomuk2::AnnotationPlugin*> Nepomuk2::AnnotationPluginFactory::getAllPlugins()
 {
 	QList<AnnotationPlugin*> plugins;
 
@@ -119,7 +119,7 @@ QList<Nepomuk::AnnotationPlugin*> Nepomuk::AnnotationPluginFactory::getAllPlugin
 	return plugins;
 }
 
-Nepomuk::AnnotationPlugin* Nepomuk::AnnotationPluginFactory::getPluginInstance(const KSharedPtr<KService>& service)
+Nepomuk2::AnnotationPlugin* Nepomuk2::AnnotationPluginFactory::getPluginInstance(const KSharedPtr<KService>& service)
 {
     return service->createInstance<AnnotationPlugin>();
 }

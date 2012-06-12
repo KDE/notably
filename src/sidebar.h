@@ -28,8 +28,8 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Tag>
 
 class TextAnnotation;
 class MainMenu;
@@ -46,14 +46,14 @@ public:
 public slots:
     void setTitle(const QString& title);
     void push(const QString& title, QWidget* widget);
-    void showInfo(const Nepomuk::Resource &note);
+    void showInfo(const Nepomuk2::Resource &note);
     void showAnnotationGroup(TextAnnotationGroup* tag);
 
-    bool saveNote(const Nepomuk::Resource& note);
+    bool saveNote(const Nepomuk2::Resource& note);
     void newNote();
 
 signals:
-    void noteSelected(const Nepomuk::Resource &note);
+    void noteSelected(const Nepomuk2::Resource &note);
     void newNoteSelected();
 
     void annotationAccepted(TextAnnotation* annotation);
@@ -67,8 +67,8 @@ private slots:
     void slotMoveForward();
     void slotMoveBackward();
 
-    void showTagInBrowser(const Nepomuk::Tag& tag);
-    void showPersonInBrowser(const Nepomuk::Resource& resource);
+    void showTagInBrowser(const Nepomuk2::Tag& tag);
+    void showPersonInBrowser(const Nepomuk2::Resource& resource);
 private:
     void updateButtons();
 

@@ -27,9 +27,9 @@
 #include <KLocale>
 #include <KMessageBox>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Variant> // For Q_DECLARE_METATYPE<Nepomuk::Resource>
-#include <Nepomuk/Utils/SimpleResourceModel>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Variant> // For Q_DECLARE_METATYPE<Nepomuk2::Resource>
+#include "simpleresourcemodel.h"
 #include <KDebug>
 
 NotesView::NotesView(QWidget* parent)
@@ -92,8 +92,8 @@ void NotesView::deleteNote()
 
     if (KMessageBox::warningYesNo(this, text, caption, deleteItem, cancelItem) == KMessageBox::Yes) {
 
-        qRegisterMetaType<Nepomuk::Resource>();
-        Nepomuk::Resource res = m_deleteCandidate.data( Nepomuk::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk::Resource>();
+        qRegisterMetaType<Nepomuk2::Resource>();
+        Nepomuk2::Resource res = m_deleteCandidate.data( Nepomuk2::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk2::Resource>();
 
         kDebug() << "Deleting : " << res.resourceUri();
 

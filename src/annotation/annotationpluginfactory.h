@@ -31,7 +31,7 @@
 
 class KService;
 
-namespace Nepomuk {
+namespace Nepomuk2 {
 
     class AnnotationPlugin;
 
@@ -69,7 +69,7 @@ namespace Nepomuk {
          *
          * The caller takes ownership of the returned plugins.
          */
-        QList<AnnotationPlugin*> getPluginsForProperty(const Nepomuk::Types::Property& property);
+        QList<AnnotationPlugin*> getPluginsForProperty(const Nepomuk2::Types::Property& property);
 
         /**
          * Returns a list with all the AnnotationPlugins that return the given \a type
@@ -83,21 +83,21 @@ namespace Nepomuk {
          *
          * The caller takes ownership of the returned plugins.
          */
-        QList<Nepomuk::AnnotationPlugin*> getPluginsSupportingAnnotationOfType( const Types::Class& rdfType );
+        QList<Nepomuk2::AnnotationPlugin*> getPluginsSupportingAnnotationOfType( const Types::Class& rdfType );
 
         /**
          * \return a list of plugins that can create Annotation objects for resource of any type in \p rdfTypes
          *
          * The caller takes ownership of the returned plugins.
          */
-        QList<Nepomuk::AnnotationPlugin*> getPluginsSupportingAnnotationOfTypes( const QList<Types::Class>& rdfTypes );
+        QList<Nepomuk2::AnnotationPlugin*> getPluginsSupportingAnnotationOfTypes( const QList<Types::Class>& rdfTypes );
 
         /**
          * \return a list of plugins that can create Annotation objects for \p resource
          *
          * The caller takes ownership of the returned plugins.
          */
-        QList<Nepomuk::AnnotationPlugin*> getPluginsSupportingAnnotationForResource( const QUrl& resource );
+        QList<Nepomuk2::AnnotationPlugin*> getPluginsSupportingAnnotationForResource( const QUrl& resource );
 
         /**
          * Tries to get the plugin with the given library \p name (usually something like nepomuk_xxxanotationplugin).
@@ -121,6 +121,6 @@ namespace Nepomuk {
         AnnotationPlugin* getPluginInstance(const KSharedPtr<KService>& service);
     };
 
-} // End namespace Nepomuk
+} // End namespace Nepomuk22
 
 #endif

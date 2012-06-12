@@ -22,14 +22,14 @@
 
 #include "../../person/personmodel.h"
 
-#include <Nepomuk/Resource>
-#include <nepomuk/annotationplugin.h>
+#include <Nepomuk2/Resource>
+#include "../annotationplugin.h"
 
 #include <QtGui/QSortFilterProxyModel>
 
 class TextAnnotation;
 
-class PersonAnnotationPlugin : public Nepomuk::AnnotationPlugin
+class PersonAnnotationPlugin : public Nepomuk2::AnnotationPlugin
 {
     Q_OBJECT
 
@@ -38,7 +38,7 @@ public:
     ~PersonAnnotationPlugin();
 
 protected:
-    void doGetPossibleAnnotations( const Nepomuk::AnnotationRequest& request );
+    void doGetPossibleAnnotations( const Nepomuk2::AnnotationRequest& request );
 
 private Q_SLOTS:
 

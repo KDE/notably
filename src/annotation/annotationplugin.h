@@ -31,7 +31,7 @@ namespace Soprano {
 	class Node;
 }
 
-namespace Nepomuk {
+namespace Nepomuk2 {
 
     class Annotation;
     class AnnotationRequest;
@@ -72,7 +72,7 @@ namespace Nepomuk {
          *
          * \param plugin The plugin emitting the signal.
          */
-        void finished( Nepomuk::AnnotationPlugin* plugin );
+        void finished( Nepomuk2::AnnotationPlugin* plugin );
 
         /**
          * Emitted once a new possible Annotation has been found.
@@ -85,7 +85,7 @@ namespace Nepomuk {
          * with the plugin, it is recommended to do the destruction manually once
          * the Annotation object is no longer needed.
          */
-        void newAnnotation( Nepomuk::Annotation* annotation );
+        void newAnnotation( Nepomuk2::Annotation* annotation );
 
     public Q_SLOTS:
         /**
@@ -129,7 +129,7 @@ namespace Nepomuk {
          *
          * This will emit the newAnnotation signal.
          */
-        void addNewAnnotation( Nepomuk::Annotation* );
+        void addNewAnnotation( Nepomuk2::Annotation* );
 
     private:
         class Private;
@@ -138,13 +138,13 @@ namespace Nepomuk {
         friend class Annotation;
     };
 
-} // End namespace Nepomuk
+} // End namespace Nepomuk22
 
 
 /**
  * Export a %Nepomuk Annotation Plugin.
  *
- * \param classname The name of the Nepomuk::AnnotationPlugin subclass to export.
+ * \param classname The name of the Nepomuk2::AnnotationPlugin subclass to export.
  * \param libname The name of the library which should export the plugin.
  */
 #define NEPOMUK_EXPORT_ANNOTATION_PLUGIN( classname, libname )  \

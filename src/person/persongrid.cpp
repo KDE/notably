@@ -134,12 +134,12 @@ void PersonGrid::leaveEvent(QEvent* event)
     QWidget::leaveEvent(event);
 }
 
-void PersonGrid::setPeople(const QList< Nepomuk::Resource >& resources)
+void PersonGrid::setPeople(const QList< Nepomuk2::Resource >& resources)
 {
     m_model->setList( resources );
 }
 
-QList< Nepomuk::Resource > PersonGrid::people() const
+QList< Nepomuk2::Resource > PersonGrid::people() const
 {
     return m_model->toList();
 }

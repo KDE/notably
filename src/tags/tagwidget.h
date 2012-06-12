@@ -23,7 +23,7 @@
 
 #include <QtGui/QStringListModel>
 
-#include <Nepomuk/Tag>
+#include <Nepomuk2/Tag>
 
 class TagEditor;
 class TagView;
@@ -34,12 +34,12 @@ class TagWidget : public QWidget
 public:
     explicit TagWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
 
-    QList<Nepomuk::Tag> tags();
-    void setTags(const QList<Nepomuk::Tag>& tags);
-    void addTags(const QList<Nepomuk::Tag>& tags);
+    QList<Nepomuk2::Tag> tags();
+    void setTags(const QList<Nepomuk2::Tag>& tags);
+    void addTags(const QList<Nepomuk2::Tag>& tags);
 
 signals:
-    void tagSelected(const Nepomuk::Tag &tag);
+    void tagSelected(const Nepomuk2::Tag &tag);
 
 private slots:
     void slotAddTags();

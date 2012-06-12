@@ -34,20 +34,20 @@ TagView::TagView(QWidget* parent): QWidget(parent)
     setStyleSheet("background-color: transparent;");
 }
 
-void TagView::addTags(const QList< Nepomuk::Tag >& tags)
+void TagView::addTags(const QList< Nepomuk2::Tag >& tags)
 {
-    foreach( const Nepomuk::Tag& t, tags ) {
+    foreach( const Nepomuk2::Tag& t, tags ) {
         Tag *tagWidget = new Tag(this);
         tagWidget->setTag( t );
-        connect( tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)), this, SIGNAL(tagClicked(Nepomuk::Tag)) );
-        connect( tagWidget, SIGNAL(tagDeleted(Nepomuk::Tag)), this, SLOT(slotTagDeleted(Nepomuk::Tag)) );
+        connect( tagWidget, SIGNAL(tagSelected(Nepomuk2::Tag)), this, SIGNAL(tagClicked(Nepomuk2::Tag)) );
+        connect( tagWidget, SIGNAL(tagDeleted(Nepomuk2::Tag)), this, SLOT(slotTagDeleted(Nepomuk2::Tag)) );
 
         m_tags.append( tagWidget );
         m_layout->addWidget( tagWidget );
     }
 }
 
-void TagView::setTags(const QList< Nepomuk::Tag >& tags)
+void TagView::setTags(const QList< Nepomuk2::Tag >& tags)
 {
     clearTags();
     addTags( tags );
@@ -65,15 +65,15 @@ void TagView::clearTags()
     m_tags.clear();
 }
 
-QList< Nepomuk::Tag > TagView::tags()
+QList< Nepomuk2::Tag > TagView::tags()
 {
-    QList<Nepomuk::Tag> tags;
+    QList<Nepomuk2::Tag> tags;
     foreach( Tag* t, m_tags )
         tags << t->tag();
     return tags;
 }
 
-void TagView::slotTagDeleted(const Nepomuk::Tag& tag)
+void TagView::slotTagDeleted(const Nepomuk2::Tag& tag)
 {
     int index = -1;
     for(int i=0; i<m_tags.size(); i++) {

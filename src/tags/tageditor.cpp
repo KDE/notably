@@ -57,7 +57,7 @@ TagEditor::~TagEditor()
 
 }
 
-void TagEditor::addTag(const Nepomuk::Tag& tag)
+void TagEditor::addTag(const Nepomuk2::Tag& tag)
 {
     if( !m_tagList.contains( tag ) ) {
         m_tagList << tag;
@@ -71,7 +71,7 @@ void TagEditor::addTag(const Nepomuk::Tag& tag)
     }
 }
 
-void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
+void TagEditor::setTags(const QList<Nepomuk2::Tag>& tags)
 {
     if( m_tagList == tags )
         return;
@@ -84,7 +84,7 @@ void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
 
     // Update the string
     QStringList list;
-    foreach( const Nepomuk::Tag &tag, m_tagList )
+    foreach( const Nepomuk2::Tag &tag, m_tagList )
         list << tag.genericLabel();
 
     setPlainText( list.join(QLatin1String(", ")) );
@@ -97,13 +97,13 @@ void TagEditor::setTags(const QList<Nepomuk::Tag>& tags)
     emit tagsChanged( m_tagList );
 }
 
-QList<Nepomuk::Tag> TagEditor::tags() const
+QList<Nepomuk2::Tag> TagEditor::tags() const
 {
     // Parse all the tags from text
     QString text = toPlainText();
     QStringList tagStringList = text.split( QChar::fromAscii(',') );
 
-    QList<Nepomuk::Tag> tagList;
+    QList<Nepomuk2::Tag> tagList;
     foreach( const QString &tag, tagStringList ) {
         QString trimmedTag = tag.trimmed();
         if( !trimmedTag.isEmpty() )
@@ -227,7 +227,7 @@ void TagEditor::insertCompletion(const QString &completion)
 
     // TODO: If the tag already exists, then add some kind of animation where that tag is
     // highlighted for a second or so
-    addTag( Nepomuk::Tag( completion ) );
+    addTag( Nepomuk2::Tag( completion ) );
 }
 
 QString TagEditor::placeholderText() const

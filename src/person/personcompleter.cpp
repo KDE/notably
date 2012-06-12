@@ -24,17 +24,17 @@
 
 #include <QtGui/QListView>
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
 
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/PIMO>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 PersonCompleter::PersonCompleter(QObject* parent): QCompleter(parent)
 {
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
+    Nepomuk2::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk2::Query::Query q(term);
     // The limit is there cause loading more than 20 causes the app to block for a long time
     // FIXME: Move this to another thread.
     q.setLimit( 20 );

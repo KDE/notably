@@ -20,30 +20,30 @@
 #include "personannotationplugin.h"
 #include "../textannotation.h"
 
-#include <nepomuk/annotationrequest.h>
-#include <nepomuk/simpleannotation.h>
+#include "../annotationrequest.h"
+#include "../simpleannotation.h"
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Variant>
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/ResourceTypeTerm>
 
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NIE>
 
 #include <KDebug>
 #include <QTimer>
 
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 PersonAnnotationPlugin::PersonAnnotationPlugin( QObject* parent, const QVariantList& )
-    : Nepomuk::AnnotationPlugin( parent )
+    : Nepomuk2::AnnotationPlugin( parent )
 {
     m_personModel = new PersonModel( this );
 
-    Nepomuk::Query::ResourceTypeTerm term(PIMO::Person());
-    Nepomuk::Query::Query q(term);
+    Nepomuk2::Query::ResourceTypeTerm term(PIMO::Person());
+    Nepomuk2::Query::Query q(term);
     q.setLimit( 5 );
     m_personModel->setQuery( q );
 
@@ -74,7 +74,7 @@ namespace {
     }
 }
 
-void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::AnnotationRequest& request )
+void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk2::AnnotationRequest& request )
 {
     QString text = request.filter();
     if( !text.isEmpty() ) {
@@ -83,7 +83,7 @@ void PersonAnnotationPlugin::doGetPossibleAnnotations( const Nepomuk::Annotation
         foreach( const Person& person, people ) {
             // FIXME: You typically want to give the exact string
             kDebug() << person.nickName();
-            Nepomuk::SimpleAnnotation *ann = new Nepomuk::SimpleAnnotation( PIMO::isRelated(), person.uri() );
+            Nepomuk2::SimpleAnnotation *ann = new Nepomuk2::SimpleAnnotation( PIMO::isRelated(), person.uri() );
             addNewAnnotation( ann );
         }
 

@@ -20,10 +20,10 @@
 
 #include "notesmodel.h"
 
-#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk2/Query/QueryServiceClient>
 
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Types/Class>
+#include <Nepomuk2/Variant>
 #include <KDebug>
 
 
@@ -31,13 +31,13 @@ NotesModel::NotesModel(QObject* parent): SimpleResourceModel(parent)
 {
 }
 
-void NotesModel::setQuery(Nepomuk::Query::Query& query)
+void NotesModel::setQuery(Nepomuk2::Query::Query& query)
 {
     clear();
 
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient( this );
-    connect( client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)),
-             this, SLOT(addResults(QList<Nepomuk::Query::Result>)) );
+    Nepomuk2::Query::QueryServiceClient *client = new Nepomuk2::Query::QueryServiceClient( this );
+    connect( client, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)),
+             this, SLOT(addResults(QList<Nepomuk2::Query::Result>)) );
     //FIXME: Ideally the model should be live updated, but using the QueryServiceClient for such
     //       things is quite expensive, as it runs the query every time the repository changes
     connect( client, SIGNAL(finishedListing()), client, SLOT(deleteLater()) );
@@ -55,10 +55,10 @@ QVariant NotesModel::data(const QModelIndex& index, int role) const
     if( !index.isValid() )
         return QVariant();
 
-    Nepomuk::Resource res = resourceForIndex( index );
+    Nepomuk2::Resource res = resourceForIndex( index );
 
     switch( role ) {
-        case Nepomuk::Utils::ResourceModel::ResourceRole: {
+        case Nepomuk2::Utils::ResourceModel::ResourceRole: {
             return QVariant::fromValue( res );
         }
     }
@@ -94,7 +94,7 @@ int NotesModel::roleForProperty(const QUrl& property)
     return role;
 }
 
-void NotesModel::emitDataUpdated(const Nepomuk::Resource& res)
+void NotesModel::emitDataUpdated(const Nepomuk2::Resource& res)
 {
     QModelIndex index = indexForResource( res );
     emit dataChanged( index, index );

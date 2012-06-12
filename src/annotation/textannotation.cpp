@@ -21,7 +21,7 @@
 #include "textannotation.h"
 
 TextAnnotation::TextAnnotation(int pos, int len, const QUrl& prop,
-                               const Nepomuk::Resource& obj, QObject* parent)
+                               const Nepomuk2::Resource& obj, QObject* parent)
     : Annotation(parent)
     , m_position( pos )
     , m_length( len )
@@ -32,11 +32,11 @@ TextAnnotation::TextAnnotation(int pos, int len, const QUrl& prop,
 
 }
 
-void TextAnnotation::doCreate(Nepomuk::Resource)
+void TextAnnotation::doCreate(Nepomuk2::Resource)
 {
 }
 
-bool TextAnnotation::exists(Nepomuk::Resource) const
+bool TextAnnotation::exists(Nepomuk2::Resource) const
 {
     return false;
 }
@@ -46,7 +46,7 @@ int TextAnnotation::position() const
     return m_position;
 }
 
-Nepomuk::Resource TextAnnotation::object() const
+Nepomuk2::Resource TextAnnotation::object() const
 {
     return m_object;
 }

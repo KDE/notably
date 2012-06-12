@@ -29,21 +29,21 @@
 #include <QtGui/QGroupBox>
 
 #include <Soprano/Vocabulary/NAO>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/PIMO>
 
-#include <nepomuk/annotation.h>
-#include <nepomuk/annotationrequest.h>
-#include <nepomuk/annotationplugin.h>
-#include <nepomuk/annotationpluginwrapper.h>
-#include <nepomuk/annotationpluginfactory.h>
+#include "annotation/annotation.h"
+#include "annotation/annotationrequest.h"
+#include "annotation/annotationplugin.h"
+#include "annotation/annotationpluginwrapper.h"
+#include "annotation/annotationpluginfactory.h"
 
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Variant>
 #include <KDebug>
 #include <KPushButton>
 
 using namespace Soprano::Vocabulary;
-using namespace Nepomuk::Vocabulary;
+using namespace Nepomuk2::Vocabulary;
 
 namespace {
     class Row: public QWidget {
@@ -80,15 +80,15 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     QVBoxLayout* tagLayout = new QVBoxLayout( tagBox );
     m_tagWidget = new TagWidget( tagBox );
     tagLayout->addWidget( m_tagWidget );
-    connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk::Tag)),
-             this, SIGNAL(tagSelected(Nepomuk::Tag)) );
+    connect( m_tagWidget, SIGNAL(tagSelected(Nepomuk2::Tag)),
+             this, SIGNAL(tagSelected(Nepomuk2::Tag)) );
 
     QGroupBox* personBox = new QGroupBox( i18n("People"), this );
     QVBoxLayout* personLayout = new QVBoxLayout( personBox );
     m_personGrid = new PersonGrid( personBox );
     personLayout->addWidget( m_personGrid );
-    connect( m_personGrid, SIGNAL(personSelected(Nepomuk::Resource)),
-             this, SIGNAL(personSelected(Nepomuk::Resource)) );
+    connect( m_personGrid, SIGNAL(personSelected(Nepomuk2::Resource)),
+             this, SIGNAL(personSelected(Nepomuk2::Resource)) );
 
     QVBoxLayout* mainLayout = new QVBoxLayout( this );
     mainLayout->addWidget( widget, 0, Qt::AlignTop );
@@ -101,7 +101,7 @@ NoteInformation::NoteInformation(QWidget* parent, Qt::WindowFlags f): QWidget(pa
     connect( annotateButton, SIGNAL(clicked(bool)), this, SLOT(slotAnnotateClicked()) );
 }
 
-void NoteInformation::setNote(const Nepomuk::Resource& note)
+void NoteInformation::setNote(const Nepomuk2::Resource& note)
 {
     if( m_note != note ) {
         m_note = note;
@@ -133,13 +133,13 @@ void NoteInformation::updateView()
     m_titleEdit->setText(title);
 }
 
-bool NoteInformation::saveNote(const Nepomuk::Resource& note)
+bool NoteInformation::saveNote(const Nepomuk2::Resource& note)
 {
     if( note != m_note )
         m_note = note;
 
     bool saved = false;
-    QList<Nepomuk::Tag> newTags = m_tagWidget->tags();
+    QList<Nepomuk2::Tag> newTags = m_tagWidget->tags();
     if( newTags !=  m_note.tags() ) {
         m_note.setTags( newTags );
         saved = true;
@@ -156,7 +156,7 @@ bool NoteInformation::saveNote(const Nepomuk::Resource& note)
 
 void NoteInformation::newNote()
 {
-    m_note = Nepomuk::Resource();
+    m_note = Nepomuk2::Resource();
     updateView();
 }
 
@@ -164,13 +164,13 @@ void NoteInformation::slotAnnotateClicked()
 {
     Annotator* annotator = Annotator::instance();
 
-    connect( annotator, SIGNAL(newAnnotation(Nepomuk::Annotation*)),
-             this, SLOT(slotNewAnnotation(Nepomuk::Annotation*)) );
+    connect( annotator, SIGNAL(newAnnotation(Nepomuk2::Annotation*)),
+             this, SLOT(slotNewAnnotation(Nepomuk2::Annotation*)) );
 
-    Nepomuk::AnnotationRequest request( m_note );
+    Nepomuk2::AnnotationRequest request( m_note );
     annotator->getPossibleAnnotations( request );
 }
 
-void NoteInformation::slotNewAnnotation(Nepomuk::Annotation* annotation)
+void NoteInformation::slotNewAnnotation(Nepomuk2::Annotation* annotation)
 {
 }

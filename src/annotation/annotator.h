@@ -23,9 +23,9 @@
 
 #include <QtCore/QObject>
 
-#include <nepomuk/annotationpluginwrapper.h>
+#include "annotationpluginwrapper.h"
 
-class Annotator : public Nepomuk::AnnotationPluginWrapper
+class Annotator : public Nepomuk2::AnnotationPluginWrapper
 {
     Q_OBJECT
 public:

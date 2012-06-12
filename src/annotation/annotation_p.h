@@ -22,7 +22,7 @@
 #include <QtGui/QIcon>
 #include <QtCore/QString>
 
-namespace Nepomuk {
+namespace Nepomuk2 {
     class AnnotationPrivate
     {
     public:
