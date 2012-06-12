@@ -43,6 +43,12 @@ set( SRCS
   person/persongrid.cpp
   person/personcompleter.cpp
 
+  annotation/annotation.cpp
+  annotation/annotationplugin.cpp
+  annotation/annotationpluginfactory.cpp
+  annotation/annotationpluginwrapper.cpp
+  annotation/annotationrequest.cpp
+
   annotation/textannotation.cpp
   annotation/textannotationgroup.cpp
   annotation/annotator.cpp
@@ -68,7 +74,6 @@ target_link_libraries( notably
   ${NEPOMUK_QUERY_LIBRARIES}
   ${SOPRANO_LIBRARIES}
   nepomukdatamanagement
-  nepomukannotation
   )
 
 install(TARGETS notably

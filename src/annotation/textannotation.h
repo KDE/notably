@@ -21,7 +21,7 @@
 #ifndef TEXTANNOTATION_H
 #define TEXTANNOTATION_H
 
-#include <nepomuk/annotation.h>
+#include "nepomuk/annotation.h"
 
 class TextAnnotation : public Nepomuk::Annotation
 {

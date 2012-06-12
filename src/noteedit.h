@@ -28,7 +28,7 @@
 #include <QtCore/QSet>
 #include <Nepomuk/Resource>
 
-#include <nepomuk/annotation.h>
+#include "nepomuk/annotation.h"
 
 class PersonCompleter;
 class NoteDocument;
