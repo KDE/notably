@@ -63,7 +63,7 @@ qreal Nepomuk2::Annotation::relevance() const
 
 void Nepomuk2::Annotation::create( Resource res )
 {
-    kDebug() << res.resourceUri();
+    kDebug() << res.uri();
     // call a protected method to be open for future extensions at
     // this place.
     doCreate( res );

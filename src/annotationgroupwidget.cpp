@@ -48,7 +48,7 @@ QVariant AnnotationGroupModel::data(const QModelIndex& index, int role) const
     TextAnnotation* ann = m_group->annotations().at( index.row() );
     switch( role ) {
         case Qt::DisplayRole:
-            return Person(ann->object().resourceUri()).nickName();
+            return Person(ann->object().uri()).nickName();
     }
 
     return QVariant();
@@ -78,7 +78,7 @@ AnnotationGroupWidget::AnnotationGroupWidget(TextAnnotationGroup* tag, QWidget* 
 
     QList<TextAnnotation*> tal = tag->annotations();
     foreach( TextAnnotation* ta, tal ) {
-        QString name = Person(ta->object().resourceUri()).nickName();
+        QString name = Person(ta->object().uri()).nickName();
         QRadioButton* rb = new QRadioButton( name );
 
         vLayout->addWidget( rb );

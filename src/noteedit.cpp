@@ -99,7 +99,7 @@ Nepomuk2::Resource NoteEdit::resource() const
 
 void NoteEdit::save()
 {
-    kDebug() << "Saving : " << m_noteResource.resourceUri();
+    kDebug() << "Saving : " << m_noteResource.uri();
     const QString plainText = m_document->plainText();
     kDebug() << plainText;
 

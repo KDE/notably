@@ -98,7 +98,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
                 return KIcon( iconName );
             }
             else {
-                QIcon icon = Types::Class(res.resourceType()).icon();
+                QIcon icon = Types::Class(res.type()).icon();
                 if( !icon.isNull() )
                     return icon;
                 else
@@ -107,7 +107,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         }
 
         case Qt::ToolTipRole:
-            return KUrl( res.resourceUri() ).prettyUrl();
+            return KUrl( res.uri() ).prettyUrl();
 
         }
 
@@ -115,10 +115,10 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         switch( role ) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            return Types::Class( res.resourceType() ).label();
+            return Types::Class( res.type() ).label();
 
         case Qt::DecorationRole: {
-            QIcon icon = Types::Class(res.resourceType()).icon();
+            QIcon icon = Types::Class(res.type()).icon();
             if( !icon.isNull() )
                 return icon;
             else
@@ -126,7 +126,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         }
 
         case Qt::ToolTipRole:
-            return KUrl(res.resourceType()).prettyUrl();
+            return KUrl(res.type()).prettyUrl();
         }
     }
 
@@ -139,8 +139,8 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         // FIXME: sort files before other stuff and so on
 
     case KCategorizedSortFilterProxyModel::CategoryDisplayRole: {
-        Q_ASSERT( !res.resourceType().isEmpty() );
-        Nepomuk2::Types::Class c( res.resourceType() );
+        Q_ASSERT( !res.type().isEmpty() );
+        Nepomuk2::Types::Class c( res.type() );
         QString cat = c.label();
         if ( cat.isEmpty() ) {
             cat = c.name();
@@ -156,7 +156,7 @@ QVariant Nepomuk2::Utils::ResourceModel::data( const QModelIndex& index, int rol
         return QVariant::fromValue( res );
 
     case ResourceTypeRole:
-        return QVariant::fromValue( Nepomuk2::Types::Class(res.resourceType()) );
+        return QVariant::fromValue( Nepomuk2::Types::Class(res.type()) );
 
     case ResourceCreationDateRole:
         return res.property( Soprano::Vocabulary::NAO::created() ).toDateTime();
@@ -198,7 +198,7 @@ QMimeData* Nepomuk2::Utils::ResourceModel::mimeData( const QModelIndexList& inde
     KUrl::List uris;
     foreach ( const QModelIndex& index, indexes ) {
         if (index.isValid()) {
-            uris << index.data( ResourceRole ).value<Resource>().resourceUri();
+            uris << index.data( ResourceRole ).value<Resource>().uri();
         }
     }
 

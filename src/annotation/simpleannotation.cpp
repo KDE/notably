@@ -116,7 +116,7 @@ int Nepomuk2::SimpleAnnotation::occurenceCount( const QDateTime& from, const QDa
     // FIXME: hanldle the new property case
     QString query = QString( "?r %1 %2 .")
                     .arg( Soprano::Node( d->property.uri() ).toN3() )
-                    .arg( Soprano::Node( d->value.toResource().resourceUri() ).toN3() );
+                    .arg( Soprano::Node( d->value.toResource().uri() ).toN3() );
     if( from.isValid() || to.isValid() ) {
         query = QString("graph ?g { %1 } . ?g %2 ?date . ")
                 .arg( query )
@@ -148,7 +148,7 @@ QDateTime Nepomuk2::SimpleAnnotation::lastUsed() const
     Soprano::QueryResultIterator it =
         ResourceManager::instance()->mainModel()->executeQuery( QString("select ?date where { graph ?g { ?r %1 %2 . }  . ?g %3 ?date . } ORDER BY DESC(?date) LIMIT 1")
                                                                 .arg( Soprano::Node( d->property.uri() ).toN3() )
-                                                                .arg( Soprano::Node( d->value.toResource().resourceUri() ).toN3() )
+                                                                .arg( Soprano::Node( d->value.toResource().uri() ).toN3() )
                                                                 .arg( Soprano::Node( Soprano::Vocabulary::NAO::created() ).toN3() ),
                                                                 Soprano::Query::QueryLanguageSparql );
     if( it.next() ) {
@@ -166,7 +166,7 @@ QDateTime Nepomuk2::SimpleAnnotation::firstUsed() const
     Soprano::QueryResultIterator it =
         ResourceManager::instance()->mainModel()->executeQuery( QString("select ?date where { graph ?g { ?r %1 %2 . }  . ?g %3 ?date . } ORDER BY ASC(?date) LIMIT 1")
                                                                 .arg( Soprano::Node( d->property.uri() ).toN3() )
-                                                                .arg( Soprano::Node( d->value.toResource().resourceUri() ).toN3() )
+                                                                .arg( Soprano::Node( d->value.toResource().uri() ).toN3() )
                                                                 .arg( Soprano::Node( Soprano::Vocabulary::NAO::created() ).toN3() ),
                                                                 Soprano::Query::QueryLanguageSparql );
     if( it.next() ) {
@@ -180,7 +180,7 @@ QDateTime Nepomuk2::SimpleAnnotation::firstUsed() const
 
 void Nepomuk2::SimpleAnnotation::doCreate( Resource res )
 {
-    kDebug() << res.resourceUri();
+    kDebug() << res.uri();
     if ( d->property.isValid() ) {
         // TODO: here we ignore possible type clashes
         if ( d->property.maxCardinality() == 1 ) {

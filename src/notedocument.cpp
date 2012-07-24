@@ -76,7 +76,7 @@ QString NoteDocument::toRDFaHtml() const
 
                 if( tag->state() == TextAnnotationGroup::Accepted ) {
                     TextAnnotation* ann = tag->acceptedAnnotation();
-                    const QUrl uri = ann->object().resourceUri();
+                    const QUrl uri = ann->object().uri();
                     const QUrl prop = ann->property();
 
                     QString string = QString::fromLatin1("<span rel='%1' resource='%2'>%3</span>")
@@ -190,7 +190,7 @@ QSet< QUrl > NoteDocument::resources(const QUrl& property)
 
                 if( tag->state() == TextAnnotationGroup::Accepted ) {
                     TextAnnotation* ta = tag->acceptedAnnotation();
-                    const QUrl uri = ta->object().resourceUri();
+                    const QUrl uri = ta->object().uri();
                     const QUrl prop= ta->property();
 
                     if( prop == property )

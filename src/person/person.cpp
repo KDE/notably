@@ -121,7 +121,7 @@ QUrl Person::photo() const
 
 QUrl Person::uri() const
 {
-    return m_pimoPerson.resourceUri();
+    return m_pimoPerson.uri();
 }
 
 Nepomuk2::Resource Person::resource() const
@@ -160,8 +160,8 @@ void Person::compress()
         }
 
         if( canMergeContacts(lastMergedContact, pc) ) {
-            const QUrl uri1 = lastMergedContact.resourceUri();
-            const QUrl uri2 = pc.resourceUri();
+            const QUrl uri1 = lastMergedContact.uri();
+            const QUrl uri2 = pc.uri();
 
             KJob* job = Nepomuk2::mergeResources( uri1, uri2 );
             job->exec();

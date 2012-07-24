@@ -95,7 +95,7 @@ void NotesView::deleteNote()
         qRegisterMetaType<Nepomuk2::Resource>();
         Nepomuk2::Resource res = m_deleteCandidate.data( Nepomuk2::Utils::SimpleResourceModel::ResourceRole ).value<Nepomuk2::Resource>();
 
-        kDebug() << "Deleting : " << res.resourceUri();
+        kDebug() << "Deleting : " << res.uri();
 
         // FIXME: The Nepomuk ResourceModel doesn't support removing of rows! Use some other model
         //        => The view isn't updated corrected

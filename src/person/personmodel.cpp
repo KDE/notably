@@ -78,7 +78,7 @@ void PersonModel::addResults(const QList< Nepomuk2::Query::Result >& results)
     QList<Person> personList;
     foreach( const Nepomuk2::Query::Result &res, results ) {
 
-        Person person( res.resource().resourceUri() );
+        Person person( res.resource().uri() );
         if( !person.isEmpty() ) {
             personList << person;
             kDebug() << personList.size() + m_people.size() << "Loaded " << person.nickName();
@@ -113,7 +113,7 @@ void PersonModel::setList(const QList< Nepomuk2::Resource >& people)
 
     QList<Person> personList;
     foreach( const Nepomuk2::Resource& res, people ) {
-        Person person( res.resourceUri() );
+        Person person( res.uri() );
         if( !person.isEmpty() ) {
             personList << person;
             kDebug() << personList.size() << "Loaded " << person.nickName();

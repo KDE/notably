@@ -113,7 +113,7 @@ void PersonToolTip::setPerson(const Nepomuk2::Resource& resource)
 {
     m_person = resource;
 
-    Person person( m_person.resourceUri() );
+    Person person( m_person.uri() );
     m_preview->setPixmap( personPixmap(person) );
     m_name->setText( person.displayName() );
 
