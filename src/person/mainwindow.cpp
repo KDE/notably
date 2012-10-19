@@ -172,7 +172,7 @@ void MainWindow::slotOnMergeJob(KJob* job)
         fillModel();
 
         // I really wish we didn't need to do this but we still have invalid caching probelms
-        Nepomuk2::ResourceManager::instance()->clearCache();
+        //Nepomuk2::ResourceManager::instance()->clearCache();
         return;
     }
 
@@ -214,6 +214,6 @@ void MainWindow::slotOnCompress()
     Person person( personUri );
     person.compress();
 
-    Nepomuk2::ResourceManager::instance()->clearCache();
+    //Nepomuk2::ResourceManager::instance()->clearCache();
     m_tooltip->setPerson( personUri );
 }

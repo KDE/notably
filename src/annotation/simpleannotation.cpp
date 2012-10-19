@@ -26,7 +26,6 @@
 #include <Nepomuk2/Variant>
 #include <Nepomuk2/Types/Property>
 #include <nepomuk2/resourcemanager.h>
-#include <nepomuk2/thing.h>
 
 #include <QtCore/QUrl>
 
